@@ -162,4 +162,9 @@ function enviarEmail($conteudo_email, $instituicao, $subject, $email, $usuario )
 
 }
 
+function gravarLog($sql){ //grava na tabela ig_log os inserts e updates
+
+	
+}
+
 ?>

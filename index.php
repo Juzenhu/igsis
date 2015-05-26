@@ -25,43 +25,67 @@ if(isset($_POST['usuario'])){
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>IGSMC - v0.1 - 2015</title>
-<link rel="stylesheet" href="visual/css/style.css" />
-<link href='http://fonts.googleapis.com/css?family=Engagement' rel='stylesheet' type='text/css'>
-<!--[if IE]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="visual/js/jquery.uniform.min.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" charset="utf-8">
-      $(function(){
-        $("input:checkbox, input:radio, input:file, select").uniform();
-      });
-    </script>
+    <link href="visual/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="visual/css/style.css" rel="stylesheet" media="screen">
+	<link href="visual/color/default.css" rel="stylesheet" media="screen">
+	<script src="visual/js/modernizr.custom.js"></script>
 </head>
 
 
 <body>
-    <div id="signup-form">
-        <div id="signup-inner">
-           	<div class="clearfix" id="header">
-<center><img src="visual/images/logo.png" /></center>
-<br />
-<form method="post" action="index.php" >
-		<p>
-		<label name="usuario">Usuário</label>
-		<input type="text" name="usuario" size="30" />
-		</p>
-        <p>
-		<label name="usuario">Senha</label>
-		<input type="password" name="senha" size="30"/>
-		</p>
-        <br />
-        <p>
-		<input type="submit" value="Entrar" />
-		</p>
-</form>
-		</div>
-	</div>
+	  <section id="contact" class="home-section bg-white">
+	  	<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="text-hide">
+					 <h2>IGSIS - SMC</h2>
+					 <p>É preciso ter um login válido. Dúdivas: igccsp2015@gmail.com </p>
+					</div>
+				  </div>
+			  </div>
+
+	  		<div class="row">
+	  			<div class="col-md-offset-1 col-md-10">
+
+				<form method="POST" action="index.php"class="form-horizontal" role="form">
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6">
+					  <input type="text" name="usuario" class="form-control" id="inputName" placeholder="Usuário">
+					</div>
+				  
+					<div class=" col-md-6">
+					  <input type="password" name="senha" class="form-control" id="inputEmail" placeholder="Senha">
+					</div>
+				  </div>
+
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					 <button type="submit" class="btn btn-theme btn-lg btn-block">Entrar</button>
+					</div>
+				  </div>
+				</form>
+	
+	  			</div>
+			
+				
+	  		</div>
+			
+
+	  	</div>
+	  </section>  
+
+
+	 
+	 <!-- js -->
+    <script src="visual/js/jquery.js"></script>
+    <script src="visual/js/bootstrap.min.js"></script>
+	<script src="visual/js/jquery.smooth-scroll.min.js"></script>
+	<script src="visual/jquery.dlmenu.js"></script>
+	<script src="visual/wow.min.js"></script>
+	<script src="visual/custom.js"></script>
+  	</body>
+    
+
 <center><img src="visual/images/rodape.png" /></center>
 </div>
 
