@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.11
+-- version 3.4.11.1deb2+deb7u1
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: 30-Mar-2015 às 02:31
--- Versão do servidor: 5.6.21
--- PHP Version: 5.6.3
+-- Máquina: localhost
+-- Data de Criação: 25-Maio-2015 às 19:46
+-- Versão do servidor: 5.5.43
+-- versão do PHP: 5.4.39-0+deb7u2
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,10 +17,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `igsmc`
+-- Base de Dados: `igsmc`
 --
-CREATE DATABASE IF NOT EXISTS `igsmc` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `igsmc`;
 
 -- --------------------------------------------------------
 
@@ -28,16 +26,19 @@ USE `igsmc`;
 -- Estrutura da tabela `ig_alteracao`
 --
 
+DROP TABLE IF EXISTS `ig_alteracao`;
 CREATE TABLE IF NOT EXISTS `ig_alteracao` (
-`idAlteracao` int(4) NOT NULL,
+  `idAlteracao` int(4) NOT NULL AUTO_INCREMENT,
   `ig_evento_idEvento` int(6) NOT NULL,
   `protocolo` int(3) NOT NULL,
   `usuario` varchar(20) NOT NULL,
   `dataAlteracao` date NOT NULL,
   `assunto` varchar(60) NOT NULL,
   `descricao` longtext NOT NULL,
-  `justificativa` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `justificativa` longtext NOT NULL,
+  PRIMARY KEY (`idAlteracao`),
+  KEY `ig_alteracao_FKIndex1` (`ig_evento_idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -45,12 +46,16 @@ CREATE TABLE IF NOT EXISTS `ig_alteracao` (
 -- Estrutura da tabela `ig_anexos`
 --
 
+DROP TABLE IF EXISTS `ig_anexos`;
 CREATE TABLE IF NOT EXISTS `ig_anexos` (
-`idAnexos` int(3) NOT NULL,
+  `idAnexos` int(3) NOT NULL AUTO_INCREMENT,
   `ig_alteracao_idAlteracao` int(4) NOT NULL,
   `ig_evento_idEvento` int(6) NOT NULL,
-  `nome` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `nome` varchar(100) NOT NULL,
+  PRIMARY KEY (`idAnexos`),
+  KEY `ig_anexos_FKIndex1` (`ig_evento_idEvento`),
+  KEY `ig_anexos_FKIndex2` (`ig_alteracao_idAlteracao`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -58,26 +63,15 @@ CREATE TABLE IF NOT EXISTS `ig_anexos` (
 -- Estrutura da tabela `ig_arquivo`
 --
 
+DROP TABLE IF EXISTS `ig_arquivo`;
 CREATE TABLE IF NOT EXISTS `ig_arquivo` (
-`idArquivo` int(4) NOT NULL,
+  `idArquivo` int(4) NOT NULL AUTO_INCREMENT,
   `ig_evento_idEvento` int(6) NOT NULL,
   `arquivo` varchar(50) NOT NULL,
-  `idEvento` int(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `ig_artes_visuais`
---
-
-CREATE TABLE IF NOT EXISTS `ig_artes_visuais` (
-`idArtes` int(4) NOT NULL,
-  `ig_evento_idEvento` int(6) NOT NULL,
-  `numero` int(2) NOT NULL,
-  `tipo` varchar(20) NOT NULL,
-  `valorTotal` decimal(8,0) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idEvento` int(6) NOT NULL,
+  PRIMARY KEY (`idArquivo`),
+  KEY `ig_arquivo_FKIndex1` (`ig_evento_idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -85,8 +79,9 @@ CREATE TABLE IF NOT EXISTS `ig_artes_visuais` (
 -- Estrutura da tabela `ig_cinema`
 --
 
+DROP TABLE IF EXISTS `ig_cinema`;
 CREATE TABLE IF NOT EXISTS `ig_cinema` (
-`idCinema` int(3) NOT NULL,
+  `idCinema` int(3) NOT NULL AUTO_INCREMENT,
   `ig_pais_idPais` int(3) NOT NULL,
   `ig_evento_idEvento` int(6) NOT NULL,
   `titulo` varchar(100) NOT NULL,
@@ -98,8 +93,11 @@ CREATE TABLE IF NOT EXISTS `ig_cinema` (
   `sinopse` longtext NOT NULL,
   `minutagem` int(3) NOT NULL,
   `linkTrailer` varchar(60) NOT NULL,
-  `elenco` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `elenco` longtext NOT NULL,
+  PRIMARY KEY (`idCinema`),
+  KEY `ig_cinema_FKIndex1` (`ig_evento_idEvento`),
+  KEY `ig_cinema_FKIndex2` (`ig_pais_idPais`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -107,57 +105,33 @@ CREATE TABLE IF NOT EXISTS `ig_cinema` (
 -- Estrutura da tabela `ig_comunicacao`
 --
 
+DROP TABLE IF EXISTS `ig_comunicacao`;
 CREATE TABLE IF NOT EXISTS `ig_comunicacao` (
-`idCom` int(4) NOT NULL,
-  `ig_cinema_idCinema` int(3) NOT NULL,
-  `ig_spcultura_idSPCultura` int(2) NOT NULL,
-  `ig_evento_idEvento` int(6) NOT NULL,
+  `idCom` int(8) NOT NULL AUTO_INCREMENT,
   `subtituloSPCultura` varchar(120) NOT NULL,
-  `sinopse` longtext NOT NULL,
-  `spcultura_inscricoes` longtext NOT NULL,
-  `spcultura_linguagens` int(2) NOT NULL,
-  `spcultura_descricao` longtext NOT NULL,
-  `spcultura_projeto` varchar(120) NOT NULL,
-  `spcultura_projetoId` int(4) NOT NULL,
-  `spcultura_tipoProjeto` int(2) NOT NULL,
-  `parecerArtistico` longtext NOT NULL,
-  `autor` longtext NOT NULL,
-  `fichaTecnica` longtext NOT NULL,
-  `release` longtext NOT NULL,
-  `filme` tinyint(1) NOT NULL,
-  `revisado` tinyint(1) NOT NULL,
-  `editado` tinyint(1) NOT NULL,
-  `site` tinyint(1) NOT NULL,
-  `publicacao` tinyint(1) NOT NULL,
-  `registroAudio` tinyint(1) NOT NULL,
-  `registroFotografia` tinyint(1) NOT NULL,
-  `registroVideo` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `ig_contratado`
---
-
-CREATE TABLE IF NOT EXISTS `ig_contratado` (
-`idContratado` int(4) NOT NULL,
-  `ig_evento_idEvento` int(6) NOT NULL,
-  `tipoPessoa` varchar(15) DEFAULT NULL,
-  `cpfCnpj` varchar(15) DEFAULT NULL,
-  `nomeEmpFis` varchar(60) DEFAULT NULL,
-  `representante` varchar(60) DEFAULT NULL,
-  `rg` varchar(12) DEFAULT NULL,
-  `cpfRepresentante` varchar(15) DEFAULT NULL,
-  `atividade` varchar(20) DEFAULT NULL,
-  `email` varchar(60) DEFAULT NULL,
-  `tel` varchar(15) DEFAULT NULL,
-  `endereco` varchar(200) DEFAULT NULL,
-  `idValor` decimal(8,0) DEFAULT NULL,
-  `banco` varchar(20) DEFAULT NULL,
-  `agencia` varchar(8) DEFAULT NULL,
-  `conta` varchar(8) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `ig_ocorrencia_idOcorrencia` int (8) DEFAULT NULL,
+  `sinopse` longtext,
+  `spcultura_inscricoes` longtext,
+  `spcultura_linguagem` int(2) DEFAULT NULL,
+  `spcultura_descricao` longtext,
+  `spcultura_projeto` varchar(120) DEFAULT NULL,
+  `spcultura_projetoId` int(4) DEFAULT NULL,
+  `spcultura_tipoProjeto` int(2) DEFAULT NULL,
+  `parecerArtisico` longtext,
+  `fichaTecnica` longtext,
+  `autor` longtext,
+  `releasecom` longtext,
+  `filme` int(1) DEFAULT NULL,
+  `revisado` int(1) DEFAULT NULL,
+  `editado` int(1) DEFAULT NULL,
+  `site` int(1) DEFAULT NULL,
+  `publicacao` int(1) DEFAULT NULL,
+  `registroAudio` int(1) DEFAULT NULL,
+  `registroVideo` int(1) DEFAULT NULL,
+  `registroFotografia` int(1) DEFAULT NULL,
+  PRIMARY KEY (`idCom`),
+    KEY `ig_comunicao_FKIndex1` (`ig_ocorrencia_idOcorrencia`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -165,14 +139,18 @@ CREATE TABLE IF NOT EXISTS `ig_contratado` (
 -- Estrutura da tabela `ig_espaco`
 --
 
+DROP TABLE IF EXISTS `ig_espaco`;
 CREATE TABLE IF NOT EXISTS `ig_espaco` (
-`idEspaco` int(3) NOT NULL,
+  `idEspaco` int(3) NOT NULL AUTO_INCREMENT,
   `ig_spcultura_idSPCultura` int(2) NOT NULL,
   `ig_instituicao_idInstituicao` int(3) NOT NULL,
   `espaco` varchar(120) NOT NULL,
   `espacoPai` int(3) NOT NULL,
-  `idSPCulturaEspaco` int(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idSPCulturaEspaco` int(6) NOT NULL,
+  PRIMARY KEY (`idEspaco`),
+  KEY `ig_espaco_FKIndex1` (`ig_instituicao_idInstituicao`),
+  KEY `ig_espaco_FKIndex2` (`ig_spcultura_idSPCultura`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -180,8 +158,9 @@ CREATE TABLE IF NOT EXISTS `ig_espaco` (
 -- Estrutura da tabela `ig_evento`
 --
 
+DROP TABLE IF EXISTS `ig_evento`;
 CREATE TABLE IF NOT EXISTS `ig_evento` (
-`idEvento` int(6) NOT NULL,
+  `idEvento` int(6) NOT NULL AUTO_INCREMENT,
   `ig_produtor_idProdutor` int(4) NOT NULL,
   `ig_tipo_evento_idTipoEvento` int(3) NOT NULL,
   `ig_programa_idPrograma` int(2) NOT NULL,
@@ -207,8 +186,12 @@ CREATE TABLE IF NOT EXISTS `ig_evento` (
   `justificativaComunicacao` longtext,
   `justificativaDocumentacao` longtext,
   `justificativaProducao` longtext,
-  `numeroProcesso` varchar(30) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `numeroProcesso` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`idEvento`),
+  KEY `ig_evento_FKIndex1` (`ig_programa_idPrograma`),
+  KEY `ig_evento_FKIndex2` (`ig_tipo_evento_idTipoEvento`),
+  KEY `ig_evento_FKIndex3` (`ig_produtor_idProdutor`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -216,13 +199,16 @@ CREATE TABLE IF NOT EXISTS `ig_evento` (
 -- Estrutura da tabela `ig_instituicao`
 --
 
+DROP TABLE IF EXISTS `ig_instituicao`;
 CREATE TABLE IF NOT EXISTS `ig_instituicao` (
-`idInstituicao` int(3) NOT NULL,
+  `idInstituicao` int(3) NOT NULL AUTO_INCREMENT,
   `ig_usuario_idUsuario` int(3) NOT NULL,
   `instituicao` varchar(60) NOT NULL,
   `instituicaoPai` int(2) NOT NULL,
-  `sigla` varchar(12) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `sigla` varchar(12) NOT NULL,
+  PRIMARY KEY (`idInstituicao`),
+  KEY `ig_instituicao_FKIndex1` (`ig_usuario_idUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -230,11 +216,13 @@ CREATE TABLE IF NOT EXISTS `ig_instituicao` (
 -- Estrutura da tabela `ig_local`
 --
 
+DROP TABLE IF EXISTS `ig_local`;
 CREATE TABLE IF NOT EXISTS `ig_local` (
-`idLocal` int(3) NOT NULL,
+  `idLocal` int(3) NOT NULL AUTO_INCREMENT,
   `sala` varchar(60) NOT NULL,
-  `lotacao` int(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `lotacao` int(4) NOT NULL,
+  PRIMARY KEY (`idLocal`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -242,13 +230,16 @@ CREATE TABLE IF NOT EXISTS `ig_local` (
 -- Estrutura da tabela `ig_log`
 --
 
+DROP TABLE IF EXISTS `ig_log`;
 CREATE TABLE IF NOT EXISTS `ig_log` (
-`idLog` int(8) NOT NULL,
+  `idLog` int(8) NOT NULL AUTO_INCREMENT,
   `ig_usuario_idUsuario` int(3) NOT NULL,
   `enderecoIP` int(12) NOT NULL,
   `dataLog` datetime NOT NULL,
-  `descricao` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `descricao` longtext NOT NULL,
+  PRIMARY KEY (`idLog`),
+  KEY `ig_log_FKIndex1` (`ig_usuario_idUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -256,12 +247,14 @@ CREATE TABLE IF NOT EXISTS `ig_log` (
 -- Estrutura da tabela `ig_modalidade`
 --
 
+DROP TABLE IF EXISTS `ig_modalidade`;
 CREATE TABLE IF NOT EXISTS `ig_modalidade` (
-`idModalidade` int(2) NOT NULL,
+  `idModalidade` int(2) NOT NULL AUTO_INCREMENT,
   `modalidade` varchar(60) NOT NULL,
   `financa` tinyint(1) NOT NULL,
-  `contratos` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `contratos` tinyint(1) NOT NULL,
+  PRIMARY KEY (`idModalidade`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -269,13 +262,16 @@ CREATE TABLE IF NOT EXISTS `ig_modalidade` (
 -- Estrutura da tabela `ig_musica`
 --
 
+DROP TABLE IF EXISTS `ig_musica`;
 CREATE TABLE IF NOT EXISTS `ig_musica` (
-`idMusica` int(4) NOT NULL,
+  `idMusica` int(4) NOT NULL AUTO_INCREMENT,
   `ig_evento_idEvento` int(6) NOT NULL,
   `genero` varchar(60) NOT NULL,
   `venda` tinyint(1) NOT NULL,
-  `material` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `material` longtext NOT NULL,
+  PRIMARY KEY (`idMusica`),
+  KEY `ig_musica_FKIndex1` (`ig_evento_idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -283,54 +279,40 @@ CREATE TABLE IF NOT EXISTS `ig_musica` (
 -- Estrutura da tabela `ig_ocorrencia`
 --
 
+DROP TABLE IF EXISTS `ig_ocorrencia`;
 CREATE TABLE IF NOT EXISTS `ig_ocorrencia` (
-`idOcorrencia` int(5) NOT NULL,
-  `ig_local_idLocal` int(3) NOT NULL,
-  `ig_tipo_ocorrencia_idTipoOcorrencia` int(4) NOT NULL,
-  `ig_evento_idEvento` int(6) NOT NULL,
-  `segunda` tinyint(1) NOT NULL,
-  `terca` tinyint(1) NOT NULL,
-  `quarta` tinyint(1) NOT NULL,
-  `quinta` tinyint(1) NOT NULL,
-  `sexta` tinyint(1) NOT NULL,
-  `sabado` tinyint(1) NOT NULL,
-  `domingo` tinyint(1) NOT NULL,
-  `dataInicio` date NOT NULL,
-  `dataFinal` date NOT NULL,
-  `horaInicio` time NOT NULL,
-  `horaFinal` time NOT NULL,
-  `timezone` int(3) NOT NULL,
-  `diaInteiro` tinyint(1) NOT NULL,
-  `diaEspecial` tinyint(1) NOT NULL,
-  `libras` tinyint(1) NOT NULL,
-  `audiodescricao` tinyint(1) NOT NULL,
-  `valorIngresso` decimal(3,0) NOT NULL,
-  `retiradaIngresso` int(2) NOT NULL,
-  `localOutros` varchar(120) NOT NULL,
-  `lotacao` int(7) NOT NULL,
-  `reservados` int(4) NOT NULL,
-  `duracao` int(4) NOT NULL,
-  `precoPopular` decimal(3,0) NOT NULL,
-  `frequencia` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `ig_oficinas`
---
-
-CREATE TABLE IF NOT EXISTS `ig_oficinas` (
-`idOficinas` int(4) NOT NULL,
-  `ig_evento_idEvento` int(6) NOT NULL,
-  `certificado` tinyint(1) NOT NULL,
-  `vagas` int(3) NOT NULL,
-  `publico` longtext NOT NULL,
-  `material` longtext NOT NULL,
-  `inscricao` varchar(60) NOT NULL,
-  `valorHora` varchar(12) NOT NULL,
-  `venda` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idOcorrencia` int(8) NOT NULL AUTO_INCREMENT,
+  `idTipoOcorrencia` int(8) DEFAULT NULL,
+  `ig_comunicao_idCom` int (8) DEFAULT NULL,
+  `local` int(3) DEFAULT NULL,
+  `idEvento` int(6) DEFAULT NULL,
+  `segunda` int(1) DEFAULT NULL,
+  `terca` int(1) DEFAULT NULL,
+  `quarta` int(1) DEFAULT NULL,
+  `quinta` int(1) DEFAULT NULL,
+  `sexta` int(1) DEFAULT NULL,
+  `sabado` int(1) DEFAULT NULL,
+  `domingo` int(1) DEFAULT NULL,
+  `dataInicio` date DEFAULT NULL,
+  `dataFinal` date DEFAULT NULL,
+  `horaInicio` time DEFAULT NULL,
+  `horaFinal` time DEFAULT NULL,
+  `timezone` int(3) DEFAULT NULL,
+  `diaInteiro` int(1) DEFAULT NULL,
+  `diaEspecial` int(1) DEFAULT NULL,
+  `libras` int(1) DEFAULT NULL,
+  `audiodescricao` int(1) DEFAULT NULL,
+  `valorIngresso` decimal(10,2) DEFAULT NULL,
+  `retiradaIngresso` int(2) DEFAULT NULL,
+  `localOutros` varchar(120) DEFAULT NULL,
+  `lotacao` int(7) DEFAULT NULL,
+  `reservados` int(4) DEFAULT NULL,
+  `duracao` int(4) DEFAULT NULL,
+  `precoPopular` decimal(10,2) DEFAULT NULL,
+  `frequencia` varchar(120) DEFAULT NULL,
+  PRIMARY KEY (`idOcorrencia`),
+   KEY `ig_ocorrencia_FKIndex1` (`ig_comunicao_idCom`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -338,10 +320,12 @@ CREATE TABLE IF NOT EXISTS `ig_oficinas` (
 -- Estrutura da tabela `ig_pais`
 --
 
+DROP TABLE IF EXISTS `ig_pais`;
 CREATE TABLE IF NOT EXISTS `ig_pais` (
-`idPais` int(3) NOT NULL,
-  `paisNome` varchar(30) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idPais` int(3) NOT NULL AUTO_INCREMENT,
+  `paisNome` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`idPais`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -349,10 +333,12 @@ CREATE TABLE IF NOT EXISTS `ig_pais` (
 -- Estrutura da tabela `ig_papelusuario`
 --
 
+DROP TABLE IF EXISTS `ig_papelusuario`;
 CREATE TABLE IF NOT EXISTS `ig_papelusuario` (
-`idPapelUsuario` int(3) NOT NULL,
-  `nomePapelUsuario` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idPapelUsuario` int(3) NOT NULL AUTO_INCREMENT,
+  `nomePapelUsuario` varchar(60) NOT NULL,
+  PRIMARY KEY (`idPapelUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -360,13 +346,16 @@ CREATE TABLE IF NOT EXISTS `ig_papelusuario` (
 -- Estrutura da tabela `ig_producao`
 --
 
+DROP TABLE IF EXISTS `ig_producao`;
 CREATE TABLE IF NOT EXISTS `ig_producao` (
-`idProducao` int(4) NOT NULL,
+  `idProducao` int(4) NOT NULL AUTO_INCREMENT,
   `ig_evento_idEvento` int(6) NOT NULL,
   `carros` longtext NOT NULL,
   `equipe` longtext NOT NULL,
-  `infraestrutura` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `infraestrutura` longtext NOT NULL,
+  PRIMARY KEY (`idProducao`),
+  KEY `ig_producao_FKIndex1` (`ig_evento_idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -374,13 +363,15 @@ CREATE TABLE IF NOT EXISTS `ig_producao` (
 -- Estrutura da tabela `ig_produtor`
 --
 
+DROP TABLE IF EXISTS `ig_produtor`;
 CREATE TABLE IF NOT EXISTS `ig_produtor` (
-`idProdutor` int(4) NOT NULL,
+  `idProdutor` int(4) NOT NULL AUTO_INCREMENT,
   `nome` varchar(120) NOT NULL,
   `email` varchar(60) NOT NULL,
   `telefone` varchar(20) NOT NULL,
-  `idSpCultura` int(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idSpCultura` int(6) NOT NULL,
+  PRIMARY KEY (`idProdutor`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -388,10 +379,12 @@ CREATE TABLE IF NOT EXISTS `ig_produtor` (
 -- Estrutura da tabela `ig_programa`
 --
 
+DROP TABLE IF EXISTS `ig_programa`;
 CREATE TABLE IF NOT EXISTS `ig_programa` (
-`idPrograma` int(2) NOT NULL,
-  `programa` varchar(120) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idPrograma` int(2) NOT NULL AUTO_INCREMENT,
+  `programa` varchar(120) NOT NULL,
+  PRIMARY KEY (`idPrograma`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -399,11 +392,13 @@ CREATE TABLE IF NOT EXISTS `ig_programa` (
 -- Estrutura da tabela `ig_projeto_especial`
 --
 
+DROP TABLE IF EXISTS `ig_projeto_especial`;
 CREATE TABLE IF NOT EXISTS `ig_projeto_especial` (
-`idProjetoEspecial` int(3) NOT NULL,
+  `idProjetoEspecial` int(3) NOT NULL AUTO_INCREMENT,
   `projetoEspecial` varchar(120) NOT NULL,
-  `apresentacao` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `apresentacao` longtext NOT NULL,
+  PRIMARY KEY (`idProjetoEspecial`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -411,10 +406,13 @@ CREATE TABLE IF NOT EXISTS `ig_projeto_especial` (
 -- Estrutura da tabela `ig_protocolo`
 --
 
+DROP TABLE IF EXISTS `ig_protocolo`;
 CREATE TABLE IF NOT EXISTS `ig_protocolo` (
-`idProtocolo` int(6) NOT NULL,
-  `ig_evento_idEvento` int(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idProtocolo` int(6) NOT NULL AUTO_INCREMENT,
+  `ig_evento_idEvento` int(6) NOT NULL,
+  PRIMARY KEY (`idProtocolo`),
+  KEY `ig_protocolo_FKIndex1` (`ig_evento_idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -422,14 +420,17 @@ CREATE TABLE IF NOT EXISTS `ig_protocolo` (
 -- Estrutura da tabela `ig_responsavel`
 --
 
+DROP TABLE IF EXISTS `ig_responsavel`;
 CREATE TABLE IF NOT EXISTS `ig_responsavel` (
-`idResponsavel` int(4) NOT NULL,
+  `idResponsavel` int(4) NOT NULL AUTO_INCREMENT,
   `ig_spcultura_idSPCultura` int(2) NOT NULL,
   `tipo` int(2) NOT NULL,
   `nomeResponsavel` varchar(120) NOT NULL,
   `emailResponsavel` varchar(60) NOT NULL,
-  `telResponsavel` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `telResponsavel` varchar(20) NOT NULL,
+  PRIMARY KEY (`idResponsavel`),
+  KEY `ig_responsavel_FKIndex1` (`ig_spcultura_idSPCultura`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -437,10 +438,12 @@ CREATE TABLE IF NOT EXISTS `ig_responsavel` (
 -- Estrutura da tabela `ig_retirada`
 --
 
+DROP TABLE IF EXISTS `ig_retirada`;
 CREATE TABLE IF NOT EXISTS `ig_retirada` (
-`idRetirada` int(2) NOT NULL,
-  `retirada` varchar(120) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idRetirada` int(2) NOT NULL AUTO_INCREMENT,
+  `retirada` varchar(120) NOT NULL,
+  PRIMARY KEY (`idRetirada`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -448,8 +451,9 @@ CREATE TABLE IF NOT EXISTS `ig_retirada` (
 -- Estrutura da tabela `ig_servico`
 --
 
+DROP TABLE IF EXISTS `ig_servico`;
 CREATE TABLE IF NOT EXISTS `ig_servico` (
-`idServico` int(3) NOT NULL,
+  `idServico` int(3) NOT NULL AUTO_INCREMENT,
   `ig_evento_idEvento` int(6) NOT NULL,
   `legenda` varchar(60) DEFAULT NULL,
   `traducao` varchar(60) DEFAULT NULL,
@@ -466,8 +470,10 @@ CREATE TABLE IF NOT EXISTS `ig_servico` (
   `cpfCnpj` varchar(12) DEFAULT NULL,
   `banco` varchar(24) DEFAULT NULL,
   `agencia` varchar(12) DEFAULT NULL,
-  `conta` varchar(12) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `conta` varchar(12) DEFAULT NULL,
+  PRIMARY KEY (`idServico`),
+  KEY `ig_servico_FKIndex1` (`ig_evento_idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -475,11 +481,13 @@ CREATE TABLE IF NOT EXISTS `ig_servico` (
 -- Estrutura da tabela `ig_spcultura`
 --
 
+DROP TABLE IF EXISTS `ig_spcultura`;
 CREATE TABLE IF NOT EXISTS `ig_spcultura` (
-`idSPCultura` int(2) NOT NULL,
+  `idSPCultura` int(2) NOT NULL AUTO_INCREMENT,
   `site` varchar(120) NOT NULL,
-  `maisInformacoes` varchar(120) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `maisInformacoes` varchar(120) NOT NULL,
+  PRIMARY KEY (`idSPCultura`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -487,9 +495,11 @@ CREATE TABLE IF NOT EXISTS `ig_spcultura` (
 -- Estrutura da tabela `ig_status`
 --
 
+DROP TABLE IF EXISTS `ig_status`;
 CREATE TABLE IF NOT EXISTS `ig_status` (
   `ig_evento_idEvento` int(6) NOT NULL,
-  `nomeStatus` varchar(12) NOT NULL
+  `nomeStatus` varchar(12) NOT NULL,
+  KEY `ig_status_FKIndex1` (`ig_evento_idEvento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
 
 -- --------------------------------------------------------
@@ -498,13 +508,17 @@ CREATE TABLE IF NOT EXISTS `ig_status` (
 -- Estrutura da tabela `ig_sub_evento`
 --
 
+DROP TABLE IF EXISTS `ig_sub_evento`;
 CREATE TABLE IF NOT EXISTS `ig_sub_evento` (
-`idSubEvento` int(4) NOT NULL,
+  `idSubEvento` int(4) NOT NULL AUTO_INCREMENT,
   `ig_tipo_ocorrencia_idTipoOcorrencia` int(4) NOT NULL,
   `ig_evento_idEvento` int(6) NOT NULL,
   `titulo` varchar(120) NOT NULL,
-  `descricao` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `descricao` longtext NOT NULL,
+  PRIMARY KEY (`idSubEvento`),
+  KEY `ig_sub_evento_FKIndex1` (`ig_evento_idEvento`),
+  KEY `ig_sub_evento_FKIndex2` (`ig_tipo_ocorrencia_idTipoOcorrencia`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -512,12 +526,15 @@ CREATE TABLE IF NOT EXISTS `ig_sub_evento` (
 -- Estrutura da tabela `ig_teatro_danca`
 --
 
+DROP TABLE IF EXISTS `ig_teatro_danca`;
 CREATE TABLE IF NOT EXISTS `ig_teatro_danca` (
-`idTeatro` int(4) NOT NULL,
+  `idTeatro` int(4) NOT NULL AUTO_INCREMENT,
   `ig_evento_idEvento` int(6) NOT NULL,
   `estreia` tinyint(1) NOT NULL,
-  `genero` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `genero` varchar(60) NOT NULL,
+  PRIMARY KEY (`idTeatro`),
+  KEY `ig_teatro_danca_FKIndex1` (`ig_evento_idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -525,10 +542,12 @@ CREATE TABLE IF NOT EXISTS `ig_teatro_danca` (
 -- Estrutura da tabela `ig_tipo_evento`
 --
 
+DROP TABLE IF EXISTS `ig_tipo_evento`;
 CREATE TABLE IF NOT EXISTS `ig_tipo_evento` (
-`idTipoEvento` int(3) NOT NULL,
-  `tipoEvento` varchar(60) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idTipoEvento` int(3) NOT NULL AUTO_INCREMENT,
+  `tipoEvento` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`idTipoEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -536,10 +555,12 @@ CREATE TABLE IF NOT EXISTS `ig_tipo_evento` (
 -- Estrutura da tabela `ig_tipo_ocorrencia`
 --
 
+DROP TABLE IF EXISTS `ig_tipo_ocorrencia`;
 CREATE TABLE IF NOT EXISTS `ig_tipo_ocorrencia` (
-`idTipoOcorrencia` int(4) NOT NULL,
-  `tipoOcorrencia` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `idTipoOcorrencia` int(4) NOT NULL AUTO_INCREMENT,
+  `tipoOcorrencia` varchar(60) NOT NULL,
+  PRIMARY KEY (`idTipoOcorrencia`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -547,399 +568,129 @@ CREATE TABLE IF NOT EXISTS `ig_tipo_ocorrencia` (
 -- Estrutura da tabela `ig_usuario`
 --
 
+DROP TABLE IF EXISTS `ig_usuario`;
 CREATE TABLE IF NOT EXISTS `ig_usuario` (
-`idUsuario` int(3) NOT NULL,
+  `idUsuario` int(3) NOT NULL AUTO_INCREMENT,
   `ig_papelusuario_idPapelUsuario` int(3) NOT NULL,
   `senha` varchar(120) NOT NULL,
   `receberNotificacao` tinyint(1) NOT NULL,
-  `nomeUsuario` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `ig_valor`
---
-
-CREATE TABLE IF NOT EXISTS `ig_valor` (
-  `idValor` int(8) NOT NULL,
-  `ig_contratado_idContratado` int(4) NOT NULL,
-  `ig_evento_idEvento` int(6) NOT NULL,
-  `valor` decimal(10,0) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+  `nomeUsuario` varchar(60) NOT NULL,
+  PRIMARY KEY (`idUsuario`),
+  KEY `ig_usuario_FKIndex1` (`ig_papelusuario_idPapelUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
 --
--- Indexes for dumped tables
+-- Constraints for dumped tables
 --
 
 --
--- Indexes for table `ig_alteracao`
+-- Limitadores para a tabela `ig_alteracao`
 --
 ALTER TABLE `ig_alteracao`
- ADD PRIMARY KEY (`idAlteracao`), ADD KEY `ig_alteracao_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{F4B41A4D-A75E-4B4F-B291-3E196EE08469}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_anexos`
+-- Limitadores para a tabela `ig_anexos`
 --
 ALTER TABLE `ig_anexos`
- ADD PRIMARY KEY (`idAnexos`), ADD KEY `ig_anexos_FKIndex1` (`ig_evento_idEvento`), ADD KEY `ig_anexos_FKIndex2` (`ig_alteracao_idAlteracao`);
+  ADD CONSTRAINT `fk_{A0BA7468-62E8-4D1D-8857-22784B101B5D}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_{BC876EDC-82DE-47D0-89D9-A9618CA3BECC}` FOREIGN KEY (`ig_alteracao_idAlteracao`) REFERENCES `ig_alteracao` (`idAlteracao`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_arquivo`
+-- Limitadores para a tabela `ig_arquivo`
 --
 ALTER TABLE `ig_arquivo`
- ADD PRIMARY KEY (`idArquivo`), ADD KEY `ig_arquivo_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{79A43DE5-3D61-434A-BAEC-9A60B9D86D16}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_artes_visuais`
---
-ALTER TABLE `ig_artes_visuais`
- ADD PRIMARY KEY (`idArtes`), ADD KEY `ig_artes_visuais_FKIndex1` (`ig_evento_idEvento`);
-
---
--- Indexes for table `ig_cinema`
+-- Limitadores para a tabela `ig_cinema`
 --
 ALTER TABLE `ig_cinema`
- ADD PRIMARY KEY (`idCinema`), ADD KEY `ig_cinema_FKIndex1` (`ig_evento_idEvento`), ADD KEY `ig_cinema_FKIndex2` (`ig_pais_idPais`);
+  ADD CONSTRAINT `fk_{4348B620-C453-4402-83EE-2AE4DCC4A344}` FOREIGN KEY (`ig_pais_idPais`) REFERENCES `ig_pais` (`idPais`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_{4FFA8281-C47F-4D9C-A314-80B438F85275}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_comunicacao`
---
-ALTER TABLE `ig_comunicacao`
- ADD PRIMARY KEY (`idCom`), ADD KEY `ig_comunicacao _FKIndex1` (`ig_evento_idEvento`), ADD KEY `ig_comunicacao _FKIndex2` (`ig_spcultura_idSPCultura`), ADD KEY `ig_comunicacao _FKIndex3` (`ig_cinema_idCinema`);
-
---
--- Indexes for table `ig_contratado`
---
-ALTER TABLE `ig_contratado`
- ADD PRIMARY KEY (`idContratado`), ADD KEY `ig_contratado_FKIndex1` (`ig_evento_idEvento`);
-
---
--- Indexes for table `ig_espaco`
+-- Limitadores para a tabela `ig_espaco`
 --
 ALTER TABLE `ig_espaco`
- ADD PRIMARY KEY (`idEspaco`), ADD KEY `ig_espaco_FKIndex1` (`ig_instituicao_idInstituicao`), ADD KEY `ig_espaco_FKIndex2` (`ig_spcultura_idSPCultura`);
+  ADD CONSTRAINT `fk_{0447B5F0-C66F-4A99-84AA-472F6D1D97E3}` FOREIGN KEY (`ig_spcultura_idSPCultura`) REFERENCES `ig_spcultura` (`idSPCultura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_{FC12B553-6C47-4EF7-B196-49F4EC540BEA}` FOREIGN KEY (`ig_instituicao_idInstituicao`) REFERENCES `ig_instituicao` (`idInstituicao`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_evento`
+-- Limitadores para a tabela `ig_evento`
 --
 ALTER TABLE `ig_evento`
- ADD PRIMARY KEY (`idEvento`), ADD KEY `ig_evento_FKIndex1` (`ig_programa_idPrograma`), ADD KEY `ig_evento_FKIndex2` (`ig_tipo_evento_idTipoEvento`), ADD KEY `ig_evento_FKIndex3` (`ig_produtor_idProdutor`);
+  ADD CONSTRAINT `fk_{0610A49A-4711-4927-A4E3-513663464036}` FOREIGN KEY (`ig_produtor_idProdutor`) REFERENCES `ig_produtor` (`idProdutor`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_{279F7050-B4D7-463F-8D21-690DB7F3FD17}` FOREIGN KEY (`ig_tipo_evento_idTipoEvento`) REFERENCES `ig_tipo_evento` (`idTipoEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_{F58EFFD3-7038-4FA4-A13F-2CC655475B58}` FOREIGN KEY (`ig_programa_idPrograma`) REFERENCES `ig_programa` (`idPrograma`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_instituicao`
+-- Limitadores para a tabela `ig_instituicao`
 --
 ALTER TABLE `ig_instituicao`
- ADD PRIMARY KEY (`idInstituicao`), ADD KEY `ig_instituicao_FKIndex1` (`ig_usuario_idUsuario`);
+  ADD CONSTRAINT `fk_{EBBC2C11-1B9C-436C-97CC-6AD8A75CAB5E}` FOREIGN KEY (`ig_usuario_idUsuario`) REFERENCES `ig_usuario` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_local`
---
-ALTER TABLE `ig_local`
- ADD PRIMARY KEY (`idLocal`);
-
---
--- Indexes for table `ig_log`
+-- Limitadores para a tabela `ig_log`
 --
 ALTER TABLE `ig_log`
- ADD PRIMARY KEY (`idLog`), ADD KEY `ig_log_FKIndex1` (`ig_usuario_idUsuario`);
+  ADD CONSTRAINT `fk_{E062B9E4-E44A-4C2C-94D4-052FE04DB721}` FOREIGN KEY (`ig_usuario_idUsuario`) REFERENCES `ig_usuario` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_modalidade`
---
-ALTER TABLE `ig_modalidade`
- ADD PRIMARY KEY (`idModalidade`);
-
---
--- Indexes for table `ig_musica`
+-- Limitadores para a tabela `ig_musica`
 --
 ALTER TABLE `ig_musica`
- ADD PRIMARY KEY (`idMusica`), ADD KEY `ig_musica_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{F67D3205-E0B0-42E3-A800-B15585C351C6}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_ocorrencia`
---
-ALTER TABLE `ig_ocorrencia`
- ADD PRIMARY KEY (`idOcorrencia`), ADD KEY `ig_ocorrencia_FKIndex1` (`ig_evento_idEvento`), ADD KEY `ig_ocorrencia_FKIndex2` (`ig_tipo_ocorrencia_idTipoOcorrencia`), ADD KEY `ig_ocorrencia_FKIndex3` (`ig_local_idLocal`);
-
---
--- Indexes for table `ig_oficinas`
---
-ALTER TABLE `ig_oficinas`
- ADD PRIMARY KEY (`idOficinas`), ADD KEY `ig_oficinas_FKIndex1` (`ig_evento_idEvento`);
-
---
--- Indexes for table `ig_pais`
---
-ALTER TABLE `ig_pais`
- ADD PRIMARY KEY (`idPais`);
-
---
--- Indexes for table `ig_papelusuario`
---
-ALTER TABLE `ig_papelusuario`
- ADD PRIMARY KEY (`idPapelUsuario`);
-
---
--- Indexes for table `ig_producao`
+-- Limitadores para a tabela `ig_producao`
 --
 ALTER TABLE `ig_producao`
- ADD PRIMARY KEY (`idProducao`), ADD KEY `ig_producao_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{A21FE65D-9B78-489F-AC84-A970111E6351}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_produtor`
---
-ALTER TABLE `ig_produtor`
- ADD PRIMARY KEY (`idProdutor`);
-
---
--- Indexes for table `ig_programa`
---
-ALTER TABLE `ig_programa`
- ADD PRIMARY KEY (`idPrograma`);
-
---
--- Indexes for table `ig_projeto_especial`
---
-ALTER TABLE `ig_projeto_especial`
- ADD PRIMARY KEY (`idProjetoEspecial`);
-
---
--- Indexes for table `ig_protocolo`
+-- Limitadores para a tabela `ig_protocolo`
 --
 ALTER TABLE `ig_protocolo`
- ADD PRIMARY KEY (`idProtocolo`), ADD KEY `ig_protocolo_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{4EFEDB61-453C-4F3F-B985-F15FEDD987FE}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_responsavel`
+-- Limitadores para a tabela `ig_responsavel`
 --
 ALTER TABLE `ig_responsavel`
- ADD PRIMARY KEY (`idResponsavel`), ADD KEY `ig_responsavel_FKIndex1` (`ig_spcultura_idSPCultura`);
+  ADD CONSTRAINT `fk_{546BF90B-300B-41DD-9D64-761D6F2A7315}` FOREIGN KEY (`ig_spcultura_idSPCultura`) REFERENCES `ig_spcultura` (`idSPCultura`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_retirada`
---
-ALTER TABLE `ig_retirada`
- ADD PRIMARY KEY (`idRetirada`);
-
---
--- Indexes for table `ig_servico`
+-- Limitadores para a tabela `ig_servico`
 --
 ALTER TABLE `ig_servico`
- ADD PRIMARY KEY (`idServico`), ADD KEY `ig_servico_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{394B952E-8AB1-42C8-B375-C0D33E589D96}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_spcultura`
---
-ALTER TABLE `ig_spcultura`
- ADD PRIMARY KEY (`idSPCultura`);
-
---
--- Indexes for table `ig_status`
+-- Limitadores para a tabela `ig_status`
 --
 ALTER TABLE `ig_status`
- ADD KEY `ig_status_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{EF836E01-763F-4D16-BE2E-61495590A941}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_sub_evento`
+-- Limitadores para a tabela `ig_sub_evento`
 --
 ALTER TABLE `ig_sub_evento`
- ADD PRIMARY KEY (`idSubEvento`), ADD KEY `ig_sub_evento_FKIndex1` (`ig_evento_idEvento`), ADD KEY `ig_sub_evento_FKIndex2` (`ig_tipo_ocorrencia_idTipoOcorrencia`);
+  ADD CONSTRAINT `fk_{35671BFF-213D-4D51-BC95-80B2EFCA3F67}` FOREIGN KEY (`ig_tipo_ocorrencia_idTipoOcorrencia`) REFERENCES `ig_tipo_ocorrencia` (`idTipoOcorrencia`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_{DBEE11FE-0E7C-4221-A038-944E339816B1}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_teatro_danca`
+-- Limitadores para a tabela `ig_teatro_danca`
 --
 ALTER TABLE `ig_teatro_danca`
- ADD PRIMARY KEY (`idTeatro`), ADD KEY `ig_teatro_danca_FKIndex1` (`ig_evento_idEvento`);
+  ADD CONSTRAINT `fk_{64CC3230-DE9D-4674-A6A5-F1B87A12D87D}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Indexes for table `ig_tipo_evento`
---
-ALTER TABLE `ig_tipo_evento`
- ADD PRIMARY KEY (`idTipoEvento`);
-
---
--- Indexes for table `ig_tipo_ocorrencia`
---
-ALTER TABLE `ig_tipo_ocorrencia`
- ADD PRIMARY KEY (`idTipoOcorrencia`);
-
---
--- Indexes for table `ig_usuario`
+-- Limitadores para a tabela `ig_usuario`
 --
 ALTER TABLE `ig_usuario`
- ADD PRIMARY KEY (`idUsuario`), ADD KEY `ig_usuario_FKIndex1` (`ig_papelusuario_idPapelUsuario`);
+  ADD CONSTRAINT `fk_{3BA448DE-8129-4EC5-9992-CDCF1EC3F713}` FOREIGN KEY (`ig_papelusuario_idPapelUsuario`) REFERENCES `ig_papelusuario` (`idPapelUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
---
--- Indexes for table `ig_valor`
---
-ALTER TABLE `ig_valor`
- ADD PRIMARY KEY (`idValor`), ADD KEY `ig_valor_FKIndex1` (`ig_evento_idEvento`), ADD KEY `ig_valor_FKIndex2` (`ig_contratado_idContratado`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `ig_alteracao`
---
-ALTER TABLE `ig_alteracao`
-MODIFY `idAlteracao` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_anexos`
---
-ALTER TABLE `ig_anexos`
-MODIFY `idAnexos` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_arquivo`
---
-ALTER TABLE `ig_arquivo`
-MODIFY `idArquivo` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_artes_visuais`
---
-ALTER TABLE `ig_artes_visuais`
-MODIFY `idArtes` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_cinema`
---
-ALTER TABLE `ig_cinema`
-MODIFY `idCinema` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_comunicacao`
---
-ALTER TABLE `ig_comunicacao`
-MODIFY `idCom` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_contratado`
---
-ALTER TABLE `ig_contratado`
-MODIFY `idContratado` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_espaco`
---
-ALTER TABLE `ig_espaco`
-MODIFY `idEspaco` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_evento`
---
-ALTER TABLE `ig_evento`
-MODIFY `idEvento` int(6) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_instituicao`
---
-ALTER TABLE `ig_instituicao`
-MODIFY `idInstituicao` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_local`
---
-ALTER TABLE `ig_local`
-MODIFY `idLocal` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_log`
---
-ALTER TABLE `ig_log`
-MODIFY `idLog` int(8) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_modalidade`
---
-ALTER TABLE `ig_modalidade`
-MODIFY `idModalidade` int(2) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_musica`
---
-ALTER TABLE `ig_musica`
-MODIFY `idMusica` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_ocorrencia`
---
-ALTER TABLE `ig_ocorrencia`
-MODIFY `idOcorrencia` int(5) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_oficinas`
---
-ALTER TABLE `ig_oficinas`
-MODIFY `idOficinas` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_pais`
---
-ALTER TABLE `ig_pais`
-MODIFY `idPais` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_papelusuario`
---
-ALTER TABLE `ig_papelusuario`
-MODIFY `idPapelUsuario` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_producao`
---
-ALTER TABLE `ig_producao`
-MODIFY `idProducao` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_produtor`
---
-ALTER TABLE `ig_produtor`
-MODIFY `idProdutor` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_programa`
---
-ALTER TABLE `ig_programa`
-MODIFY `idPrograma` int(2) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_projeto_especial`
---
-ALTER TABLE `ig_projeto_especial`
-MODIFY `idProjetoEspecial` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_protocolo`
---
-ALTER TABLE `ig_protocolo`
-MODIFY `idProtocolo` int(6) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_responsavel`
---
-ALTER TABLE `ig_responsavel`
-MODIFY `idResponsavel` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_retirada`
---
-ALTER TABLE `ig_retirada`
-MODIFY `idRetirada` int(2) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_servico`
---
-ALTER TABLE `ig_servico`
-MODIFY `idServico` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_spcultura`
---
-ALTER TABLE `ig_spcultura`
-MODIFY `idSPCultura` int(2) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_sub_evento`
---
-ALTER TABLE `ig_sub_evento`
-MODIFY `idSubEvento` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_teatro_danca`
---
-ALTER TABLE `ig_teatro_danca`
-MODIFY `idTeatro` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_tipo_evento`
---
-ALTER TABLE `ig_tipo_evento`
-MODIFY `idTipoEvento` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_tipo_ocorrencia`
---
-ALTER TABLE `ig_tipo_ocorrencia`
-MODIFY `idTipoOcorrencia` int(4) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ig_usuario`
---
-ALTER TABLE `ig_usuario`
-MODIFY `idUsuario` int(3) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
