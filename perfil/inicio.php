@@ -7,6 +7,7 @@
 							</li>
 							<li><a href="?secao=perfil">Perfil de acesso</a></li>
 							<li><a href="?secao=ajuda">Ajuda</a></li>
+                            <li><a href="../include/logoff.php">Sair</a></li>
 							<!--<li>
 								<a href="#">Sub Menu</a>
 								<ul class="dl-submenu">

@@ -9,7 +9,7 @@ ccsplab.org - centro cultural são paulo
 
 function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia uma session
 	
-	$sql = "SELECT * FROM ig_usuario, ig_instituicao, ig_papelusuario WHERE ig_usuario.nomeUsuario = '$usuario' AND ig_instituicao.idInstituicao = ig_usuario.instituicao AND ig_papelusuario.idPapelUsuario = ig_usuario.idPapelUsuario LIMIT 0,1"; //query que seleciona os campos que voltarão para na matriz
+	$sql = "SELECT * FROM ig_usuario, ig_instituicao, ig_papelusuario WHERE ig_usuario.nomeUsuario = '$usuario' AND ig_instituicao.idInstituicao = ig_usuario.idInstituicao AND ig_papelusuario.idPapelUsuario = ig_usuario.ig_papelusuario_idPapelUsuario LIMIT 0,1"; //query que seleciona os campos que voltarão para na matriz
 	if(mysql_query($sql)){ //verifica erro no banco de dados
 	$query = mysql_query($sql);
 		if(mysql_num_rows($query) > 0){ // verifica se retorna usuário válido
@@ -20,7 +20,13 @@ function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia u
 					$_SESSION['perfil'] = $user['idPapelUsuario'];
 					$_SESSION['instituicao'] = $user['instituicao'];
 					$_SESSION['include'] = $user['include'];
+					$_SESSION['nomeCompleto'] = $user['nomeCompleto'];
+					$_SESSION['idUsuario'] = $user['idUsuario'];
+
+					$log = "Fez login.";
+					gravarLog($log);
 					header("Location: visual/index.php"); 
+
 				}else{
 			echo "A senha está incorreta.";
 			}
@@ -162,9 +168,27 @@ function enviarEmail($conteudo_email, $instituicao, $subject, $email, $usuario )
 
 }
 
-function gravarLog($sql){ //grava na tabela ig_log os inserts e updates
+function gravarLog($log){ //grava na tabela ig_log os inserts e updates
+	$idUsuario = $_SESSION['idUsuario'];
+	$ip = $_SERVER["REMOTE_ADDR"];
+	$data = date('Y-m-d H:i:s');
+	$sql = "INSERT INTO `ig_log` (`idLog`, `ig_usuario_idUsuario`, `enderecoIP`, `dataLog`, `descricao`) VALUES (NULL, '$idUsuario', '$ip', '$data', '$log')";
 
+	mysql_query($sql);
 	
+}
+
+function saudacao(){
+	$hora = date('H');
+	if(($hora > 12) AND ($hora <= 18)){
+		return "Boa tarde";	
+	}else if(($hora > 18) AND ($hora <= 23)){
+		return "Boa noite";	
+	}else if(($hora >= 0) AND ($hora <= 4)){
+		return "Boa noite";	
+	}else if(($hora > 4) AND ($hora <=12)){
+		return "Bom dia";
+	}
 }
 
 ?>

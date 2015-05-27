@@ -1,6 +1,6 @@
-<?
+<?php
 //iniciar session
-/* session_start();
+ session_start();
 	if(!isset ($_SESSION['usuario']) == true) //verifica se há uma sessão, se não, volta para área de login
 		{
 			unset($_SESSION['usuario']);
@@ -8,7 +8,9 @@
 	}else{
 		$logado = $_SESSION['usuario'];
 	}
-	*/?>
+	
+
+	?>
 
 <!DOCTYPE html>
 <html>
@@ -20,43 +22,12 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/style.css" rel="stylesheet" media="screen">
 	<link href="color/default.css" rel="stylesheet" media="screen">
-	<script src="js/modernizr.custom.js"></script>
+
 
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="js/jquery-1.9.1.js"></script>
-<script src="js/jquery-ui.js"></script>
-<script src="js/jquery.maskedinput.js" type="text/javascript"></script>
-<script src="js/jquery.maskMoney.js" type="text/javascript"></script>
-  <script>
-  $(function() {
-    $( "#datepicker01" ).datepicker();
-    $( "#anim" ).change(function() {
-      $( "#datepicker" ).datepicker( "option", "showAnim", $( this ).val() );
-    });
-  });
-    $(function() {
-    $( "#datepicker02" ).datepicker();
-    $( "#anim" ).change(function() {
-      $( "#datepicker" ).datepicker( "option", "showAnim", $( this ).val() );
-    });
-  });
-  $(function(){
-	$( "#hora" ).mask("99:99");
-  });
-
- 
-    $(function() {
-    $('#valor').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
-  });
-
-  </script>
-<script>
-  $(function() {
-    $('#duracao').maskMoney({thousands:'', decimal:'', allowZero:true, suffix: ''});
-  })
-</script>
+<?php include "../include/script.php"; ?>
       </head>
   <body>
   <div id="bar">
-  <p id="p-bar">Olá, visitante</p>
+  <p id="p-bar"><img src="images/logo_pequeno.png" /><? echo saudacao(); ?>, <?php echo $_SESSION['nomeCompleto'] ?> - 	</p>
   </div>

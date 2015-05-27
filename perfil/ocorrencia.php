@@ -47,6 +47,12 @@
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
 					  <label>Dias da semana</label>
+                      <input type="checkbox" id="diaespecial" />
+                      <div class='other' name='other' title='other' style='display:none;'>
+
+						<input type="checkbox">
+						<input type="checkbox">
+					</div>
 					</div>
 				  </div>  
 				  <div class="form-group">
