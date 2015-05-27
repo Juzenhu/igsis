@@ -2,63 +2,121 @@
 @ini_set('display_errors', '1');
 error_reporting(E_ALL);
 ?>
-<h1>Este é o perfil de evento.</h1>
+	<div class="menu-area">
+			<div id="dl-menu" class="dl-menuwrapper">
+						<button class="dl-trigger">Open Menu</button>
+						<ul class="dl-menu">
+							<li>		
+								<a href="#enviar">Início</a> </li>
+							
+							<li><a href="#lista">Arquivos anexados</a></li>
+							<li>
+								<a href="#">Eventos</a>
+								<ul class="dl-submenu">
+									<li><a href="#">Inserir Evento</a></li>
+									<li><a href="#">Listar Listar</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div><!-- /dl-menuwrapper -->
+	</div>	
+<section id="contact" class="home-section bg-white">
+	  	<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="text-hide">
+					 <h2>Inserir Evento</h2>
+					 <h1>Apresentação Básica</h1>
+					 <p> </p>
+					</div>
+				  </div>
+			  </div>
 
+	  		<div class="row">
+	  			<div class="col-md-offset-1 col-md-10">
 
-<h2>Apresentação Básica</h2>
-                <p>* campos obrigatórios.</p>
-<form method="post" action="evento.php?p=" >                
-<label for="pg01_modalidade">Tipo de modalidade</label><br />
-<select name="pg01_modalidade" id="pg01_modalidade">
-<option value="1">1</option>
-<option value="2" selected>2</option>
-<option value="3">3</option>
-
-</select>                
-<br /><br />
-
-<label for="pg01_programa">Nome do Programa</label><br />
-
- 
-
-<br /><br />
-
-<label for="pg01_projeto_especial">Nome do Projeto Especial</label><br />
- <br /><br />
-	
-<label for="pg01_evento">Nome do Evento *</label><br />
-<input name="pg01_evento" type="text" id="pg01_evento" size="80" />
-
-
-<br /><br />
-	
-<label for="pg01_projeto">Nome do Projeto</label><br />
-<input name="pg01_projeto" type="text" id="pg01_projeto" size="80" value=""/>
-
-<br />  <br />
-<label for="pg01_tipo_evento">Tipo de Evento *</label><br />
-  <? // form_tipo_evento($id_evento); ?>
- 
-
-<br />  <br />
-<label for="pg01_memorando">Memorando</label>
-  <br />
-  <input name="pg01_memorando" type="text" id="pg01_memorando" size="30" value=""/>
-<br />  <br />
-<label for="pg01_responsavel">Nome do Responsável pelo Evento no CCSP (responsável pelo contrato)* </label><br />
-  <input name="pg01_responsavel" type="text" id="pg01_responsavel" size="50" value=""/><br /><br />
-<label for="pg01_ramal">Telefone / Ramal do Responsável pelo Evento do CCSP * </label><br />
-  <input name="pg01_ramal" type="text" id="pg01_ramal" size="50" value="" />
-<br /><br />
-<label for="pg01_email">E-mail do Responsável pelo Evento no CCSP *</label><br />
-  <input name="pg01_email" type="text" id="pg01_email" size="50" value=""/>
-<br /><br />
-<label for="pg01_resp_ccsp02">Nome do 2º Responsável pelo Evento no CCSP (suplente do responsável pelo contrato) * </label><br />
-  <input name="pg01_resp_ccsp02" type="text" id="pg01_resp_ccsp02" size="50" value=""/><br /><br />
-<label for="pg01_email02">E-mail do 2º Responsável pelo Evento no CCSP *</label><br />
-  <input name="pg01_email02" type="text" id="pg01_email02" size="50" value=""/>
-<br /><br />
+				<form class="form-horizontal" role="form">
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><label>Tipo de modalidade </label><input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="Name">
+					</div>
 				  
+					<div class=" col-md-6"><label>Nome do Programao</label>
+					  <input type="text" name="dataFinal" class="form-control" id="datepicker02" placeholder="Email">
+					</div>
+				  </div>
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					  <label>Nome do Projeto Especial </label>
+                      <input type="checkbox" id="diaespecial" />
+                      <div class='other' name='other' title='other' style='display:none;'>
+
+						<input type="checkbox">
+						<input type="checkbox">
+					</div>
+					</div>
+				  </div>  
+				  <div class="form-group">
+                     
+					<div class="col-md-offset-2 col-md-2">
+               <label>Nome do Evento *</label>
+					  <input type="text" name="hora" class="form-control"id="hora" />
+            
+					</div> 
+
+				  </div>
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><label>Nome do Projeto </label><input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="Name">
+					</div>
+				  
+					<div class=" col-md-6"><label>Tipo de Evento *</label>
+					  <input type="email" id="duracao" name="duracao" class="form-control" id="" placeholder="Email">
+					</div>
+				  </div>
+         
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                    <label>Memorando</label>
+					  <select class="form-control" name="retiradaIngresso" id="inputSubject" ><option>Selecione</option></select>
+					</div>
+				  </div>
+ <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                    <label>Nome do Responsável pelo Evento no CCSP (responsável pelo contrato)* </label>
+					  <select class="form-control" name="instituicao" id="inputSubject" ><option>Selecione</option></select>
+					</div>
+				  </div>
+ <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                    <label>Telefone / Ramal do Responsável pelo Evento do CCSP *</label>
+					  <select class="form-control" name="local" id="inputSubject" ><option>Selecione</option></select>
+					</div>
+				  </div>	
+                  			  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><label>E-mail do Responsável pelo Evento no CCSP *</label><input type="text" class="form-control" id="" placeholder="">
+					</div>
+				  
+					<div class=" col-md-6"><label>Nome do 2º Responsável pelo Evento no CCSP (suplente do responsável pelo contrato) * </label>
+					  <input type="email" class="form-control" id="" placeholder="">
+					</div>
+				  </div>
+	
+
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					 <button type="button" class="btn btn-theme btn-lg btn-block">E-mail do 2º Responsável pelo Evento no CCSP *</button>
+					</div>
+				  </div>
+				</form>
+	
+	  			</div>
+			
+				
+	  		</div>
+			
+
+	  	</div>
+	  </section>  
+
 
 				</li>
 
