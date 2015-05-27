@@ -9,7 +9,11 @@ require "../funcoes/funcoesGerais.php"; //carrega as funcoes gerais
 
 <? 
 //include "../perfil/".$_SESSION['include'];
-include "../perfil/evento.php";
+if(isset($_GET['perfil'])){
+include "../perfil/".$_GET['perfil'].".php";	
+	}else{
+include "../perfil/inicio.php";
+	}
 ?>
 
 <? include "rodape.php" ?>

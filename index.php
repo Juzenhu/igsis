@@ -83,11 +83,8 @@ if(isset($_POST['usuario'])){
 	<script src="visual/jquery.dlmenu.js"></script>
 	<script src="visual/wow.min.js"></script>
 	<script src="visual/custom.js"></script>
-  	</body>
     
 
-<center><img src="visual/images/rodape.png" /></center>
-</div>
 
 </body>
 </html>
