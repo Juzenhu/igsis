@@ -168,6 +168,53 @@ function enviarEmail($conteudo_email, $instituicao, $subject, $email, $usuario )
 
 }
 
+function enviarEmailSimples($conteudo_email, $subject, $toEmail, $toUsuario, $fromEmail, $fromUsuario ){ //envia um email pela conta igccsp2015@gmail.com é preciso que a classe phpmailer esteja instalada - vale dar uma revisada geral
+
+
+	require_once('../include/phpmailer/class.phpmailer.php');
+	//include("class.smtp.php"); // optional, gets called from within class.phpmailer.php if not already loaded
+
+	$mail = new PHPMailer(true); // the true param means it will throw exceptions on errors, which we need to catch
+
+	$mail->IsSMTP(); // telling the class to use SMTP
+
+	try {
+	  //$mail->SMTPDebug  = 2;                     // enables SMTP debug information (for testing)
+	  $mail->CharSet = 'UTF-8';
+	  $mail->SMTPAuth   = true;                  // enable SMTP authentication
+	  $mail->SMTPSecure = "ssl";                 // sets the prefix to the servier
+	  $mail->Host       = "smtp.gmail.com";      // sets GMAIL as the SMTP server
+	  $mail->Port       = 465;                   // set the SMTP port for the GMAIL server
+	  $mail->Username   = "igccsp2015@gmail.com";  // GMAIL username
+	  $mail->Password   = "lic54eca";            // GMAIL password
+      $mail->AddAddress($toEmail,$toUsuario);
+	  $mail->AddBcc("igccsp2015@gmail.com"); //hidden copy to igcssp2015
+	
+			
+		
+	  
+	  //$mail->AddAddress(emailUserLogin($logado), nomeUserLogin($logado));
+	
+	
+	  $mail->SetFrom($fromEmail, $fromUsuario);
+	  $mail->AddReplyTo($fromEmail, $fromUsuario);
+	
+	  //assunto da IGCCSP 	
+	  $mail->Subject = $subject;
+	
+	  $mail->AltBody = 'To view the message, please use an HTML compatible email viewer!'; // optional - MsgHTML will create an alternate automatically
+		//	Criar uma variável com as informações
+	  $mail->MsgHTML($conteudo_email);
+	  $mail->Send();
+	} catch (phpmailerException $e) {
+	  echo $e->errorMessage(); //Pretty error messages from PHPMailer
+	} catch (Exception $e) {
+	  echo $e->getMessage(); //Boring error messages from anything else!
+	}
+
+
+}
+
 function gravarLog($log){ //grava na tabela ig_log os inserts e updates
 	$idUsuario = $_SESSION['idUsuario'];
 	$ip = $_SERVER["REMOTE_ADDR"];

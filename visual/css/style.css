@@ -634,3 +634,7 @@ input[type=checkbox].css-checkbox {
  	padding: 12px 26px 12px 26px; 
 	margin: 0 5px 0 0; 
   }
+  
+ .left{
+	text-align: left !important; 	 
+	 } 

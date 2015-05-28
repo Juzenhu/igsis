@@ -67,38 +67,17 @@ case "perfil";
 				  </div>
 			  </div>
 			  <div class="row">
-                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-					<div class="service-box wow bounceInDown" data-wow-delay="0.1s">
-						<a href="?perfil=evento"><i class="fa fa-code fa-4x"></i></a>
-						<h4>Programador/Curador</h4>
-						<p>Lorem ipsum dolor sit amet, ut decore iracundia urbanitas sit.</p>
-						<a class="btn btn-primary">Learn more</a>
-					</div>
-                </div>
-                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" data-wow-delay="0.3s">
-					<div class="service-box wow bounceInDown" data-wow-delay="0.1s">
-						<i class="fa fa-cog fa-4x"></i>
-						<h4>Finanças/orçamento</h4>
-						<p>Lorem ipsum dolor sit amet, ut decore iracundia urbanitas sit.</p>
-						<a class="btn btn-primary">Learn more</a>
-					</div>
-                </div>
-                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" data-wow-delay="0.5s">
-					<div class="service-box wow bounceInDown" data-wow-delay="0.1s">
-						<i class="fa fa-desktop fa-4x"></i>
-						<h4>Contratos</h4>
-						<p>Lorem ipsum dolor sit amet, ut decore iracundia urbanitas sit.</p>
-						<a class="btn btn-primary">Learn more</a>
-					</div>
-                </div>
-                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" data-wow-delay="0.7s">
-					<div class="service-box wow bounceInDown" data-wow-delay="0.1s">
-						<i class="fa fa-dropbox fa-4x"></i>
-						<h4>Comunnicação</h4>
-						<p>Lorem ipsum dolor sit amet, ut decore iracundia urbanitas sit.</p>
-						<a class="btn btn-primary">Learn more</a>
-					</div>
-                </div>
+ 				  <div class="col-md-offset-2 col-md-8">
+                  <div class="left">
+            	<ul >
+             		<li>+ Programação / Curadoria</li>
+             		<li>+ Comunicação</li>
+             		<li>+ Produção</li>
+             		<li>+ Contratos</li>
+
+            	</ul>
+                </div>	
+				</div>
 			  </div>	
 		</div>
 	</section>
@@ -107,8 +86,32 @@ case "perfil";
 break;
 case "ajuda";
  ?>
+
+ <?php
+if(isset($_POST['nome'])){ ?>
+ 	  <section id="contact" class="home-section bg-white">
+	  	<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Sua mensagem foi enviada!</h2>
+					 <p>Dúvidas, sugestões e comunicação de bugs, fale conosco! </p>
+					</div>
+				  </div>
+			  </div>
+        </div>
+        </section>
+<?php
+ $conteudo_email = $_POST['mensagem'];	
+ $subject = $_POST['assunto'];
+ $email = $_POST['email'];
+ $usuario = $_POST['nome']; 	
+ enviarEmailSimples($conteudo_email, $subject, $email, $usuario );
+}else{ 
+ 
+  ?>
 	 <!-- Contact -->
-	  <section id="contact" class="home-section bg-white">
+ 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
@@ -122,30 +125,30 @@ case "ajuda";
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
 
-				<form class="form-horizontal" role="form">
+				<form method="POST" action="index.php?secao=ajuda" class="form-horizontal" role="form">
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					  <input type="text" class="form-control" id="inputName" placeholder="Nome">
+					  <input type="text" name="nome" class="form-control" id="inputName" placeholder="Nome">
 					</div>
 				  </div>
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					  <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+					  <input type="email" name="email" class="form-control" id="inputEmail" placeholder="Email">
 					</div>
 				  </div>
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					  <input type="text" class="form-control" id="inputSubject" placeholder="Assunto">
+					  <input type="text" name="assunto" class="form-control" id="inputSubject" placeholder="Assunto">
 					</div>
 				  </div>
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					  <textarea name="message" class="form-control" rows="3" placeholder="Mensagem"></textarea>
+					  <textarea name="mensagem" class="form-control" rows="3" placeholder="Mensagem"></textarea>
 					</div>
 				  </div>
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					 <button type="button" class="btn btn-theme btn-lg btn-block">Enviar</button>
+					 <button type="submit" class="btn btn-theme btn-lg btn-block">Enviar</button>
 					</div>
 				  </div>
 				</form>
@@ -160,5 +163,6 @@ case "ajuda";
 	  </section>  
  
 <?php 
+}
 break;
 } ?>
