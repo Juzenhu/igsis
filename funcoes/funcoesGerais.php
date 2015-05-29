@@ -225,7 +225,7 @@ function gravarLog($log){ //grava na tabela ig_log os inserts e updates
 	
 }
 
-function saudacao(){
+function saudacao(){ //saudacao inicial
 	$hora = date('H');
 	if(($hora > 12) AND ($hora <= 18)){
 		return "Boa tarde";	
@@ -237,5 +237,35 @@ function saudacao(){
 		return "Bom dia";
 	}
 }
+
+function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
+	if($instituicao != ""){
+		$sql = "SELECT * FROM $tabela WHERE idInstituicao = $instituicao";
+	}else{
+		$sql = "SELECT * FROM $tabela";
+	}
+	
+	$query = mysql_query($sql);
+	while($option = mysql_fetch_row($query)){
+		if($option[0] == $select){
+			echo "<option value='".$option[0]."' selected >".$option[1]."</option>";	
+		}else{
+			echo "<option value='".$option[0]."'>".$option[1]."</option>";	
+		}
+	}
+}
+
+	
+
+
+
+	
+
+
+
+
+
+
+
 
 ?>

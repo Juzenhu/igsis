@@ -76,7 +76,7 @@ error_reporting(E_ALL);
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     <label>Memorando</label>
-					  <select class="form-control" name="retiradaIngresso" id="inputSubject" ><option>Selecione</option></select>
+					  <select class="form-control" name="retiradaIngresso" id="inputSubject" ><?php echo geraOpcao("ig_local","","") ?></select>
 					</div>
 				  </div>
  <div class="form-group">

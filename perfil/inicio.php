@@ -20,6 +20,7 @@
 	</div>	
 
 
+
 <?php
 if(isset($_GET['secao'])){
 	$secao = $_GET['secao'];
@@ -45,6 +46,8 @@ case "inicio":
 <p>&nbsp;</p>
 <p>Equipe IGSIS / DEC / CCSPLab / Julho de 2015</p>
 <p>igccsp2015@gmail.com</p>
+
+
 					</div>
 				  </div>
 			  </div>

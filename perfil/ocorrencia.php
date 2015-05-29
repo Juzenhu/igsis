@@ -88,7 +88,7 @@
  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     <label>Sala / espaço</label>
-					  <select class="form-control" name="local" id="inputSubject" ><option>Selecione</option></select>
+					  <select class="form-control" name="local" id="inputSubject" ><?php echo geraOpcao("ig_local","","") ?></select>
 					</div>
 				  </div>	
                   			  <div class="form-group">
