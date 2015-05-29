@@ -6,18 +6,50 @@ error_reporting(E_ALL);
 			<div id="dl-menu" class="dl-menuwrapper">
 						<button class="dl-trigger">Open Menu</button>
 						<ul class="dl-menu">
-							<li>		
-								<a href="#enviar">Início</a> </li>
-							
-							<li><a href="#lista">Arquivos anexados</a></li>
-							<li>
-								<a href="#">Eventos</a>
-								<ul class="dl-submenu">
-									<li><a href="#">Inserir Evento</a></li>
-									<li><a href="#">Listar Listar</a></li>
-								</ul>
-							</li>
-						</ul>
+							<li><a href="#enviar">Início</a> </li>
+							<li><a href="#lista">Quadro geral</a></li>
+                            <li><a href="#lista">Inserir novo pedido</a>
+                          		<ul class="dl-submenu">
+                                 <li><a href="#">Evento</a>
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Apresentação básica</a></li>
+                                        <li><a href="#">Detalhamento</a></li>
+                                        <li><a href="#">Ocorrências</a></li>
+                                        <li><a href="#">Conteúdo</a></li>
+                                        <li><a href="#">Serviços internos</a></li>
+                                        <li><a href="#">Especificidades de área</a></li>
+                                        <li><a href="#">Previsão de serviços externos</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#enviar">Contratado</a> 
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Inserir contratado</a></li>
+                                        <li><a href="#">Lista de contratados</a></li>
+                                    </ul>
+                                </li>    
+                                <li><a href="#enviar">Anexar arquivos</a> </li>
+                                <?php //criar um if para o módulo cinema ?>
+                                <li><a href="#enviar">Módulo Cinema</a> 
+    
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Inserir novo filme</a></li>
+                                        <li><a href="#">Lista de filmes</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#enviar">Enviar</a> </li>
+							</ul>
+                            </li>
+  							<li><a href="#lista">Carregar evento em aberto</a></li> 
+                            <li><a href="#lista">Pedidos enviados</a>   
+
+    
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Relatório de alterações</a></li>
+                                        <li><a href="#">Enviar alteraçãos</a></li>
+                                        <li><a href="#">Enviar anexo</a></li>
+                                    </ul>
+                                </li>                      
+                        </ul>
 					</div><!-- /dl-menuwrapper -->
 	</div>	
 <section id="contact" class="home-section bg-white">
