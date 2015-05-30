@@ -31,7 +31,9 @@ if(isset($_GET['secao'])){
 <?php switch($secao){
 	
 case "inicio":
+
 ?>	
+
 	 <section id="services" class="home-section bg-white">
 		<div class="container">
 			  <div class="row">
@@ -46,7 +48,7 @@ case "inicio":
 <p>&nbsp;</p>
 <p>Equipe IGSIS / DEC / CCSPLab / Julho de 2015</p>
 <p>igccsp2015@gmail.com</p>
-
+<p><?php print_r($_SESSION); ?>
 
 					</div>
 				  </div>
@@ -58,33 +60,46 @@ case "inicio":
 <?php
 break;
 case "perfil";
+
  ?>
-	 <section id="services" class="home-section bg-white">
+	<!-- <section id="services" class="home-section bg-white">
 		<div class="container">
-			  <div class="row">
+
+
+		</div>
+	</section>-->
+	 <!-- list -->
+	<section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
 					 <h2>Perfil</h2>
 					<p>Selecione o perfil de trabalho.</p>
 					</div>
 				  </div>
-			  </div>
-			  <div class="row">
- 				  <div class="col-md-offset-2 col-md-8">
-                  <div class="left">
-            	<ul >
-             		<li>+ Programação / Curadoria</li>
-             		<li>+ Comunicação</li>
-             		<li>+ Produção</li>
-             		<li>+ Contratos</li>
+			  </div>  
 
-            	</ul>
-                </div>	
-				</div>
-			  </div>	
+			<div class="table-responsive list_info">
+				<table class="table table-condensed">
+					<thead>
+						<tr class="list_menu">
+							<td>Perfil</td>
+							<td>Descrição</td>
+							<td width="20%"></td>
+						</tr>
+					</thead>
+					<tbody>
+						
+                         <?php listaModulos($_SESSION['perfil']); ?>
+                        
+
+						
+					</tbody>
+				</table>
+			</div>
 		</div>
-	</section>
-
+	</section> <!--/#list_items-->
 <?php
 break;
 case "ajuda";

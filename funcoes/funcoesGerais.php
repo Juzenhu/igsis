@@ -19,7 +19,6 @@ function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia u
 					$_SESSION['usuario'] = $user['nomeUsuario'];
 					$_SESSION['perfil'] = $user['idPapelUsuario'];
 					$_SESSION['instituicao'] = $user['instituicao'];
-					$_SESSION['include'] = $user['include'];
 					$_SESSION['nomeCompleto'] = $user['nomeCompleto'];
 					$_SESSION['idUsuario'] = $user['idUsuario'];
 
@@ -254,9 +253,59 @@ function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 		}
 	}
 }
-
+function recuperaModulo($pag){
+	$sql = "SELECT * FROM ig_modulo WHERE pag = '$pag'";
+	$query = mysql_query($sql);
+	$modulo = mysql_fetch_array($query);
+	return $modulo;
+}
 	
+function listaModulos($perfil){ //gera as tds dos módulos a carregar
 
+	// gera uma array com todos os módulos instalados no sistema
+
+
+	// recupera quais módulos o usuário tem acesso
+	$sql = "SELECT * FROM ig_papelusuario WHERE idPapelUsuario = $perfil"; 
+	$query = mysql_query($sql);
+	$campoFetch = mysql_fetch_array($query,MYSQL_BOTH); // retorna a array com resultados
+
+	for($i = 1; $i < sizeof($campoFetch); $i++){
+		if($campoFetch[$i] == 1){
+			$k = mysql_field_name($query, $i);
+			$descricao = recuperaModulo($k);
+			echo "<tr>";
+			echo "<td class='list_description'><b>".$descricao['nome']."</b></td>";
+			echo "<td class='list_description'>".$descricao['descricao']."</td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=$k'>
+			<input type ='submit' class='btn btn-theme btn-lg btn-block' value='carregar'></td></form>"	;
+			echo "</tr>";
+		}	
+		
+	}
+		
+/*	function retornaNomeModulo($pag){
+		$sql = "SELECT * FROM ig_modulo WHERE pag = $pag";
+		$query = mysql_query($sql);
+		$campo = mysql_fetch_array($sql);
+		return $campo;	
+	}
+
+	for($i = 1; $i <= $numCampos; $i++){
+		if($campoFetch[$i] == 1){
+			$pag = mysql_field_name($query, $i);
+			$descricao = retornaNomeModulo($pag);
+			echo "<td class='list_description'>".$descricao['nome']."</td>";
+			echo "<td class='list_description'>".$descricao['descricao']."</td>";
+			echo "<td class='list_description'><button type='button' class='btn btn-theme btn-lg btn-block'>carregar</button></td>";		
+		} 	
+		
+	}
+*/	
+
+}
 
 
 	

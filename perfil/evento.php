@@ -148,9 +148,37 @@ error_reporting(E_ALL);
 
 	  	</div>
 	  </section>  
+	 <!-- list -->
+	<section id="list_items">
+		<div class="container">
+			<div class="breadcrumbs">
+				<ol class="breadcrumb">
+				  <li><a href="#">Home</a></li>
+				  <li class="active">List</li>
+				</ol>
+			</div>
+			<div class="table-responsive list_info">
+				<table class="table table-condensed">
+					<thead>
+						<tr class="list_menu">
+							<td>Perfil</td>
+							<td>Descrição</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+						  <td class="list_description"> Texto</td>
+						  <td class="list_description"> Texto</td>
+						  <td class="list_description"> <button type="button" class="btn btn-theme btn-lg btn-block">carregar</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section> <!--/#list_items-->
 
-
-				</li>
+		
 
 	<div class="gravar">
 <input type="hidden" name="id_evento" value=""  />
