@@ -32,4 +32,15 @@ evento
 		> enviar alteração
 		> enviar anexo
 	 
+comunicação
+	> quadro geral
+		> resumo 
+		> edição
+		> ocorrências
+		> relatório de alterações
+		> anexos
+		> spcultura
+	> módulo cinema
+	> registro documentação
+	> relatório de alterações	
 	
