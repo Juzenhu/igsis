@@ -5,6 +5,12 @@ igSmc v0.1 - 2015
 ccsplab.org - centro cultural são paulo
 */
 
+	//Verifica erro na string
+	//$mysqli = new mysqli("localhost", "root", "lic54eca","igsis_beta");
+	//if (!$mysqli->query($sql_inserir)) {
+    //printf("Errormessage: %s\n", $mysqli->error);
+	//}
+
 // Esta é a página para as funções gerais do sistema.
 
 function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia uma session
@@ -215,12 +221,15 @@ function enviarEmailSimples($conteudo_email, $subject, $toEmail, $toUsuario, $fr
 }
 
 function gravarLog($log){ //grava na tabela ig_log os inserts e updates
+	$logTratado = addslashes($log);
 	$idUsuario = $_SESSION['idUsuario'];
 	$ip = $_SERVER["REMOTE_ADDR"];
 	$data = date('Y-m-d H:i:s');
-	$sql = "INSERT INTO `ig_log` (`idLog`, `ig_usuario_idUsuario`, `enderecoIP`, `dataLog`, `descricao`) VALUES (NULL, '$idUsuario', '$ip', '$data', '$log')";
+	$sql = "INSERT INTO `ig_log` (`idLog`, `ig_usuario_idUsuario`, `enderecoIP`, `dataLog`, `descricao`) VALUES (NULL, '$idUsuario', '$ip', '$data', '$logTratado')";
 
 	mysql_query($sql);
+
+
 	
 }
 
@@ -239,7 +248,7 @@ function saudacao(){ //saudacao inicial
 
 function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 	if($instituicao != ""){
-		$sql = "SELECT * FROM $tabela WHERE idInstituicao = $instituicao";
+		$sql = "SELECT * FROM $tabela WHERE idInstituicao = $instituicao OR idInstituicao = 999";
 	}else{
 		$sql = "SELECT * FROM $tabela";
 	}
@@ -306,15 +315,42 @@ function listaModulos($perfil){ //gera as tds dos módulos a carregar
 */	
 
 }
+function verificaAcesso($usuario,$pagina){
+	$sql = "SELECT * FROM ig_usuario,ig_papelusuario WHERE ig_usuario.idUsuario = $usuario AND ig_usuario.ig_papelusuario_idPapelUsuario = ig_papelusuario.idPapelUsuario LIMIT 0,1";
+	$query = mysql_query($sql);
+	$verifica = mysql_fetch_array($query);
+	if($verifica["$pagina"] == 1){
+		return 1;
+	}else{
+		return 0;
+	}
+}
 
+function recuperaEvento($idEvento){
+	$sql = "SELECT * FROM ig_evento WHERE idEvento = $idEvento LIMIT 0,1";
+	$query = mysql_query($sql);
+	$campo = mysql_fetch_array($query);
+	return $campo;		
+}	
 
-	
+function opcaoUsuario($idInstituicao,$idUsuario){
+	$sql = "SELECT DISTINCT * FROM ig_usuario,ig_papelusuario WHERE ig_usuario.ig_papelusuario_idPapelUsuario = ig_papelusuario.idPapelUsuario AND ig_papelusuario.evento = 1";
+	$query = mysql_query($sql);
+	while($campo = mysql_fetch_array($query)){
+		if($campo['idUsuario'] == $idUsuario){
+			echo "<option value=".$campo['idUsuario']." selected >".$campo['nomeCompleto']."</option>";
+		}else{
+			echo "<option value=".$campo['idUsuario']." >".$campo['nomeCompleto']."</option>";
+			
+		}
+	}	
+}
 
-
-
-
-
-
-
+function retornaArtesVisuais($idEvento){
+	$sql = "SELECT * FROM ig_artes_visuais WHERE idEvento = '$idEvento'";
+	$query = mysql_query($sql);
+	$campo = mysql_fetch_array($query);
+	return $campo;	
+}
 
 ?>
