@@ -6,6 +6,23 @@ $verifica = verificaAcesso($_SESSION['idUsuario'],$_GET['perfil']);
 if($verifica == 1){
 ?>
 
+
+
+
+<?php
+@ini_set('display_errors', '1');
+error_reporting(E_ALL);
+
+if(isset($_GET['p'])){
+	$p = $_GET['p'];	
+}else{
+	$p = "inicio";
+}
+
+switch($p){
+
+case "inicio":
+?>
 	<div class="menu-area">
 			<div id="dl-menu" class="dl-menuwrapper">
 						<button class="dl-trigger">Open Menu</button>
@@ -56,23 +73,6 @@ if($verifica == 1){
                         </ul>
 					</div><!-- /dl-menuwrapper -->
 	</div>	
-
-
-<?php
-@ini_set('display_errors', '1');
-error_reporting(E_ALL);
-
-if(isset($_GET['p'])){
-	$p = $_GET['p'];	
-}else{
-	$p = "inicio";
-}
-
-switch($p){
-
-case "inicio":
-?>
-
 <section id="contact" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -147,7 +147,7 @@ if(isset($_POST['atualizar'])){
 // Cria um array com dados do evento
 $campo = recuperaEvento($_SESSION['idEvento']);
 ?>
-
+<? include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -269,7 +269,7 @@ if(isset($_POST['atualizar'])){
 }
 $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
 ?>
-
+<? include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -451,6 +451,7 @@ if(isset($_POST['apagar'])){
 // Cria um array com dados do evento
 $campo = recuperaEvento($_SESSION['idEvento']);
 ?>
+<? include "../include/menuEvento.php" ?>
 <script type="application/javascript">
 $(function(){
 	$('#instituicao').change(function(){
@@ -514,6 +515,7 @@ function habilitar(){
     }  
 } 
 </script>
+<? include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -698,7 +700,7 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
 
 
 ?>
-
+<? include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -753,13 +755,13 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
 <?php 
 break;
 case "internos" :?>
-
+<? include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
-                    <h3>Evento - Apresentação Básica</h3>
+                    <h3>Evento - Serviços internos</h3>
                     <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
                     <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
                 </div>
@@ -847,7 +849,7 @@ break;
 case "area" :
 $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
 ?>
-
+<? include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -927,6 +929,131 @@ if($campo['ig_tipo_evento_idTipoEvento'] == 2){ // Artes Visuais
 	($campo['ig_tipo_evento_idTipoEvento'] == 5))
 { 
 ?>
+			<h1>Módulo do Siscontrat</h1>
+<!--                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-2">
+                		<label>Certificado</label>
+                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm"/>
+                	</div> 
+                	<div class="col-md-3">
+                		<label>Vagas *</label>
+                		<input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="em reais">
+               		</div>
+             	   <div class=" col-md-3">
+                		<label>Forma de inscrição *</label>
+               			<input type="text" id="duracao" name="duracao" class="form-control" id="" placeholder="em minutos">
+                	</div>
+                </div>
+                
+                <div class="form-group">
+                <h4>Período de Inscrição</h4>
+                	<div class="col-md-offset-2 col-md-6">
+               			 <label>Início</label>
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="">
+               		 </div>
+                	<div class=" col-md-6">
+                		<label>Encerramento</label>
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" placeholder="só preencha se for temporada">
+               		</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+               			 <label>Resultado</label>
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="">
+               		 </div>
+                	<div class=" col-md-6">
+                		<label>Material requisitado</label>
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02"  placeholder="só preencha se for temporada">
+               		</div>
+				</div>
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Público-alvo</label>
+            		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
+            	</div> 
+            </div> 
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Formas de pagamento do oficineiro</label>
+            		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
+            	</div> 
+            </div>                                
+                <div class="form-group">
+	                <div class="col-md-offset-2 col-md-8">
+    		            <input type="checkbox" name="segunda" id="diasemana01" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Segunda</label>
+           			    <input type="checkbox" name="terca" id="diasemana02" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Terça</label>
+            		    <input type="checkbox" name="quarta" id="diasemana03" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quarta</label>
+            		    <input type="checkbox" name="quinta" id="diasemana04" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quinta</label>
+           				<input type="checkbox" name="sexta" id="diasemana05" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Sexta</label>
+          		      	<input type="checkbox" name="sabado" id="diasemana06" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Sábado</label>
+            		    <input type="checkbox" name="domingo" id="diasemana07" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Domingo</label>
+                	</div>                     
+                </div>
+                <div class="form-group">
+                    
+           			
+	            	<div class="col-md-offset-2 col-md-8">
+                    <input type="checkbox" name="diaEspecial" id="diaEspecial" onclick="habilitar()"/><label  style="padding:0 20px 0 5px;">Dia especial?</label>
+    		            <input type="checkbox" name="audiodescricao" id="especial01" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Audiodescricão</label>
+           			    <input type="checkbox" name="libras" id="especial02" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Libras</label>
+            		    <input type="checkbox" name="precoPopular" id="especial03" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Preço popular</label>
+                	</div>                     
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-2">
+                		<label>Horário de início</label>
+                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm"/>
+                	</div> 
+                	<div class="col-md-3">
+                		<label>Valor ingresso *</label>
+                		<input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="em reais">
+               		</div>
+             	   <div class=" col-md-3">
+                		<label>Duração *</label>
+               			<input type="text" id="duracao" name="duracao" class="form-control" id="" placeholder="em minutos">
+                	</div>
+                </div>
+                       
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+               		 <label>Sistema de retirada de ingressos</label>
+               		 <select class="form-control" name="retiradaIngresso" id="inputSubject" >
+               		 <option>Selecione</option>
+					<?php geraOpcao("ig_retirada","","") ?>
+                	</select>
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+                		<label>Local / instituição *</label><img src="images/loading.gif" class="loading" style="display:none" />
+                		<select class="form-control" name="instituicao" id="instituicao" >
+                		<option>Selecione</option>
+                		<?php geraOpcao("ig_instituicao","","") ?>
+                		</select>
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+               		 	<label>Sala / espaço (antes selecione a instituição)</label>
+                		<select class="form-control" name="local" id="local" ></select>
+                	</div>
+                </div>	
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+                    	<label>Ingressos disponíveis</label>
+                    	<input type="text" class="form-control" name="ingressosDisponiveis" id="" placeholder="">
+                	</div>
+               		<div class=" col-md-6">
+                    	<label>Ingressos reservados</label>
+                		<input type="text" class="form-control" name="ingressosReservados" id="" placeholder="">
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+                    	<input type="hidden" name="inserir" value="1"  />
+                		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir ocorrência"  />
+               		 </div>
+                </div>-->
 
 
 <?
@@ -993,13 +1120,13 @@ if($campo['ig_tipo_evento_idTipoEvento'] == 2){ // Artes Visuais
 <?php 
 break;
 case "externos" :?>
-
+<? include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
-                    <h3>Evento - Apresentação Básica</h3>
+                    <h3>Evento - Previsão de demandas de serviços externos</h3>
                     <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
                     <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
                 </div>
@@ -1081,6 +1208,153 @@ case "externos" :?>
         </div>
     </div>
 </section>  
+
+<?php 
+break;
+case "arquivos" :?>
+<? include "../include/menuEvento.php" ?>
+
+    
+    	 <section id="enviar" class="home-section bg-white">
+		<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Envio de Arquivos</h2>
+<p>Nesta página, você envia os arquivos como o rider, mapas de cenas e luz, logos de parceiros, programação de filmes de mostras de cinema, etc. O tamanho máximo do arquivo deve ser 60MB.</p>
+<p> Em caso de envio de fotografia, considerar as seguintes especificações técnicas:<br />
+- formato: horizontal <br />
+- tamanho: mínimo de 300dpi”</p>
+
+
+<?php
+
+if( isset( $_POST['enviar'] ) ) {
+
+    $pathToSave = 'uploads/';
+
+    // A variavel $_FILES é uma variável do PHP, e é ela a responsável
+    // por tratar arquivos que sejam enviados em um formulário
+    // Nesse caso agora, a nossa variável $_FILES é um array com 3 dimensoes
+    // e teremos de trata-lo, para realizar o upload dos arquivos
+    // Quando é definido o nome de um campo no form html, terminado por []
+    // ele é tratado como se fosse um array, e por isso podemos ter varios
+    // campos com o mesmo nome
+    $i = 0;
+    $msg = array( );
+    $arquivos = array( array( ) );
+    foreach(  $_FILES as $key=>$info ) {
+        foreach( $info as $key=>$dados ) {
+            for( $i = 0; $i < sizeof( $dados ); $i++ ) {
+                // Aqui, transformamos o array $_FILES de:
+                // $_FILES["arquivo"]["name"][0]
+                // $_FILES["arquivo"]["name"][1]
+                // $_FILES["arquivo"]["name"][2]
+                // $_FILES["arquivo"]["name"][3]
+                // para
+                // $arquivo[0]["name"]
+                // $arquivo[1]["name"]
+                // $arquivo[2]["name"]
+                // $arquivo[3]["name"]
+                // Dessa forma, fica mais facil trabalharmos o array depois, para salvar
+                // o arquivo
+                $arquivos[$i][$key] = $info[$key][$i];
+            }
+        }
+    }
+
+    $i = 1;
+
+    // Fazemos o upload normalmente, igual no exemplo anterior
+    foreach( $arquivos as $file ) {
+
+        // Verificar se o campo do arquivo foi preenchido
+        if( $file['name'] != '' ) {
+            $arquivoTmp = $file['tmp_name'];
+            $arquivo = $pathToSave.$file['name'];
+			$arquivo_base = $file['name'];
+			if(file_exists($arquivo)){
+				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
+			}else{
+			include "include/conecta_mysql.php";
+			$sql = "INSERT INTO ig_arquivos (id_arquivos , nome , evento_id) VALUES( NULL , '$arquivo_base' , '$id_evento' );";
+			mysql_query($sql);
+			
+            if( !move_uploaded_file( $arquivoTmp, $arquivo ) ) {
+                $msg[$i] = 'Erro no upload do arquivo '.$i;
+            } else {
+                $msg[$i] = sprintf('Upload do arquivo %s foi um sucesso!',$i);
+            }
+			}
+       } 
+        $i++;
+    }
+
+    // Imprimimos as mensagens geradas pelo sistema
+
+ foreach( $msg as $e ) {
+	 	echo " <div id = 'mensagem_upload'>";
+        printf('%s<br>', $e);
+		echo " </div>";
+    }
+
+}
+
+?>
+
+<br />
+<div class = "center">
+<form method='POST' action="?perfil=evento&p=arquivos" enctype='multipart/form-data'>
+<p><input type='file' name='arquivo[]'></p>
+<p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+  <p><input type='file' name='arquivo[]'></p>
+  <p><input type='file' name='arquivo[]'></p>
+    <br>
+    <input type='submit' value='Enviar' name='enviar'>
+</form>
+</div>
+
+
+					</div>
+				  </div>
+			  </div>
+			  
+		</div>
+	</section>
+
+	 <section id="lista" class="home-section bg-white">
+		<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Arquivos anexados</h2>
+<p>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</p>
+    
+   <?
+if(isset($_POST['apagar'])){
+//página 01
+$id_arquivo = $_POST["id_arquivo"];
+// query para atualizar dados  os dados da página 1 a 3
+$ssql = "UPDATE  `ig_arquivos` SET  `evento_id` =  'NULL' WHERE  `ig_arquivos`.`id_arquivos` = '$id_arquivo';";
+ 
+// executa a query
+if(mysql_query($ssql)){
+	echo "<span class='alerta'>Arquivo deletado!</span>";
+	}
+
+}
+?> 
+					</div>
+				  </div>
+			  </div>
+			  
+		</div>
+	</section>
 
 <?php 
 break;
