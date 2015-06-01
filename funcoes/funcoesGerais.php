@@ -455,4 +455,36 @@ function checar($id){
 	}	
 }
 
+function listaArquivos($idEvento){
+	$sql = "SELECT * FROM ig_arquivo WHERE 	ig_evento_idEvento = $idEvento AND publicado = 1";
+	$query = mysql_query($sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>Nome do arquivo</td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysql_fetch_array($query)){
+			echo "<tr>";
+			echo "<td class='list_description'>".$campo['arquivo']."</td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=arquivos'>
+			<input type='hidden' name='apagar' value='".$campo['idArquivo']."' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+					
+						
+
+                        
+
+						
+		
+	echo "					</tbody>
+				</table>";	
+}
+
 ?>

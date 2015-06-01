@@ -100,6 +100,7 @@ if(isset($_POST['apagar'])){
 
 	if(mysql_query($sql_apagar_registro)){	
 		$mensagem = "Evento apagado com sucesso!";
+		gravarLog($sql_apagar_registro);
 	}else{
 		$mensagem = "Erro ao apagar o evento...";	
 	}
@@ -1603,7 +1604,20 @@ case "externos" :?>
 
 <?php 
 break;
-case "arquivos" :?>
+case "arquivos" :
+if(isset($_POST['apagar'])){
+	$idArquivo = $_POST['apagar'];
+	$sql_apagar_arquivo = "UPDATE ig_arquivo SET publicado = 0 WHERE idArquivo = '$idArquivo'";
+	if(mysql_query($sql_apagar_arquivo)){
+		$arq = recuperaDados("ig_arquivo",$idArquivo,"idArquivo");
+		$mensagem =	"Arquivo ".$arq['arquivo']."apagado com sucesso!";
+		gravarLog($sql_apagar_arquivo);
+	}else{
+		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
+	}
+}
+
+?>
 <? include "../include/menuEvento.php" ?>
 
     
@@ -1623,7 +1637,7 @@ case "arquivos" :?>
 
 if( isset( $_POST['enviar'] ) ) {
 
-    $pathToSave = 'uploads/';
+    $pathToSave = '../uploads/';
 
     // A variavel $_FILES é uma variável do PHP, e é ela a responsável
     // por tratar arquivos que sejam enviados em um formulário
@@ -1668,9 +1682,11 @@ if( isset( $_POST['enviar'] ) ) {
 			if(file_exists($arquivo)){
 				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
 			}else{
-			include "include/conecta_mysql.php";
-			$sql = "INSERT INTO ig_arquivos (id_arquivos , nome , evento_id) VALUES( NULL , '$arquivo_base' , '$id_evento' );";
+				$idEvento = $_SESSION['idEvento'];
+			include "../include/conecta_mysql.php";
+			$sql = "INSERT INTO ig_arquivo (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , '$arquivo_base' , '$idEvento', '1' );";
 			mysql_query($sql);
+			gravarLog($sql);
 			
             if( !move_uploaded_file( $arquivoTmp, $arquivo ) ) {
                 $msg[$i] = 'Erro no upload do arquivo '.$i;
@@ -1707,46 +1723,38 @@ if( isset( $_POST['enviar'] ) ) {
   <p><input type='file' name='arquivo[]'></p>
   <p><input type='file' name='arquivo[]'></p>
     <br>
-    <input type='submit' value='Enviar' name='enviar'>
+    <input type="submit" class="btn btn-theme btn-lg btn-block" value="Enviar">
 </form>
 </div>
 
 
 					</div>
 				  </div>
+                  
 			  </div>
 			  
 		</div>
 	</section>
 
-	 <section id="lista" class="home-section bg-white">
+	<section id="list_items" class="home-section bg-white">
 		<div class="container">
-			  <div class="row">
+      			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h2>Arquivos anexados</h2>
-<p>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</p>
-    
-   <?
-if(isset($_POST['apagar'])){
-//página 01
-$id_arquivo = $_POST["id_arquivo"];
-// query para atualizar dados  os dados da página 1 a 3
-$ssql = "UPDATE  `ig_arquivos` SET  `evento_id` =  'NULL' WHERE  `ig_arquivos`.`id_arquivos` = '$id_arquivo';";
- 
-// executa a query
-if(mysql_query($ssql)){
-	echo "<span class='alerta'>Arquivo deletado!</span>";
-	}
-
-}
-?> 
+ <h2>Arquivos anexados</h2>
+<h5>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</h5>
 					</div>
+			<div class="table-responsive list_info">
+                         <?php listaArquivos($_SESSION['idEvento']); ?>
+			</div>
 				  </div>
-			  </div>
-			  
+			  </div>  
+
+
 		</div>
 	</section>
+
+
 
 <?php 
 break;
