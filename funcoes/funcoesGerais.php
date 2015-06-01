@@ -468,7 +468,7 @@ function listaArquivos($idEvento){
 					<tbody>";
 	while($campo = mysql_fetch_array($query)){
 			echo "<tr>";
-			echo "<td class='list_description'>".$campo['arquivo']."</td>";
+			echo "<td class='list_description'><a href='../uploads/".$campo['arquivo']."' target='_blank'>".$campo['arquivo']."</a></td>";
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=evento&p=arquivos'>

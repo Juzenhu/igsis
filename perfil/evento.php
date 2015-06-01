@@ -1723,7 +1723,7 @@ if( isset( $_POST['enviar'] ) ) {
   <p><input type='file' name='arquivo[]'></p>
   <p><input type='file' name='arquivo[]'></p>
     <br>
-    <input type="submit" class="btn btn-theme btn-lg btn-block" value="Enviar">
+    <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar' name='enviar'>
 </form>
 </div>
 
