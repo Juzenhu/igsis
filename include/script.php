@@ -5,18 +5,7 @@
 <script src="js/jquery.maskedinput.js" type="text/javascript"></script>
 <script src="js/jquery.maskMoney.js" type="text/javascript"></script>
   <script>
-  $(function() {
-    $( "#datepicker01" ).datepicker();
-    $( "#anim" ).change(function() {
-      $( "#datepicker" ).datepicker( "option", "showAnim", $( this ).val() );
-    });
-  });
-    $(function() {
-    $( "#datepicker02" ).datepicker();
-    $( "#anim" ).change(function() {
-      $( "#datepicker" ).datepicker( "option", "showAnim", $( this ).val() );
-    });
-  });
+
   $(function(){
 	$( "#hora" ).mask("99:99");
   });

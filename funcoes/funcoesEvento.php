@@ -4,6 +4,8 @@
 */
 
 function iniciaFormulario($idUsuario){
+	unset($_SESSION['idEvento']);
+
 	// Query para inserir um registro em branco
 	$sql_inicio = "INSERT INTO  `ig_evento` (
 
@@ -21,7 +23,7 @@ function iniciaFormulario($idUsuario){
 `fichaTecnica` ,
 `faixaEtaria` ,
 `sinopse` ,
-`release` ,
+`releaseCom` ,
 `parecerArtistico` ,
 `confirmaFinanca` ,
 `confirmaDiretoria` ,
@@ -38,6 +40,7 @@ NULL ,  '',  '',  '',  '',  '', NULL , NULL ,  '',  '',  '',  '',  '',  '',  '',
 ";
 	// Executa a query
 	mysql_query($sql_inicio);
+	
 	// Retorna o ID gerado na tabela ig_evento
 	$sql_ultimo = "SELECT * FROM ig_evento ORDER BY idEvento DESC LIMIT 1";
 	$id_evento = mysql_query($sql_ultimo);

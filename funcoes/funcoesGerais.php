@@ -333,6 +333,16 @@ function recuperaEvento($idEvento){
 	return $campo;		
 }	
 
+function recuperaDados($tabela,$idEvento,$campo){
+	$sql = "SELECT * FROM $tabela WHERE $campo = $idEvento LIMIT 0,1";
+	$query = mysql_query($sql);
+	$campo = mysql_fetch_array($query);
+	return $campo;		
+}
+
+
+
+
 function opcaoUsuario($idInstituicao,$idUsuario){
 	$sql = "SELECT DISTINCT * FROM ig_usuario,ig_papelusuario WHERE ig_usuario.ig_papelusuario_idPapelUsuario = ig_papelusuario.idPapelUsuario AND ig_papelusuario.evento = 1";
 	$query = mysql_query($sql);
@@ -346,11 +356,103 @@ function opcaoUsuario($idInstituicao,$idUsuario){
 	}	
 }
 
-function retornaArtesVisuais($idEvento){
-	$sql = "SELECT * FROM ig_artes_visuais WHERE idEvento = '$idEvento'";
+function verificaExiste($idTabela,$idCampo,$idDado,$st){
+	if($st == 1){ // se for 1, é uma string
+		$sql = "SELECT * FROM $idTabela WHERE $idCampo = '%$idDado%'";
+	}else{
+		$sql = "SELECT * FROM $idTabela WHERE $idCampo = '$idDado'";
+	}
+	$query = mysql_query($sql);
+	$numero = mysql_num_rows($query);
+	$dados = mysql_fetch_array($query);
+	$campo['numero'] = $numero;
+	$campo['dados'] = $dados;	
+	return $campo;
+}
+
+function retornaUltimo($idTabela){
+
+	$sql_ultimo = "SELECT * FROM $idTabela ORDER BY idEvento DESC LIMIT 1";
+	$id_evento = mysql_query($sql_ultimo);
+	$id = mysql_fetch_array($id_evento);
+	$_SESSION['idEvento'] = $id['idEvento'];
+}
+
+function testaQuery($sql){
+	$mysqli = new mysqli("localhost", "root", "lic54eca","igsis_beta");
+	if (!$mysqli->query($sql)) {
+    return printf("Errormessage: %s\n", $mysqli->error);
+	}
+
+}
+
+function recuperaIdDado($tabela,$id){
+	//recupera os nomes dos campos
+	$sql = "SELECT * FROM $tabela";
+	$query = mysql_query($sql);
+	$campo01 = mysql_field_name($query, 0);
+	$campo02 = mysql_field_name($query, 1);
+	
+	$sql = "SELECT * FROM $tabela WHERE $campo01 = $id";
+	$query = mysql_query($sql);
+	$campo = mysql_fetch_array($query);
+	return $campo[$campo02];	
+}
+
+function recuperaProdutor($idProdutor){
+	$sql = "SELECT * FROM ig_produtor WHERE idProdutor = $idProdutor";
 	$query = mysql_query($sql);
 	$campo = mysql_fetch_array($query);
 	return $campo;	
+}
+
+function listaEventosGravados($idUsuario){ 
+	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 1";
+	$query = mysql_query($sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>Nome do evento</td>
+							<td>Tipo de evento</td>
+  							<td>Data de início</td>
+							<td width='10%'></td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysql_fetch_array($query)){
+			echo "<tr>";
+			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
+			echo "<td class='list_description'>".recuperaIdDado("ig_tipo_evento",$campo['ig_tipo_evento_idTipoEvento'])."</td>";
+			echo "<td class='list_description'></td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=basica'>
+			<input type='hidden' name='carregar' value='".$campo['idEvento']."' />
+			<input type ='submit' class='btn btn-theme btn-block' value='carregar'></td></form>"	;
+			
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=carregar'>
+			<input type='hidden' name='apagar' value='".$campo['idEvento']."' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+					
+						
+
+                        
+
+						
+		
+	echo "					</tbody>
+				</table>";
+}
+
+function checar($id){
+	if($id == 1){
+		echo "checked";	
+	}	
 }
 
 ?>

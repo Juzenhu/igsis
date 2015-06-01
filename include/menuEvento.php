@@ -10,6 +10,7 @@
                             <li><a href="?perfil=evento&p=externos">Serviços externos</a></li>
                             <li><a href="?perfil=evento&p=arquivos">Anexar arquivos</a></li>
                             <li><a href="?perfil=evento&p=contratados">Serviços externos</a></li>
+                            <li><a href="?perfil=evento&p=ocorrencias">Ocorrências</a></li>
                             <li><a href="?perfil=evento&p=ocorrencias">Contratado</a></li>  
                             <li><a href="?perfil=evento&p=enviar">Enviar</a> </li>
  							<li><a href="#">Outras opções</a> 
