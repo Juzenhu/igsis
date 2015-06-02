@@ -37,4 +37,66 @@
 })
  </script>
  
+	<script>
+	//funções para calendário	
+	  $(function() {
+    $( "#datepicker01" ).datepicker({ 
+      changeMonth: true,
+      changeYear: true
+    });
+  });
+
+  $(function() {
+    $( "#datepicker02" ).datepicker({ 
+      changeMonth: true,
+      changeYear: true
+    });
+  });
+
+  $(function() {
+    $( "#datepicker03" ).datepicker({ 
+      changeMonth: true,
+      changeYear: true
+    });
+  });
+
+  $(function() {
+    $( "#datepicker04" ).datepicker({ 
+      changeMonth: true,
+      changeYear: true
+    });
+  });
+
+  $(function() {
+    $( "#datepicker05" ).datepicker({ 
+      changeMonth: true,
+      changeYear: true
+    });
+  });
+
+	//funções para mostrar/esconder
+	$('#toggle1').click(function() {
+		$('.toggle1').slideToggle('slow');
+		return false;
+	});	
+
+	$('#toggle2').click(function() {
+		$('.toggle2').slideToggle('slow');
+		return false;
+	});	
+	$('#toggle3').click(function() {
+		$('.toggle3').slideToggle('slow');
+		return false;
+	});	
+	$('#toggle4').click(function() {
+		$('.toggle4').slideToggle('slow');
+		return false;
+	});	
+	$('#toggle5').click(function() {
+		$('.toggle5').slideToggle('slow');
+		return false;
+	});	
+  
+  </script>
+
 

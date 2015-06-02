@@ -471,35 +471,30 @@ function listaOcorrencias($idEvento){
 	while($campo = mysql_fetch_array($query)){
 			$tipo_de_evento = recuperaIdDado("ig_tipo_ocorrencia",$campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
 			if($campo['dataFinal'] == '0000-00-00'){
-				$data = $campo['dataInicio']." - ".diasemana($campo['dataFinal']);
+				$data = exibirDataBr($campo['dataInicio'])." - ".diasemana($campo['dataFinal']);
 					$semana = "";
 			}else{
-				$data = "De ".$campo['dataInicio']." a ".$campo['dataFinal'];
-				if($campo['segunda'] == 1){
-					$semana = "segunda";
-					if($campo['terca'] == 1){
-						$semana = $semana." terça";
-						if($campo['quarta'] == 1){
-							$semana = $semana." quarta";
-								if($campo['quinta'] == 1){
-									$semana = $semana." quinta";
-									if($campo['sexta'] == 1){
-										$semana = $semana." sexta";
-										if($campo['sabado'] == 1){
-											$semana = $semana." sábado";
-											if($campo['domingo'] == 1){
-												$semana = $semana." domingo";
-											}
-										}
-									}
-								}
-						}
-					
-					}
-				}else{
-					$semana = "";	
-				}
+				$data = "De ".exibirDataBr($campo['dataInicio'])." a ".exibirDataBr($campo['dataFinal']);
+				if($campo['segunda'] == 1){$seg = "segunda";}else{$seg = "";}
+				if($campo['terca'] == 1){$ter = "terça";}else{$ter = "";}
+				if($campo['quarta'] == 1){$qua = "quarta";}else{$qua = "";}
+				if($campo['quinta'] == 1){$qui = "quinta";}else{$qui = "";}
+				if($campo['sexta'] == 1){$sex = " sexta";}else{$sex = "";}
+				if($campo['sabado'] == 1){$sab = " sábado";}else{$sab = "";}
+				if($campo['domingo'] == 1){$dom = " domingo";}else{$dom = "";}
+				$semana = "(".$seg." ".$ter." ".$qua." ".$qui." ".$sex." ".$sab." ".$dom.")";	
 			}
+			
+			if($campo['diaEspecial'] == 1){
+				if($campo['libras'] == 1){$libras = "Tradução em libras";}else{$libras = "";}
+				if($campo['audiodescricao'] == 1){$audio = "Audiodescrição";}else{$audio = "";}
+				if($campo['precoPopular'] == 1){$popular = "Preço popular";}else{$popular = "";}
+				
+				$dia_especial =	" - Dia especial:".$libras." ".$audio." ".$popular;
+			}else{
+				$dia_especial = "";
+			}
+			
 			//recuperaDados($tabela,$idEvento,$campo)
 			$hora = exibirHora($campo['horaInicio']);
 			$retirada = recuperaIdDado("ig_retirada",$campo['retiradaIngresso']);
@@ -508,19 +503,23 @@ function listaOcorrencias($idEvento){
 			$espaco = $local['espaco'];
 			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
 			$instituicao = $inst['instituicao'];
-			$ocorrencia = "<div class='left'$tipo_de_evento<br />
-			 Data: $data $semana <br />
-			 Horário: $hora<br />
-			 Local: $espaco - $instituicao<br />
-			Retirada de ingresso: $retirada  Valor: $valor";  
+			$id = $campo['idOcorrencia'];
+			
+			
+			$ocorrencia = "<div class='left'>$tipo_de_evento $dia_especial<br />
+			
+			Data: $data $semana <br />
+			Horário: $hora<br />
+			Local: $espaco - $instituicao<br />
+			Retirada de ingresso: $retirada  - Valor: $valor <br /></br>";  
 			
 					
 			echo "<tr>";
 			echo "<td class='list_description'>".$ocorrencia."</td>";
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=evento&p=basica'>
-			<input type='hidden' name='carregar' value='' />
+			<form method='POST' action='?perfil=evento&p=ocorrencias&action=editar'>
+			<input type='hidden' name='id' value='$id' />
 			<input type ='submit' class='btn btn-theme btn-block' value='Editar'></td></form>"	;
 
 			echo "

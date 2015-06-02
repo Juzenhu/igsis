@@ -507,68 +507,68 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 
 
 	if(isset($_POST['segunda'])){
-		$segunda = $_POST['segunda'];
+		$segunda = 1;
 	}else{
 		$segunda = 0;
 	}
 			
 	if(isset($_POST['terca'])){
-		$terca = $_POST['terca'];
+		$terca = 1;
 	}else{
 		$terca = 0;
 	}
 	
 	if(isset($_POST['quarta'])){
-		$quarta = $_POST['quarta'];
+		$quarta = 1;
 	}else{
 		$quarta = 0;
 	}
 	
 	if(isset($_POST['quinta'])){
-		$quinta = $_POST['quinta'];
+		$quinta = 1;
 	}else{
 		$quinta = 0;
 	}
 	
 	if(isset($_POST['sexta'])){
-		$sexta = $_POST['sexta'];
+		$sexta = 1;
 	}else{
 		$sexta = 0;
 	}
 	
 	if(isset($_POST['sabado'])){
-		$sabado = $_POST['sabado'];
+		$sabado = 1;
 	}else{
 		$sabado = 0;
 	}
 	
 	if(isset($_POST['domingo'])){
-		$domingo = $_POST['domingo'];
+		$domingo = 1;
 	}else{
 		$domingo = 0;
 	}
 
 
 	if(isset($_POST['libras'])){
-		$libras = $_POST['libras'];
+		$libras = 1;
 	}else{
 		$libras = 0;
 	}
 
 	if(isset($_POST['audiodescricao'])){
-		$audiodescricao = $_POST['audiodescricao'];
+		$audiodescricao = 1;
 	}else{
 		$audiodescricao = 0;
 	}
 
 	if(isset($_POST['diaEspecial'])){
-		$diaEspecial = $_POST['diaEspecial'];
+		$diaEspecial = 1;
 	}else{
 		$diaEspecial = 0;
 	}
 
 	if(isset($_POST['precoPopular'])){
-		$precoPopular = $_POST['precoPopular'];
+		$precoPopular = 1;
 	}else{
 		$precoPopular = 0;
 	}
@@ -708,7 +708,7 @@ function habilitar(){
 	
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
-            <form method="POST" action="?perfil=evento&p=ocorrencias" class="form-horizontal" role="form">
+            <form method="POST" action="?perfil=evento&p=ocorrencias&action=listar" class="form-horizontal" role="form">
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
@@ -829,14 +829,80 @@ function habilitar(){
 <?php
 	break;
 	case "editar":
+	$idOcorrencia = $_POST['id'];
+	
+	$ocor = recuperaDados("ig_ocorrencia",$idOcorrencia,"idOcorrencia");
 ?>
+<script type="application/javascript">
+$(function(){
+	$('#instituicao').change(function(){
+		if( $(this).val() ) {
+			$('#local').hide();
+			$('.carregando').show();
+			$.getJSON('local.ajax.php?instituicao=',{instituicao: $(this).val(), ajax: 'true'}, function(j){
+				var options = '<option value=""></option>';	
+				for (var i = 0; i < j.length; i++) {
+					options += '<option value="' + j[i].idEspaco + '">' + j[i].espaco + '</option>';
+				}	
+				$('#local').html(options).show();
+				$('.carregando').hide();
+			});
+		} else {
+			$('#local').html('<option value="">-- Escolha uma instituição --</option>');
+		}
+	});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function (){
+    validate();
+    $('#datepicker02').change(validate);
+});
+
+function validate(){
+    if ($('#datepicker02').val().length > 0) {
+        $("#diasemana01").prop("disabled", false);
+        $("#diasemana02").prop("disabled", false);
+        $("#diasemana03").prop("disabled", false);
+        $("#diasemana04").prop("disabled", false);
+        $("#diasemana05").prop("disabled", false);
+        $("#diasemana06").prop("disabled", false);
+        $("#diasemana07").prop("disabled", false);
+    }
+    else {
+        $("#diasemana01").prop("disabled", true);
+        $("#diasemana02").prop("disabled", true);
+        $("#diasemana03").prop("disabled", true);
+        $("#diasemana04").prop("disabled", true);
+        $("#diasemana05").prop("disabled", true);
+        $("#diasemana06").prop("disabled", true);
+        $("#diasemana07").prop("disabled", true);
+
+    }
+}
+</script>
+
+<script type="text/javascript">
+function habilitar(){  
+    if(document.getElementById('diaEspecial').checked){  
+        document.getElementById('especial01').disabled = false;  
+        document.getElementById('especial02').disabled = false;  
+        document.getElementById('especial03').disabled = false;  
+    } else {  
+        document.getElementById('especial01').disabled = true;  
+        document.getElementById('especial02').disabled = true;  
+        document.getElementById('especial03').disabled = true;  
+
+    }  
+} 
+</script>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Inserir ocorrências</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> </h1>
+                    <h1><?php echo $campo["nomeEvento"] ?><? echo $idOcorrencia; ?></h1>
                     <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
                 </div>
             </div>
@@ -844,50 +910,50 @@ function habilitar(){
 	
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
-            <form method="POST" action="?perfil=evento&p=ocorrencias" class="form-horizontal" role="form">
+            <form method="POST" action="?perfil=evento&p=ocorrencias$action=editar" class="form-horizontal" role="form">
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
-                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="">
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" value="<? echo $ocor['dataInicio'] ?>" placeholder="">
                		 </div>
                 	<div class=" col-md-6">
                 		<label>Data encerramento</label>
-                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" placeholder="só preencha se for temporada">
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" value="<? echo $ocor['dataFinal'] ?>"placeholder="só preencha se for temporada">
                		</div>
                 </div>
                 <div class="form-group">
 	                <div class="col-md-offset-2 col-md-8">
-    		            <input type="checkbox" name="segunda" id="diasemana01" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Segunda</label>
-           			    <input type="checkbox" name="terca" id="diasemana02" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Terça</label>
-            		    <input type="checkbox" name="quarta" id="diasemana03" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quarta</label>
-            		    <input type="checkbox" name="quinta" id="diasemana04" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quinta</label>
-           				<input type="checkbox" name="sexta" id="diasemana05" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Sexta</label>
-          		      	<input type="checkbox" name="sabado" id="diasemana06" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Sábado</label>
-            		    <input type="checkbox" name="domingo" id="diasemana07" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Domingo</label>
+    		            <input type="checkbox" name="segunda" id="diasemana01" disabled="disabled" <?php checar($ocor['segunda']) ?> /><label style="padding:0 10px 0 5px;"> Segunda</label>
+           			    <input type="checkbox" name="terca" id="diasemana02" disabled="disabled" <?php checar($ocor['terca']) ?>/><label  style="padding:0 10px 0 5px;"> Terça</label>
+            		    <input type="checkbox" name="quarta" id="diasemana03" disabled="disabled" <?php checar($ocor['quarta']) ?>/><label style="padding:0 10px 0 5px;"> Quarta</label>
+            		    <input type="checkbox" name="quinta" id="diasemana04" disabled="disabled" <?php checar($ocor['quinta']) ?> /><label style="padding:0 10px 0 5px;"> Quinta</label>
+           				<input type="checkbox" name="sexta" id="diasemana05" disabled="disabled" <?php checar($ocor['sexta']) ?>/><label  style="padding:0 10px 0 5px;"> Sexta</label>
+          		      	<input type="checkbox" name="sabado" id="diasemana06" disabled="disabled" <?php checar($ocor['sabado']) ?>/><label style="padding:0 10px 0 5px;"> Sábado</label>
+            		    <input type="checkbox" name="domingo" id="diasemana07" disabled="disabled" <?php checar($ocor['domingo']) ?>/><label  style="padding:0 10px 0 5px;"> Domingo</label>
                 	</div>                     
                 </div>
                 <div class="form-group">
                     
            			
 	            	<div class="col-md-offset-2 col-md-8">
-                    <input type="checkbox" name="diaEspecial" id="diaEspecial" onclick="habilitar()"/><label  style="padding:0 20px 0 5px;">Dia especial?</label>
-    		            <input type="checkbox" name="audiodescricao" id="especial01" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Audiodescricão</label>
-           			    <input type="checkbox" name="libras" id="especial02" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Libras</label>
-            		    <input type="checkbox" name="precoPopular" id="especial03" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Preço popular</label>
+                    <input type="checkbox" name="diaEspecial" id="diaEspecial" onclick="habilitar()" <?php checar($ocor['diaEspecial']) ?>/><label  style="padding:0 20px 0 5px;">Dia especial?</label>
+    		            <input type="checkbox" name="audiodescricao" id="especial01" disabled="disabled" <?php checar($ocor['audiodescricao']) ?>/><label  style="padding:0 10px 0 5px;">Audiodescricão</label>
+           			    <input type="checkbox" name="libras" id="especial02" disabled="disabled" <?php checar($ocor['libras']) ?>/><label  style="padding:0 10px 0 5px;">Libras</label>
+            		    <input type="checkbox" name="precoPopular" id="especial03" disabled="disabled" <?php checar($ocor['precoPopular']) ?>/><label  style="padding:0 10px 0 5px;">Preço popular</label>
                 	</div>                     
                 </div>
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-2">
                 		<label>Horário de início</label>
-                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm"/>
+                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm" value="<?php echo $ocor['horaInicio'] ?>"/>
                 	</div> 
                 	<div class="col-md-3">
                 		<label>Valor ingresso *</label>
-                		<input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="em reais">
+                		<input type="text" name="valorIngresso" class="form-control" id="valor" value="<?php echo $ocor['valorIngresso'] ?>" placeholder="em reais">
                		</div>
              	   <div class=" col-md-3">
                 		<label>Duração *</label>
-               			<input type="text" id="duracao" name="duracao" class="form-control" id="" placeholder="em minutos">
+              			<input type="text" id="duracao" name="duracao" class="form-control" value="<?php echo $ocor['duracao'] ?>" placeholder="em minutos">
                 	</div>
                 </div>
                        
@@ -896,7 +962,7 @@ function habilitar(){
                		 <label>Sistema de retirada de ingressos</label>
                		 <select class="form-control" name="retiradaIngresso" id="inputSubject" >
                		 <option>Selecione</option>
-					<?php geraOpcao("ig_retirada","","") ?>
+					<?php geraOpcao("ig_retirada",$ocor['retiradaIngresso'],"") ?>
                 	</select>
                 	</div>
                 </div>
@@ -918,11 +984,11 @@ function habilitar(){
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                     	<label>Ingressos disponíveis</label>
-                    	<input type="text" class="form-control" name="ingressosDisponiveis" id="" placeholder="">
+                    	<input type="text" class="form-control" name="ingressosDisponiveis" value="<?php echo $ocor['lotacao'] ?>" id="" placeholder="">
                 	</div>
                		<div class=" col-md-6">
                     	<label>Ingressos reservados</label>
-                		<input type="text" class="form-control" name="ingressosReservados" id="" placeholder="">
+                		<input type="text" class="form-control" name="ingressosReservados" value="<?php echo $ocor['reservados'] ?>" id="" placeholder="">
                 	</div>
                 </div>
                 <div class="form-group">
