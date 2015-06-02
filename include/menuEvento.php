@@ -9,9 +9,19 @@
                             <li><a href="?perfil=evento&p=area">Espeficidades</a></li>
                             <li><a href="?perfil=evento&p=externos">Serviços externos</a></li>
                             <li><a href="?perfil=evento&p=arquivos">Anexar arquivos</a></li>
-                            <li><a href="?perfil=evento&p=contratados">Serviços externos</a></li>
-                            <li><a href="?perfil=evento&p=ocorrencias">Ocorrências</a></li>
-                            <li><a href="?perfil=evento&p=ocorrencias">Contratado</a></li>  
+                            <li><a href="#">Contratados - Siscontrat</a></li>
+                            <li><a href="#">Ocorrências</a>
+                             		<ul class="dl-submenu">
+                                    	<li><a href="?perfil=evento&p=ocorrencias&action=listar">Listar ocorrências</a>
+                                        <li><a href="?perfil=evento&p=ocorrencias&action=inserir">Inserir nova ocorrência</a></li>
+ 										<?php
+											$ver_sub = verificaExiste("ig_sub_evento","ig_evento_idEvento",$_SESSION['idEvento'],0);
+											if($ver_sub['numero'] > 0){
+										 ?>
+                                        <li><a href="?perfil=evento&p=ocorrencias&action=inserirsub">Inserir ocorrência em sub-evento</a></li>
+                                        <?php } ?>
+                                    </ul>
+                            </li>
                             <li><a href="?perfil=evento&p=enviar">Enviar</a> </li>
  							<li><a href="#">Outras opções</a> 
     

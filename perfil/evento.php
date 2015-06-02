@@ -324,7 +324,7 @@ $campo = recuperaEvento($_SESSION['idEvento']);
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Apresentação Básica</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
+                    <h1><?php echo $campo["nomeEvento"] ?></h1>
                     <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
                 </div>
             </div>
@@ -446,7 +446,7 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Detalhamento</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
+                    <h1><?php echo $campo["nomeEvento"] ?> </h1>
                     <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
                 </div>
             </div>
@@ -594,11 +594,12 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	$local = $_POST['local'];
 	$frequencia = 0;
 	$idEvento = $_SESSION['idEvento'];
+	$publicado = 1;
 
 }
 
 if(isset($_POST['inserir'])){
-	$sql_inserir = "INSERT INTO `ig_ocorrencia` (`idOcorrencia`, `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`) VALUES (NULL, '$tipoOcorrencia', NULL, '$local', '$idEvento', '$segunda', '$terca', '$quarta', '$quinta', '$sexta', '$sabado', '$domingo', '$dataInicio', '$dataFinal', '$horaInicio', '$horaFinal', '$timezone', '$diaInteiro', '$diaEspecial', '$libras', '$audiodescricao', '$valorIngresso', '$retiradaIngresso', '$localOutros', '$lotacao', '$reservados', '$duracao', '$precoPopular', '$frequencia');";
+	$sql_inserir = "INSERT INTO `ig_ocorrencia` (`idOcorrencia`, `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`) VALUES (NULL, '$tipoOcorrencia', NULL, '$local', '$idEvento', '$segunda', '$terca', '$quarta', '$quinta', '$sexta', '$sabado', '$domingo', '$dataInicio', '$dataFinal', '$horaInicio', '$horaFinal', '$timezone', '$diaInteiro', '$diaEspecial', '$libras', '$audiodescricao', '$valorIngresso', '$retiradaIngresso', '$localOutros', '$lotacao', '$reservados', '$duracao', '$precoPopular', '$frequencia', '$publicado');";
 
 	if(mysql_query($sql_inserir)){
 		$mensagem = "Ocorrência inserida com sucesso!";	
@@ -617,11 +618,19 @@ if(isset($_POST['apagar'])){
 
 }
 
+	
 
 // Cria um array com dados do evento
 $campo = recuperaEvento($_SESSION['idEvento']);
 ?>
+
+
 <? include "../include/menuEvento.php" ?>
+<? 
+	$action = $_GET['action'];
+	switch($action){
+		case "inserir":
+?>
 <script type="application/javascript">
 $(function(){
 	$('#instituicao').change(function(){
@@ -685,57 +694,13 @@ function habilitar(){
     }  
 } 
 </script>
-<? include "../include/menuEvento.php" ?>
-<section id="inserir" class="home-section bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Evento - Ocorrências</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
-                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
-                </div>
-            </div>
-    </div>
-
-	  		<div class="row">
-            <div class="col-md-offset-2 col-md-8" style="background:#E5E5E5; padding:10px;">
-            <div class="ocorrencia">
-<p>Dia 23/04/05 - Quarta-feira</p>
-<p>Horário: 20:00</p>
-<p>Local: Sala Adoniran Barbosa</p>
-<p>Ingresso: 10,00</p>
-<p>Retirada de ingressos: </p>
-<br />
-<br />
-<div class="col-md-offset-0 col-md-6">
-<button type="button" class="btn btn-theme  btn-block">Apagar</button>
-					</div>
-				  
-					<div class=" col-md-6">
-                    <button type="button" class="btn btn-theme  btn-block">Editar</button>
-					</div>
-                    					<div class=" col-md-6">
-                    <button type="button" class="btn btn-theme  btn-block">Duplicar</button>
-					</div>
-
-			</div>	
-
-
-			</div>				
-	  		</div>
-			</div>
-
-	  	</div>
-	  </section> 
-
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Inserir ocorrências</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
+                    <h1><?php echo $campo["nomeEvento"] ?> </h1>
                     <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
                 </div>
             </div>
@@ -837,6 +802,261 @@ function habilitar(){
 	</div>
 </section>  
 
+<?php
+	break;
+	case "listar":
+?>
+ 
+
+	<section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Eventos gravados mas não enviados</h2>
+					<h4>Selecione o evento para carregar.</h4>
+                    <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
+					</div>
+				  </div>
+			  </div>  
+
+			<div class="table-responsive list_info">
+                         <?php listaOcorrencias($_SESSION['idEvento']); ?>
+			</div>
+		</div>
+	</section>
+
+<?php
+	break;
+	case "editar":
+?>
+<section id="inserir" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Evento - Inserir ocorrências</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?> </h1>
+                    <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
+                </div>
+            </div>
+    	</div>
+	
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+            <form method="POST" action="?perfil=evento&p=ocorrencias" class="form-horizontal" role="form">
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+               			 <label>Data início *</label>
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="">
+               		 </div>
+                	<div class=" col-md-6">
+                		<label>Data encerramento</label>
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" placeholder="só preencha se for temporada">
+               		</div>
+                </div>
+                <div class="form-group">
+	                <div class="col-md-offset-2 col-md-8">
+    		            <input type="checkbox" name="segunda" id="diasemana01" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Segunda</label>
+           			    <input type="checkbox" name="terca" id="diasemana02" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Terça</label>
+            		    <input type="checkbox" name="quarta" id="diasemana03" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quarta</label>
+            		    <input type="checkbox" name="quinta" id="diasemana04" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quinta</label>
+           				<input type="checkbox" name="sexta" id="diasemana05" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Sexta</label>
+          		      	<input type="checkbox" name="sabado" id="diasemana06" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Sábado</label>
+            		    <input type="checkbox" name="domingo" id="diasemana07" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Domingo</label>
+                	</div>                     
+                </div>
+                <div class="form-group">
+                    
+           			
+	            	<div class="col-md-offset-2 col-md-8">
+                    <input type="checkbox" name="diaEspecial" id="diaEspecial" onclick="habilitar()"/><label  style="padding:0 20px 0 5px;">Dia especial?</label>
+    		            <input type="checkbox" name="audiodescricao" id="especial01" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Audiodescricão</label>
+           			    <input type="checkbox" name="libras" id="especial02" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Libras</label>
+            		    <input type="checkbox" name="precoPopular" id="especial03" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Preço popular</label>
+                	</div>                     
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-2">
+                		<label>Horário de início</label>
+                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm"/>
+                	</div> 
+                	<div class="col-md-3">
+                		<label>Valor ingresso *</label>
+                		<input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="em reais">
+               		</div>
+             	   <div class=" col-md-3">
+                		<label>Duração *</label>
+               			<input type="text" id="duracao" name="duracao" class="form-control" id="" placeholder="em minutos">
+                	</div>
+                </div>
+                       
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+               		 <label>Sistema de retirada de ingressos</label>
+               		 <select class="form-control" name="retiradaIngresso" id="inputSubject" >
+               		 <option>Selecione</option>
+					<?php geraOpcao("ig_retirada","","") ?>
+                	</select>
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+                		<label>Local / instituição *</label><img src="images/loading.gif" class="loading" style="display:none" />
+                		<select class="form-control" name="instituicao" id="instituicao" >
+                		<option>Selecione</option>
+                		<?php geraOpcao("ig_instituicao","","") ?>
+                		</select>
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+               		 	<label>Sala / espaço (antes selecione a instituição)</label>
+                		<select class="form-control" name="local" id="local" ></select>
+                	</div>
+                </div>	
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+                    	<label>Ingressos disponíveis</label>
+                    	<input type="text" class="form-control" name="ingressosDisponiveis" id="" placeholder="">
+                	</div>
+               		<div class=" col-md-6">
+                    	<label>Ingressos reservados</label>
+                		<input type="text" class="form-control" name="ingressosReservados" id="" placeholder="">
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+                    	<input type="hidden" name="inserir" value="1"  />
+                		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir ocorrência"  />
+               		 </div>
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+	</div>
+</section>  
+
+<?php
+	break;
+	case "inserirsub":
+	
+?>
+<section id="inserir" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Evento - Inserir ocorrências</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?> </h1>
+                    <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
+                </div>
+            </div>
+    	</div>
+	
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+            <form method="POST" action="?perfil=evento&p=ocorrencias" class="form-horizontal" role="form">
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+               			 <label>Data início *</label>
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="">
+               		 </div>
+                	<div class=" col-md-6">
+                		<label>Data encerramento</label>
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" placeholder="só preencha se for temporada">
+               		</div>
+                </div>
+                <div class="form-group">
+	                <div class="col-md-offset-2 col-md-8">
+    		            <input type="checkbox" name="segunda" id="diasemana01" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Segunda</label>
+           			    <input type="checkbox" name="terca" id="diasemana02" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Terça</label>
+            		    <input type="checkbox" name="quarta" id="diasemana03" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quarta</label>
+            		    <input type="checkbox" name="quinta" id="diasemana04" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quinta</label>
+           				<input type="checkbox" name="sexta" id="diasemana05" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Sexta</label>
+          		      	<input type="checkbox" name="sabado" id="diasemana06" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Sábado</label>
+            		    <input type="checkbox" name="domingo" id="diasemana07" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Domingo</label>
+                	</div>                     
+                </div>
+                <div class="form-group">
+                    
+           			
+	            	<div class="col-md-offset-2 col-md-8">
+                    <input type="checkbox" name="diaEspecial" id="diaEspecial" onclick="habilitar()"/><label  style="padding:0 20px 0 5px;">Dia especial?</label>
+    		            <input type="checkbox" name="audiodescricao" id="especial01" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Audiodescricão</label>
+           			    <input type="checkbox" name="libras" id="especial02" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Libras</label>
+            		    <input type="checkbox" name="precoPopular" id="especial03" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Preço popular</label>
+                	</div>                     
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-2">
+                		<label>Horário de início</label>
+                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm"/>
+                	</div> 
+                	<div class="col-md-3">
+                		<label>Valor ingresso *</label>
+                		<input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="em reais">
+               		</div>
+             	   <div class=" col-md-3">
+                		<label>Duração *</label>
+               			<input type="text" id="duracao" name="duracao" class="form-control" id="" placeholder="em minutos">
+                	</div>
+                </div>
+                       
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+               		 <label>Sistema de retirada de ingressos</label>
+               		 <select class="form-control" name="retiradaIngresso" id="inputSubject" >
+               		 <option>Selecione</option>
+					<?php geraOpcao("ig_retirada","","") ?>
+                	</select>
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+                		<label>Local / instituição *</label><img src="images/loading.gif" class="loading" style="display:none" />
+                		<select class="form-control" name="instituicao" id="instituicao" >
+                		<option>Selecione</option>
+                		<?php geraOpcao("ig_instituicao","","") ?>
+                		</select>
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+               		 	<label>Sala / espaço (antes selecione a instituição)</label>
+                		<select class="form-control" name="local" id="local" ></select>
+                	</div>
+                </div>	
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+                    	<label>Ingressos disponíveis</label>
+                    	<input type="text" class="form-control" name="ingressosDisponiveis" id="" placeholder="">
+                	</div>
+               		<div class=" col-md-6">
+                    	<label>Ingressos reservados</label>
+                		<input type="text" class="form-control" name="ingressosReservados" id="" placeholder="">
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-8">
+                    	<input type="hidden" name="inserir" value="1"  />
+                		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir ocorrência"  />
+               		 </div>
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+	</div>
+</section>  
+
+<?php
+	break; // fecha a switch action
+	}
+	?>
+
+
 <?php 
 break;
 case "conteudo" :
@@ -877,7 +1097,7 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Conteúdo</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
+                    <h1><?php echo $campo["nomeEvento"] ?></h1>
                     <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
                 </div>
             </div>
@@ -1022,7 +1242,7 @@ $producao = recuperaDados("ig_producao",$campo['idEvento'],"ig_evento_idEvento")
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Serviços internos</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
+                    <h1><?php echo $campo["nomeEvento"] ?></h1>
                     <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
                     <h4><?php if(isset($mensagem02)){echo $mensagem02;} ?></h4>
                 </div>
@@ -1095,7 +1315,7 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Espeficidades de Área</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
+                    <h1><?php echo $campo["nomeEvento"] ?></h1>
                     <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
                 </div>
             </div>
@@ -1218,7 +1438,7 @@ $artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
 
 ?>
 				<h3>Teatro / Dança</h3>
-                <h4><? if(isset($mensagem)){echo $mensagem;} ?><? echo $ver['numero'] ?></h4>
+                <h4><? if(isset($mensagem)){echo $mensagem;} ?></h4>
 
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-2">
@@ -1514,83 +1734,137 @@ $sub = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
 break;
 case "externos" :?>
 <? include "../include/menuEvento.php" ?>
+
+<?
+	$idTabela = "ig_servico";
+	$idCampo = "ig_evento_idEvento";
+	$idDado = $_SESSION['idEvento'];
+	$st = 0;
+	
+	if(isset($_POST['atualizar'])){
+		
+		//carrega as variáveis
+	$ig_servico_legenda = $_POST['ig_servico_legenda'];
+	$ig_servico_traducao = $_POST['ig_servico_traducao'];
+	$ig_servico_seguro = $_POST['ig_servico_seguro'];
+	$ig_servico_transporte = $_POST['ig_servico_transporte'];
+	$ig_servico_montagem = $_POST['ig_servico_montagem'];
+	$ig_servico_passagens = $_POST['ig_servico_passagens'];
+	$ig_servico_itinerario = $_POST['ig_servico_itinerario'];
+	$ig_servico_hospedagem = $_POST['ig_servico_hospedagem'];
+	$ig_servico_locacao = $_POST['ig_servico_locacao'];
+	$ig_servico_bilhetagem = $_POST['ig_servico_bilhetagem'];
+		
+	//verifica se existe um registro na tabela
+	$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
+		
+	if($ver['numero'] == 0){ // insere um registro novo
+		$sql_insere_ext = "INSERT INTO `ig_servico` (`idServico`, `ig_evento_idEvento`, `legenda`, `traducao`, `graficos`, `passagens`, `itinerario`, `libras`, `audiodescricao`, `montagem`, `hospedagem`, `seguro`, `transporte`, `razaoSocial`, `cpfCnpj`, `banco`, `agencia`, `conta`, `bilhetagem`, `locacao`) VALUES (NULL, '$idDado', '$ig_servico_legenda', '$ig_servico_traducao', NULL, '$ig_servico_passagens', '$ig_servico_itinerario', NULL, NULL, '$ig_servico_montagem', '$ig_servico_hospedagem', '$ig_servico_seguro', '$ig_servico_transporte', NULL, NULL, NULL, NULL, NULL, '$ig_servico_bilhetagem', '$ig_servico_locacao');";
+				if(mysql_query($sql_insere_ext)){		
+					$mensagem_s = "Atualizado com sucesso! ";	
+					gravarLog($sql_insere_ext); //grava log
+				}else{
+					$mensagem_s = "Erro ao atualizar(1)!";
+				}
+			}else{ //atualiza o registro existente
+				$sql_atualiza_ext = "UPDATE `ig_sub_evento` SET `legenda` = '$ig_servico_legenda', traducao` = '$ig_servico_traducao', `seguro` = '$ig_servico_seguro', `transporte` = '$ig_servico_transporte',`montagem` = '$ig_servico_montagem', `passagens`= '$ig_servico_passagens', `itinerario`= '$ig_servico_itinerario',`hospedagem` = '$ig_servico_hospedagem',`locacao` = '$ig_servico_locacao',`bilhetagem` = '$ig_servico_bilhetagem'  WHERE ig_evento_idEvento = '$idDado'";
+				if(mysql_query($sql_atualiza_ext)){		
+					$mensagem_s = "Atualizado com sucesso! ";	
+					gravarLog($sql_atualiza_ext); //grava log
+				}else{
+					$mensagem_s = "Erro ao atualizar(2)!";
+				}
+		}
+}
+
+$externo = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo); 
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+?>
+
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
                     <h3>Evento - Previsão de demandas de serviços externos</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
-                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
+                    <h1><?php echo $campo["nomeEvento"] ?>  </h1>
+                    <h4><?php if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
                 </div>
             </div>
     </div>
     
     <div class="row">
         <div class="col-md-offset-1 col-md-10">
-        <form method="POST" action="?perfil=evento&p=basica" class="form-horizontal" role="form">
+        <form method="POST" action="?perfil=evento&p=externos" class="form-horizontal" role="form">
        		 <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
-            		<label>Nome do Evento *</label>
-            		<input type="text" name="nomeEvento" class="form-control" id="inputSubject" value="<?php echo $campo['nomeEvento'] ?>"/>
             	</div> 
             </div>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-8">
-                	<label>Tipo de relação jurídica</label>
-                	<select class="form-control" name="ig_modalidade_IdModalidade" id="inputSubject" >
-                    <option value="1"></option>
-					<?php echo geraOpcao("ig_modalidade",$campo['ig_modalidade_IdModalidade'],"") ?>
-                    </select>
+             		<label>Legenda / legendagem *</label>
+            		<input type="text" name="ig_servico_legenda" class="form-control" id="inputSubject" value="<?php echo $externo['legenda'] ?>"/>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-offset-2 col-md-8">
-            	<label>Nome do Projeto especial</label>
-            	<select class="form-control" name="projetoEspecial" id="inputSubject" >
-					<option value="1"></option>
-					<?php echo geraOpcao("ig_projeto_especial",$campo['projetoEspecial'],$_SESSION['idInstituicao']) ?>
-                </select>
+            <div class="col-md-offset-2 col-md-8">
+            		<label>Tradução *</label>
+            		<input type="text" name="ig_servico_traducao" class="form-control" id="inputSubject" value="<?php echo $externo['traducao'] ?>"/>
         	    </div>
       	    </div>
 
             <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
-            		<label>Nome do Projeto </label>
-            		<input type="text" name="projeto" class="form-control" id=""  value="<? echo $campo['projeto'] ?>">
+            		<label>Seguro *</label>
+            		<input type="text" name="ig_servico_seguro" class="form-control" id="inputSubject" value="<?php echo $externo['seguro'] ?>"/>
             	</div>
              </div>
             <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
-            		<label>Tipo de Evento *</label>
-            		<select class="form-control" name="ig_tipo_evento_idTipoEvento" id="inputSubject" >
-						<option value="1"></option>
-						<?php echo geraOpcao("ig_tipo_evento",$campo['ig_tipo_evento_idTipoEvento'],"") ?>
-                    </select>					
-            	</div>
+              		<label>Transporte *</label>
+            		<input type="text" name="ig_servico_transporte" class="form-control" id="inputSubject" value="<?php echo $externo['transporte'] ?>"/>
+          	</div>
             </div>
             <div class="form-group">
-            <br />
-       <p>O responsável e suplente devem estar cadastrado como usuários do sistema.</p>
-	            <div class="col-md-offset-2 col-md-8">
-    	        <label>Primeiro responsável</label>
-					<select class="form-control" name="nomeResponsavel" id="inputSubject" >
-					<option value="1"></option>	
-					<?php echo opcaoUsuario($_SESSION['idInstituicao'],$campo['idResponsavel']) ?>
-                    </select>	                
-            	</div>
-            </div>
-        
-            <div class="form-group">
-	            <div class="col-md-offset-2 col-md-8">
-    		        <label>Segundo responsável (Fiscal)</label>
-						<select class="form-control" name="suplente" id="inputSubject" >
-                        <option value="1"></option>
-						<?php echo opcaoUsuario($_SESSION['idInstituicao'],$campo['suplente']) ?>
-                        </select>	
-        		  </div>
+            	<div class="col-md-offset-2 col-md-8">
+              		<label>Montagem fina*</label>
+            		<input type="text" name="ig_servico_montagem" class="form-control" id="inputSubject" value="<?php echo $externo['montagem'] ?>"/>
+          	</div>
             </div>
 
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+              		<label>Passagem aérea *</label>
+            		<input type="text" name="ig_servico_passagens" class="form-control" id="inputSubject" value="<?php echo $externo['passagens'] ?>"/>
+          	</div>
+            </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Descrição das passagens aéreas</label>
+            		<textarea name="ig_servico_itinerario" class="form-control" rows="10" placeholder="Descreva as datas, locais de ida e volta para as passagens aéreas."><?php echo $externo["itinerario"] ?></textarea>
+            	</div> 
+            </div>
+
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+              		<label>Hospedagem</label>
+            		<input type="text" name="ig_servico_hospedagem" class="form-control" id="inputSubject" value="<?php echo $externo['hospedagem'] ?>"/>
+          	</div>
+            </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Equipamentos para locação</label>
+            		<textarea name="ig_servico_locacao" class="form-control" rows="10" placeholder="Descreva equipamentos para locação."><?php echo $externo["locacao"] ?></textarea>
+            	</div> 
+            </div>
+            
+           <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Bilhetagem</label>
+            		<textarea name="ig_servico_bilhetagem" class="form-control" rows="10" placeholder="Ingresso rápido: Nome/Razão Social, CPF/CNPJ, Banco, Agência, Conta"><?php echo $externo["bilhetagem"] ?></textarea>
+            	</div> 
+            </div>
+            
             <div class="form-group">
 	            <div class="col-md-offset-2 col-md-8">
                 	<input type="hidden" name="atualizar" value="1" />
@@ -1616,7 +1890,7 @@ if(isset($_POST['apagar'])){
 		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
 	}
 }
-
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
 ?>
 <? include "../include/menuEvento.php" ?>
 
@@ -1626,7 +1900,9 @@ if(isset($_POST['apagar'])){
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h2>Envio de Arquivos</h2>
+                                        <h1><?php echo $campo["nomeEvento"] ?>  </h1>
+
+					 <h3>Envio de Arquivos</h3>
 <p>Nesta página, você envia os arquivos como o rider, mapas de cenas e luz, logos de parceiros, programação de filmes de mostras de cinema, etc. O tamanho máximo do arquivo deve ser 60MB.</p>
 <p> Em caso de envio de fotografia, considerar as seguintes especificações técnicas:<br />
 - formato: horizontal <br />

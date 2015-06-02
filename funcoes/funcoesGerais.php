@@ -53,6 +53,12 @@ function exibirDataHoraBr($data){ //retorna data d/m/y de mysql/datetime(a-m-d H
 	return date('d/m/y - H:i:s', $timestamp);	
 }
 
+function exibirHora($data){
+	$timestamp = strtotime($data); 
+	return date('H:i', $timestamp);	
+	
+}
+
 function exibirDataMysql($data){ //retorna data mysql/date (a-m-d) de data/br (d/m/a)
 	list ($dia, $mes, $ano) = explode ('/', $data);
 	$data_mysql = $ano.'-'.$mes.'-'.$dia;
@@ -334,7 +340,7 @@ function recuperaEvento($idEvento){
 }	
 
 function recuperaDados($tabela,$idEvento,$campo){
-	$sql = "SELECT * FROM $tabela WHERE $campo = $idEvento LIMIT 0,1";
+	$sql = "SELECT * FROM $tabela WHERE $campo = '$idEvento' LIMIT 0,1";
 	$query = mysql_query($sql);
 	$campo = mysql_fetch_array($query);
 	return $campo;		
@@ -448,6 +454,99 @@ function listaEventosGravados($idUsuario){
 	echo "					</tbody>
 				</table>";
 }
+
+function listaOcorrencias($idEvento){ 
+	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 ORDER BY dataInicio";
+	$query = mysql_query($sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>Ocorrência</td>
+							<td width='10%'></td>
+							<td width='10%'></td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysql_fetch_array($query)){
+			$tipo_de_evento = recuperaIdDado("ig_tipo_ocorrencia",$campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
+			if($campo['dataFinal'] == '0000-00-00'){
+				$data = $campo['dataInicio']." - ".diasemana($campo['dataFinal']);
+					$semana = "";
+			}else{
+				$data = "De ".$campo['dataInicio']." a ".$campo['dataFinal'];
+				if($campo['segunda'] == 1){
+					$semana = "segunda";
+					if($campo['terca'] == 1){
+						$semana = $semana." terça";
+						if($campo['quarta'] == 1){
+							$semana = $semana." quarta";
+								if($campo['quinta'] == 1){
+									$semana = $semana." quinta";
+									if($campo['sexta'] == 1){
+										$semana = $semana." sexta";
+										if($campo['sabado'] == 1){
+											$semana = $semana." sábado";
+											if($campo['domingo'] == 1){
+												$semana = $semana." domingo";
+											}
+										}
+									}
+								}
+						}
+					
+					}
+				}else{
+					$semana = "";	
+				}
+			}
+			//recuperaDados($tabela,$idEvento,$campo)
+			$hora = exibirHora($campo['horaInicio']);
+			$retirada = recuperaIdDado("ig_retirada",$campo['retiradaIngresso']);
+			$valor = dinheiroParaBr($campo['valorIngresso']);
+			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
+			$espaco = $local['espaco'];
+			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
+			$instituicao = $inst['instituicao'];
+			$ocorrencia = "<div class='left'$tipo_de_evento<br />
+			 Data: $data $semana <br />
+			 Horário: $hora<br />
+			 Local: $espaco - $instituicao<br />
+			Retirada de ingresso: $retirada  Valor: $valor";  
+			
+					
+			echo "<tr>";
+			echo "<td class='list_description'>".$ocorrencia."</td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=basica'>
+			<input type='hidden' name='carregar' value='' />
+			<input type ='submit' class='btn btn-theme btn-block' value='Editar'></td></form>"	;
+
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=basica'>
+			<input type='hidden' name='carregar' value='' />
+			<input type ='submit' class='btn btn-theme btn-block' value='Duplicar'></td></form>"	;
+			
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=carregar'>
+			<input type='hidden' name='apagar' value='' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='Apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+					
+						
+
+                        
+
+						
+		
+	echo "					</tbody>
+				</table>";
+}
+
 
 function checar($id){
 	if($id == 1){
