@@ -47,6 +47,12 @@ function exibirDataBr($data){ //retorna data d/m/y de mysql/date(a-m-d)
 	$timestamp = strtotime($data); 
 	return date('d/m/y', $timestamp);	
 }
+
+function retornaDataSemHora($data){
+	$semhora = substr($data, 0, 10);
+	return $semhora;
+	
+}
 	
 function exibirDataHoraBr($data){ //retorna data d/m/y de mysql/datetime(a-m-d H:i:s)
 	$timestamp = strtotime($data); 
@@ -455,6 +461,13 @@ function listaEventosGravados($idUsuario){
 				</table>";
 }
 
+function retornaInstituicao($local){
+	$sql = "SELECT idInstituicao FROM ig_local WHERE idLocal = $local";
+	$query = mysql_query($sql);
+	$campo = mysql_fetch_array($query);
+	return $campo['idInstituicao'];
+}
+
 function listaOcorrencias($idEvento){ 
 	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 ORDER BY dataInicio";
 	$query = mysql_query($sql);
@@ -471,7 +484,7 @@ function listaOcorrencias($idEvento){
 	while($campo = mysql_fetch_array($query)){
 			$tipo_de_evento = recuperaIdDado("ig_tipo_ocorrencia",$campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
 			if($campo['dataFinal'] == '0000-00-00'){
-				$data = exibirDataBr($campo['dataInicio'])." - ".diasemana($campo['dataFinal']);
+				$data = exibirDataBr($campo['dataInicio'])." - ".diasemana($campo['dataInicio']); //precisa tirar a hora para fazer a função funcionar
 					$semana = "";
 			}else{
 				$data = "De ".exibirDataBr($campo['dataInicio'])." a ".exibirDataBr($campo['dataFinal']);
@@ -524,14 +537,14 @@ function listaOcorrencias($idEvento){
 
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=evento&p=basica'>
-			<input type='hidden' name='carregar' value='' />
+			<form method='POST' action='?perfil=evento&p=ocorrencias&action=listar'>
+			<input type='hidden' name='duplicar' value='".$campo['idOcorrencia']."' />
 			<input type ='submit' class='btn btn-theme btn-block' value='Duplicar'></td></form>"	;
 			
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=evento&p=carregar'>
-			<input type='hidden' name='apagar' value='' />
+			<form method='POST' action='?perfil=evento&p=ocorrencias&action=listar'>
+			<input type='hidden' name='apagar' value='".$campo['idOcorrencia']."' />
 			<input type ='submit' class='btn btn-theme  btn-block' value='Apagar'></td></form>"	;
 			echo "</tr>";		
 	}

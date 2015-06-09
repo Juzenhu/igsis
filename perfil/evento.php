@@ -586,7 +586,7 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	$horaFinal = "00:00:00";
 	$timezone = -3;
 	$diaInteiro = 0;
-	$localOutros = 0;
+	$localOutros = "";
 	$lotacao = $_POST['ingressosDisponiveis'];
 	$reservados = $_POST['ingressosReservados'];
 	$retiradaIngresso = $_POST['retiradaIngresso'];
@@ -610,11 +610,63 @@ if(isset($_POST['inserir'])){
 
 
 }
+if(isset($_POST['atualizar'])){
+	$idOc = $_POST['atualizar'];
+	$sql_atualizar_ocorrencia = "UPDATE ig_ocorrencia SET
+`idTipoOcorrencia` = '$tipoOcorrencia',
+   `local` = '$local' ,
+	 `segunda` = '$segunda',
+	  `terca` = '$terca',
+	   `quarta` = '$quarta',
+	    `quinta` = '$quinta',
+		 `sexta` = '$sexta',
+		  `sabado` = '$sabado',
+		   `domingo` = '$domingo',
+		    `dataInicio` = '$dataInicio',
+			 `dataFinal` = '$dataFinal',
+			  `horaInicio` = '$horaInicio',
+			   `diaEspecial` = '$diaEspecial',
+				   `libras` = '$libras',
+				    `audiodescricao` = '$audiodescricao',
+					 `valorIngresso` = '$valorIngresso',
+					  `retiradaIngresso` = '$retiradaIngresso',
+					   `localOutros` = '$localOutros',
+					    `lotacao` = '$lotacao',
+						 `reservados` = '$reservados',
+						  `duracao` = '$duracao',
+						   `precoPopular` = '$precoPopular'
+
+							 WHERE 	`idOcorrencia` = '$idOc'";
+	
+	
+	
+
+
+}
+
 if(isset($_POST['duplicar'])){
+	$idOc = $_POST['duplicar'];
+	$sql_duplicar_ocorrencia = "INSERT INTO ig_ocorrencia (`idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`) SELECT `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado` FROM ig_ocorrencia WHERE `idOcorrencia` = '$idOc'";
+
+
+	if(mysql_query($sql_duplicar_ocorrencia)){
+		$mensagem = "Ocorrência duplicada com sucesso!";	
+		gravarLog($sql_duplicaragar_ocorrencia);	
+	}else{
+		$mensagem = "Erro ao duplicar. Tente novamente.";
+	}
 
 }
 
 if(isset($_POST['apagar'])){
+	$idOc = $_POST['apagar'];
+	$sql_apagar_ocorrencia = "UPDATE ig_ocorrencia SET publicado = '0' WHERE idOcorrencia = $idOc";
+	if(mysql_query($sql_apagar_ocorrencia)){
+		$mensagem = "Ocorrência apagada com sucesso!";	
+		gravarLog($sql_apagar_ocorrencia);	
+	}else{
+		$mensagem = "Erro ao atualizar. Tente novamente.";
+	}
 
 }
 
@@ -910,7 +962,7 @@ function habilitar(){
 	
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
-            <form method="POST" action="?perfil=evento&p=ocorrencias$action=editar" class="form-horizontal" role="form">
+            <form method="POST" action="?perfil=evento&p=ocorrencias&action=listar" class="form-horizontal" role="form">
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
@@ -971,14 +1023,18 @@ function habilitar(){
                 		<label>Local / instituição *</label><img src="images/loading.gif" class="loading" style="display:none" />
                 		<select class="form-control" name="instituicao" id="instituicao" >
                 		<option>Selecione</option>
-                		<?php geraOpcao("ig_instituicao","","") ?>
+                		<?php 
+						$inst = retornaInstituicao($ocor['local']);
+						geraOpcao("ig_instituicao",$inst,"") 
+						?>
                 		</select>
                 	</div>
                 </div>
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-8">
                		 	<label>Sala / espaço (antes selecione a instituição)</label>
-                		<select class="form-control" name="local" id="local" ></select>
+                		<select class="form-control" name="local" id="local" >
+                        <? geraOpcao("ig_local",$ocor['local'],$inst); ?></select>
                 	</div>
                 </div>	
                 <div class="form-group">
@@ -993,8 +1049,8 @@ function habilitar(){
                 </div>
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-8">
-                    	<input type="hidden" name="inserir" value="1"  />
-                		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir ocorrência"  />
+                    	<input type="hidden" name="atualizar" value="<? echo $ocor['idOcorrencia']; ?>"  />
+                		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Atualizar ocorrência"  />
                		 </div>
                 </div>
                 </form>
@@ -1719,9 +1775,115 @@ $artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
             	</div> 
             </div>                
 
-<? } // Fim das áreas ?>
+<? } // Fim das áreas 
+else if ($campo['ig_tipo_evento_idTipoEvento'] == 1)
+	{ ?>
+<div class="form-group">
+		<h3>Inserir novo filme</h3>
+                            <h4><? if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
+		<div class="row">
+	    <div class="col-md-offset-1 col-md-10">
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Título do Filme</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div> 
+            </div>
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Título Original</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div> 
+            </div>
+			
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-6">
+            		<label>País de Origem</label>
+            		<select class="form-control" name="ig_sub_evento_idTipo" id="inputSubject" >
+						<option value="1"></option>
+						<?php echo geraOpcao("ig_tipo_evento",$sub['idTipo'],"") ?>
+                    </select>					
+            	</div>
+				            	<div class="col-md-offset-2 col-md-6">
+            		<label>País de Origem (co-produção)</label>
+            		<select class="form-control" name="ig_sub_evento_idTipo" id="inputSubject" >
+						<option value="1"></option>
+						<?php echo geraOpcao("ig_tipo_evento",$sub['idTipo'],"") ?>
+                    </select>					
+            	</div>
+				
+            </div>
+			
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-6">
+            		<label>Ano de Produção</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div>           
+            	<div class="col-md-offset-2 col-md-6">
+            		<label>Gênero</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div> 
+            </div>
+			
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-6">
+            		<label>Bitola</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div>           
+				<div class="col-md-offset-2 col-md-6">
+            		<label>Direção</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div> 
+   			</div>
+			
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Sinopse</label>
+            		<textarea name="ig_sub_evento_descricao" class="form-control" rows="10" placeholder="Descreva a atividade complementar ao evento."><?php echo $sub["descricao"] ?></textarea>
+            	</div> 
+            </div>	
+						
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Elenco</label>
+            		<textarea name="ig_sub_evento_descricao" class="form-control" rows="10" placeholder="Descreva a atividade complementar ao evento."><?php echo $sub["descricao"] ?></textarea>
+            	</div> 
+            </div>
+			
+			
+	 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Links *</label>
+            		<textarea name="linksCom" class="form-control" rows="10" placeholder="Links para auxiliar a divulgação e o jurídico. Site oficinal, vídeos, clipping, artigos, etc "><?php echo $campo["linksCom"] ?></textarea>
+            	</div> 
+            </div>
+ <div class="form-group">
+            	<div class="col-md-offset-2 col-md-6">
+            		<label>Título do Filme</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div> 
+            </div>
 
-<?
+
+            <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+    </div>
+    </div>
+		
+</section>  
+
+	<?php
+	
+}
+
+?>
+
+<?php
 	$idTabela = "ig_sub_evento";
 	$idCampo = "ig_evento_idEvento";
 	$idDado = $_SESSION['idEvento'];
@@ -1794,6 +1956,7 @@ $sub = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
             </form>
         </div>
     </div>
+
 </section>  
 
 <?php 

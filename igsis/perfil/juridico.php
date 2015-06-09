@@ -1,0 +1,4 @@
+<?
+//include para jurídico
+
+ ?>

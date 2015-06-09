@@ -39,12 +39,12 @@ case "inicio":
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h2>Olá! Bem-vindo a nova versão da IGSIS!</h2>
-					<p>Aqui você poderá começar os processos internos para a realização de seu evento.</p>
-<p>A nova IGCCSP é um projeto que teve a colaboração de muitas areas do CCSP. Por isso, antes de tudo, a IGCCSP pode ser considerada como o resultado de longas conversas e montagem de quebra-cabeças.</p>
-<p>Você pode imaginar que muitas rotinas podem mudar no seu cotidiano, mas lembre-se que muitas outras pessoas também vão passar pela mesma situação. O que podemos afirmar é que há muito mais consenso porque todos queremmos um CCSP mais unido, mais amigável e mais plural.</p>
-<p>Por isso, opiniões, críticas, sugestões são muito bem-vindas. Elas melhoram o sistema, mas também fomentam a discussão dos processos e conceitos internos. </p>
-<p>Um grande abraço de agradecimento e um bom trabalho!</p>
+					 <h2>Bem-vindo à IGSIS!</h2>
+					<p>Aqui inicia o processo interno para a realização de seu evento.</p>
+<p>Este sistema é desenvolvido pela colaboração de diversas áreas, incluindo a sua.</p>
+<p>A nova IGSIS é um diálogo interdisciplinar resultando na montagem de um grande quebra-cabeça:</p> <p>Um CCSP melhor.</p>
+<p>Compartilhe sua opinião conosco. Envie para igccsp2015@gmail.com</p>
+<p>Toda sugestão será bem-vinda</p>
 <p>&nbsp;</p>
 <p>Equipe IGSIS / DEC / CCSPLab / Julho de 2015</p>
 <p>igccsp2015@gmail.com</p>
