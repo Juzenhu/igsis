@@ -598,4 +598,85 @@ function listaArquivos($idEvento){
 				</table>";	
 }
 
+function verificaSubEvento($idEvento){
+	$sql = "SELECT * FROM ig_sub_evento WHERE ig_evento_idEvento = '$idEvento'";
+	$query = mysql_query($sql);
+	$num = mysql_num_rows($query);
+	$subEvento['num'] = $num;
+	if($num > 0){
+		$subEvento = mysql_fetch_array($query);	
+	}
+	return $subEvento ;
+}
+
+function recuperaUsuario($idUsuario){
+	$recupera = recuperaDados('ig_usuario',$idUsuario,'idUsuario');
+	return $recupera;	
+}
+
+
+function descricaoEvento($idEvento){
+	$evento = recuperaEvento($idEvento);
+	$tipoEvento = recuperaDados('ig_tipo_evento',$evento['ig_tipo_evento_idTipoEvento'],'idTipoEvento');
+	$programa = recuperaDados('ig_programa',$evento['ig_programa_idPrograma'],'idPrograma');
+	$projetoEspecial = recuperaDados('ig_projeto_especial',$evento['projetoEspecial'],'idProjetoEspecial');
+	$responsavel = recuperaUsuario($evento['idResponsavel']);
+	$suplente = recuperaUsuario($evento['suplente']);
+	$faixa = recuperaDados('ig_etaria',$evento['faixaEtaria'],'idIdade');
+
+	//exibe as informações principais
+	echo "<b>Tipo de evento:</b> ".$tipoEvento['tipoEvento']."<br />";
+	if($evento['ig_programa_idPrograma'] != 0){ echo "<b>Programa especial:</b> ".$programa['programa']."<br />";}
+	if($evento['projetoEspecial'] != 0){ echo "<b>Projeto especial:</b> ".$projetoEspecial['projetoEspecial']."<br />";}
+	if($evento['projeto'] != ""){ echo "<b>Projeto:</b> ".$evento['projeto']."<br />";}
+	echo "<br />";
+	echo "<b>Responsável pelo evento:</b> ".$responsavel['nomeCompleto']."<br />";
+	echo "<b>Suplente:</b> ".$suplente['nomeCompleto']."<br />";
+	echo "<br />";
+	echo "<b>Autor:</b><br />".$evento['autor']."<br /><br />";
+	echo "<b>Ficha técnica:</b><br />".$evento['fichaTecnica']."<br /><br />";
+	echo "<b>Faixa ou indicação etária:</b> ".$faixa['faixa']."<br /><br />";
+	echo "<br /><br />";
+	echo "<b>Sinopse:</b><br />".$evento['sinopse']."<br /><br />";
+	echo "<b>Release:</b><br />".$evento['releaseCom']."<br /><br />";
+	echo "<b>Parecer artístico:</b><br />".$evento['parecerArtistico']."<br /><br />";
+
+}
+
+function descricaoEspecificidades($idEvento,$tipo){
+	//switch das áreas específicas
+	switch($tipo){
+	
+	case 2: //artes visuais
+	
+	break;
+	case 7: //teatro e dança
+	case 8:
+	case 14:
+	case 15:
+	case 16:
+	case 17:
+	
+	
+	
+	break;
+	case 4: //oficinas e paletras
+	case 5:
+		
+	
+	break;
+	case 11: //música
+	case 12:	
+		
+		
+	break;
+	case 1: //cinema
+	
+	break;
+	}
+
+	//sub-evento
+	
+}
+
 ?>

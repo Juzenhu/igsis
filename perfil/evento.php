@@ -283,6 +283,11 @@ if(isset($_POST['atualizar'])){
 	$ig_tipo_evento_idTipoEvento = $_POST['ig_tipo_evento_idTipoEvento'];
 	$idResponsavel = $_POST['nomeResponsavel'];
 	$idSuplente = $_POST['suplente'];
+	if(isset($_POST['subEvento'])){
+		$subEvento = 1;	
+	}else{
+		$subEvento = 0;	
+	}
 
 	$sql_atualizar = "UPDATE `ig_evento` SET 
 	`nomeEvento` = '$nomeEvento', 
@@ -292,6 +297,7 @@ if(isset($_POST['atualizar'])){
 	`suplente` = '$idSuplente', 
 	`ig_modalidade_IdModalidade` = 	'$ig_modalidade_IdModalidade',
 	`ig_tipo_evento_idTipoEvento` = '$ig_tipo_evento_idTipoEvento',
+	`subEvento` = '$subEvento',
 	 `publicado` = 1
 	WHERE `ig_evento`.`idEvento` = ".$_SESSION['idEvento'].";";
 
@@ -392,6 +398,11 @@ $campo = recuperaEvento($_SESSION['idEvento']);
                         <option value="1"></option>
 						<?php echo opcaoUsuario($_SESSION['idInstituicao'],$campo['suplente']) ?>
                         </select>	
+        		  </div>
+            </div>
+                        <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+    		          <input type="checkbox" name="subEvento" id="subEvento" <?php checar($campo['subEvento']) ?>/><label style="padding:0 10px 0 5px;"> Haverá um evento complementar (sub-evento)?</label>
         		  </div>
             </div>
 
@@ -501,6 +512,10 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 		$tipoOcorrencia = 3; // Tipo de Ocorrência data única
 	}else{
 		$tipoOcorrencia = 4; // Tipo de Ocorrência por temporada
+	}
+	
+	if(isset($_POST['subEvento'])){ //Tipo de Ocorrência de Sub-evento
+		$tipoOcorrencia = 6;	
 	}
 	
 	$ig_comunicao_idCom = 0;
@@ -638,7 +653,12 @@ if(isset($_POST['atualizar'])){
 
 							 WHERE 	`idOcorrencia` = '$idOc'";
 	
-	
+	if(mysql_query($sql_atualizar_ocorrencia)){
+		$mensagem = "Ocorrência atualizada com sucesso!";	
+		gravarLog($sql_atualizar_ocorrencia);	
+	}else{
+		$mensagem = "Erro ao atualizar. Tente novamente.";
+	}	
 	
 
 
@@ -761,6 +781,13 @@ function habilitar(){
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
             <form method="POST" action="?perfil=evento&p=ocorrencias&action=listar" class="form-horizontal" role="form">
+           
+                            <div class="form-group">  
+                                          	<div class="col-md-offset-2 col-md-6">
+  <input type="checkbox" name="subEvento" id="subEvento" /><label style="padding:0 10px 0 5px;"> Ocorrência para sub-evento?</label>
+                	</div>
+                </div>
+           
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
@@ -868,10 +895,10 @@ function habilitar(){
 					 <h2>Eventos gravados mas não enviados</h2>
 					<h4>Selecione o evento para carregar.</h4>
                     <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
-					</div>
+                 </div>
 				  </div>
 			  </div>  
-
+			
 			<div class="table-responsive list_info">
                          <?php listaOcorrencias($_SESSION['idEvento']); ?>
 			</div>
@@ -963,6 +990,11 @@ function habilitar(){
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
             <form method="POST" action="?perfil=evento&p=ocorrencias&action=listar" class="form-horizontal" role="form">
+             	<div class="form-group">  
+                	<div class="col-md-offset-2 col-md-6">
+  <input type="checkbox" name="subEvento" id="subEvento" <? if($ocor['idTipoOcorrencia'] == 6){ echo "checked"; } ?>/><label style="padding:0 10px 0 5px;"> Ocorrência para sub-evento?</label>
+                	</div>
+                </div>
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
@@ -1775,115 +1807,199 @@ $artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
             	</div> 
             </div>                
 
-<? } // Fim das áreas 
-else if ($campo['ig_tipo_evento_idTipoEvento'] == 1)
-	{ ?>
-<div class="form-group">
-		<h3>Inserir novo filme</h3>
-                            <h4><? if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
-		<div class="row">
-	    <div class="col-md-offset-1 col-md-10">
-       		 <div class="form-group">
+<? } 
+else if ($campo['ig_tipo_evento_idTipoEvento'] == 1){
+	if(isset($_GET['filme'])){
+		$filme = $_GET['filme'];
+	}else{
+		$filme = "listar";	
+	}
+	if($filme == 'listar'){		
+		
+		 ?>
+         <h1>Listar filmes</h1>
+         <?php 
+	}else if($filme == 'inserir'){
+		 ?>
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Inserir um filme</h3>
+                    <h1><?php echo $campo["cinema"] ?></h1>
+                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
+                </div>
+            </div>
+             <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
-            		<label>Título do Filme</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            		<label>Título</label>
+            		<input type="text" name="ig_cinema_titulo" class="form-control" id="ig_cinema_titulo" value=""/>
             	</div> 
             </div>
-			<div class="form-group">
+			 <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
             		<label>Título Original</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            		<input type="text" name="ig_cinema_tituloOriginal" class="form-control" id="ig_cinema_tituloOriginal" value=""/>
             	</div> 
             </div>
-			
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-6">
-            		<label>País de Origem</label>
-            		<select class="form-control" name="ig_sub_evento_idTipo" id="inputSubject" >
-						<option value="1"></option>
-						<?php echo geraOpcao("ig_tipo_evento",$sub['idTipo'],"") ?>
-                    </select>					
-            	</div>
-				            	<div class="col-md-offset-2 col-md-6">
-            		<label>País de Origem (co-produção)</label>
-            		<select class="form-control" name="ig_sub_evento_idTipo" id="inputSubject" >
-						<option value="1"></option>
-						<?php echo geraOpcao("ig_tipo_evento",$sub['idTipo'],"") ?>
-                    </select>					
-            	</div>
-				
-            </div>
-			
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-6">
+            <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+               			 <label>País de origem</label>
+                		<select class="form-control" name="ig_pais_idPais">
+                		<option>Selecione</option>
+                		<?php geraOpcao("ig_pais","","") ?>
+                		</select>
+               		 </div>
+                	<div class=" col-md-6">
+                		<label>País de origem (co-produção)</label>
+                		<select class="form-control" name="ig_pais_idPais_2">
+                		<option>Selecione</option>
+                		<?php geraOpcao("ig_pais","","") ?>
+                		</select>
+               		</div>
+             </div>
+            <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
             		<label>Ano de Produção</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
-            	</div>           
-            	<div class="col-md-offset-2 col-md-6">
+            		<input type="text" name="ig_cinema_anoProducao" class="form-control" id="ig_cinema_anoProducao" value=""/>
+               		 </div>
+                	<div class=" col-md-6">
+            		<label>Bitola</label>
+            		<input type="text" name="ig_cinema_bitola" class="form-control" id="ig_cinema_bitola" value=""/>
+               		</div>
+            </div>
+            <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
             		<label>Gênero</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            		<input type="text" name="ig_cinema_genero" class="form-control" id="ig_cinema_genero" value=""/>
+               		 </div>
+                	<div class=" col-md-6">
+            		<label>Minutagem</label>
+            		<input type="text" name="ig_cinema_minutagem" class="form-control" id="ig_cinema_minutagem" value=""/>
+               		</div>
+            </div>
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Direção</label>
+            		<textarea name="ig_cinema_direcao" class="form-control" rows="10" placeholder="Listagem de diretores do filme."></textarea>
             	</div> 
             </div>
-			
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-6">
-            		<label>Bitola</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
-            	</div>           
-				<div class="col-md-offset-2 col-md-6">
-            		<label>Direção</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
-            	</div> 
-   			</div>
-			
 			<div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
             		<label>Sinopse</label>
-            		<textarea name="ig_sub_evento_descricao" class="form-control" rows="10" placeholder="Descreva a atividade complementar ao evento."><?php echo $sub["descricao"] ?></textarea>
+            		<textarea name="ig_cinema_sinopse" class="form-control" rows="10" placeholder="Texto para divulgação. Não ultrapassar 400 caracteres."></textarea>
             	</div> 
-            </div>	
-						
-      		 <div class="form-group">
+            </div>
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Link do Trailer</label>
+            		<input type="text" name="ig_cinema_linkTrailer" class="form-control" id="ig_cinema_linkTrailer" value="" placeholder="http://"/>
+            	</div> 
+			</div>
+			<div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
             		<label>Elenco</label>
-            		<textarea name="ig_sub_evento_descricao" class="form-control" rows="10" placeholder="Descreva a atividade complementar ao evento."><?php echo $sub["descricao"] ?></textarea>
+            		<textarea name="ig_cinema_elenco" class="form-control" rows="10" placeholder="Listagem de todos os componentes do elenco."></textarea>
             	</div> 
             </div>
-			
-			
-	 <div class="form-group">
+
+         <?php 
+	}else if($filme == 'editar'){
+		 ?>
+         
+             <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Inserir um filme</h3>
+                    <h1><?php echo $campo["cinema"] ?></h1>
+                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
+                </div>
+            </div>
+             <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
-            		<label>Links *</label>
-            		<textarea name="linksCom" class="form-control" rows="10" placeholder="Links para auxiliar a divulgação e o jurídico. Site oficinal, vídeos, clipping, artigos, etc "><?php echo $campo["linksCom"] ?></textarea>
+            		<label>Título</label>
+            		<input type="text" name="ig_cinema_titulo" class="form-control" id="ig_cinema_titulo" value="<?php echo $sub['ig_cinema_titulo'] ?>"/>
             	</div> 
             </div>
- <div class="form-group">
-            	<div class="col-md-offset-2 col-md-6">
-            		<label>Título do Filme</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+			 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Título Original</label>
+            		<input type="text" name="ig_cinema_tituloOriginal" class="form-control" id="ig_cinema_tituloOriginal" value="<?php echo $sub['ig_cinema_tituloOriginal'] ?>"/>
             	</div> 
             </div>
-
-
             <div class="form-group">
-	            <div class="col-md-offset-2 col-md-8">
-                	<input type="hidden" name="atualizar" value="1" />
-    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
-            	</div>
+                	<div class="col-md-offset-2 col-md-6">
+               			 <label>País de origem</label>
+                		<select class="form-control" name="ig_pais_idPais">
+                		<option>Selecione</option>
+                		<?php geraOpcao("ig_pais","","") ?>
+                		</select>
+               		 </div>
+                	<div class=" col-md-6">
+                		<label>País de origem (co-produção)</label>
+                		<select class="form-control" name="ig_pais_idPais_2">
+                		<option>Selecione</option>
+                		<?php geraOpcao("ig_pais","","") ?>
+                		</select>
+               		</div>
+             </div>
+            <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+            		<label>Ano de Produção</label>
+            		<input type="text" name="ig_cinema_anoProducao" class="form-control" id="ig_cinema_anoProducao" value="<?php echo $sub['ig_cinema_anoProducao'] ?>"/>
+               		 </div>
+                	<div class=" col-md-6">
+            		<label>Bitola</label>
+            		<input type="text" name="ig_cinema_bitola" class="form-control" id="ig_cinema_bitola" value="<?php echo $sub['ig_cinema_bitola'] ?>"/>
+               		</div>
             </div>
-            </form>
-    </div>
-    </div>
-		
-</section>  
+            <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+            		<label>Gênero</label>
+            		<input type="text" name="ig_cinema_genero" class="form-control" id="ig_cinema_genero" value="<?php echo $sub['ig_cinema_genero'] ?>"/>
+               		 </div>
+                	<div class=" col-md-6">
+            		<label>Minutagem</label>
+            		<input type="text" name="ig_cinema_minutagem" class="form-control" id="ig_cinema_minutagem" value="<?php echo $sub['ig_cinema_minutagem'] ?>"/>
+               		</div>
+            </div>
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Direção</label>
+            		<textarea name="ig_cinema_direcao" class="form-control" rows="10" placeholder="Listagem de diretores do filme."><?php echo $campo["ig_cinema_direcao"] ?></textarea>
+            	</div> 
+            </div>
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Sinopse</label>
+            		<textarea name="ig_cinema_sinopse" class="form-control" rows="10" placeholder="Texto para divulgação. Não ultrapassar 400 caracteres."><?php echo $campo["ig_cinema_sinopse"] ?></textarea>
+            	</div> 
+            </div>
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Link do Trailer</label>
+            		<input type="text" name="ig_cinema_linkTrailer" class="form-control" id="ig_cinema_linkTrailer" value="<?php echo $sub['ig_cinema_linkTrailer'] ?>"/>
+            	</div> 
+			</div>
+			<div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Elenco</label>
+            		<textarea name="ig_cinema_elenco" class="form-control" rows="10" placeholder="Listagem de todos os componentes do elenco."><?php echo $campo["ig_cinema_elenco"] ?></textarea>
+            	</div> 
+            </div>        
+         <? } //fim da área de cinema ?>
+         
+
+
+
+
 
 	<?php
 	
-}
+} // Fim das áreas 
 
 ?>
 
 <?php
+	if($campo['subEvento'] == 1){
+
 	$idTabela = "ig_sub_evento";
 	$idCampo = "ig_evento_idEvento";
 	$idDado = $_SESSION['idEvento'];
@@ -1956,10 +2072,11 @@ $sub = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
             </form>
         </div>
     </div>
-
+<? 	} //fim do subevento ?>
 </section>  
 
 <?php 
+
 break;
 case "externos" :?>
 <? include "../include/menuEvento.php" ?>
@@ -2259,7 +2376,34 @@ if( isset( $_POST['enviar'] ) ) {
 		</div>
 	</section>
 
+<?php
+break;
+case "enviar" :
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+?>
+<? include "../include/menuEvento.php" ?>
+<section id="inserir" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Finalizar e enviar o pedido</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?>  </h1>
+                    <h4><?php if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
+                </div>
+            </div>
 
+		</div>
+        <div class="col-md-offset-2 col-md-8">
+   			<div class="section-heading">
+               <div class="left">
+					 <h4>Descrição</h4>
+					 <?php descricaoEvento($_SESSION['idEvento']);  ?>
+				</div>
+		</div>
+		</div>
+    </div>
+</section>
 
 <?php 
 break;
