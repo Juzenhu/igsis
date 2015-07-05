@@ -27,6 +27,7 @@ function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia u
 					$_SESSION['instituicao'] = $user['instituicao'];
 					$_SESSION['nomeCompleto'] = $user['nomeCompleto'];
 					$_SESSION['idUsuario'] = $user['idUsuario'];
+					$_SESSION['idInstituicao'] = $user['idInstituicao'];
 
 					$log = "Fez login.";
 					gravarLog($log);
@@ -676,6 +677,50 @@ function descricaoEspecificidades($idEvento,$tipo){
 	}
 
 	//sub-evento
+	
+}
+
+function verificaEdicao($idEvento){
+	if(isset($idEvento)){
+		if($idEvento != ''){
+		$campo = recuperaEvento($idEvento);
+		echo "- Você está editando o evento <strong>'".$campo['nomeEvento']."'</strong>";	
+		}
+	}
+}
+
+function recuperaPessoa($id,$tipo){
+	switch($tipo){
+		case '1':
+			$sql = "SELECT * FROM sis_pessoa_fisica WHERE Id_PessoaFisica = $id";
+			$query = mysql_query($sql);
+			$x = mysql_fetch_array($query);
+			$y['nome'] = $x['Nome']; 
+			$y['tipo'] = "Pessoa física";
+			$y['numero'] = $x['CPF'];
+			return $y;
+
+		break;
+		case '2':
+			$sql = "SELECT * FROM sis_pessoa_juridica WHERE Id_PessoaJuridica = $id";
+			$query = mysql_query($sql);
+			$x = mysql_fetch_array($query);
+			$y['nome'] = $x['RazaoSocial']; 
+			$y['tipo'] = "Pessoa jurídica";
+			$y['numero'] = $x['CNPJ'];	
+						return $y;	
+		break;
+		case '3':
+			$sql = "SELECT * FROM sis_representante_legal WHERE Id_RepresentanteLegal = $id";
+			$query = mysql_query($sql);
+			$x = mysql_fetch_array($query);
+			$y['nome'] = $x['RepresentanteLegal']; 
+			$y['tipo'] = "Representante legal";
+			$y['numero'] = $x['CPF'];		
+						return $y;
+		break;		
+
+	}
 	
 }
 

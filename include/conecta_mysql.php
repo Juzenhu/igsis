@@ -4,7 +4,7 @@ mysql_connect("localhost", "root", "lic54eca");
 // Converte caracteres utf8 para evitar erros no banco
 mysql_query("SET NAMES 'utf8';");
 // Seleciona banco de dados 
-mysql_select_db("igsis_beta"); 
+mysql_select_db("igsis"); 
 // Assegura que as entradas e saídas sejam em utf-8
 header('Content-Type: text/html; charset=utf-8');
 mysql_query("SET NAMES 'utf8'");
