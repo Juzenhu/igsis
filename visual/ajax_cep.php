@@ -12,15 +12,19 @@ mysql_query('SET character_set_connection=utf8');
 mysql_query('SET character_set_client=utf8');
 mysql_query('SET character_set_results=utf8');
 
-$cep = $_POST['cep'];
-$cep_index = $parte = substr($cep, 0, 5);
+if(isset($_GET['cep'])){
+	$cep = $_GET['cep'];	
+}else{
+$cep = $_POST['CEP'];
+}
+$cep_index = substr($cep, 0, 5);
 
-$sql01 = "SELECT uf FROM cep_log_index WHERE cep5 = '$cep_index' LIMIT 0,1";
+$sql01 = "SELECT * FROM cep_log_index WHERE cep5 = '$cep_index' LIMIT 0,1";
 $query01 = mysql_query($sql01);
-$campo01 = mysql_fetch_array($query);
+$campo01 = mysql_fetch_array($query01);
 $uf = $campo01['uf'];
 
-$sql02 = "SELECT * FROM $uf WHERE cep = $cep";
+$sql02 = "SELECT * FROM $uf WHERE cep = '$cep'";
 $query02 = mysql_query($sql02);
 $campo02 = mysql_fetch_array($query02);
  

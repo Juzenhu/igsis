@@ -15,14 +15,41 @@
     $('#valor').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
   });
 
-  </script>
-<script>
   $(function() {
     $('#duracao').maskMoney({thousands:'', decimal:'', allowZero:true, suffix: ''});
   })
+  $(function(){
+	$("#CEP").mask("99999-999");
+  });
 
 
 </script>
+
+    <script type="text/javascript">
+	$(document).ready( function() {
+   /* Executa a requisição quando o campo CEP perder o foco */
+   $('#CEP').blur(function(){
+           /* Configura a requisição AJAX */
+           $.ajax({
+                url : 'ajax_cep.php', /* URL que será chamada */ 
+                type : 'POST', /* Tipo da requisição */ 
+                data: 'CEP=' + $('#CEP').val(), /* dado que será enviado via POST */
+                dataType: 'json', /* Tipo de transmissão */
+                success: function(data){
+                    if(data.sucesso == 1){
+                        $('#Endereco').val(data.rua);
+                        $('#Bairro').val(data.bairro);
+                        $('#Cidade').val(data.cidade);
+                        $('#Estado').val(data.estado);
+ 
+                        $('#Numero').focus();
+                    }
+                }
+           });   
+   return false;    
+   })
+});
+	</script>
 
  <script type="text/javascript"> 	
  	$(document).ready(function(){
@@ -100,4 +127,4 @@
   </script>
 
 
-<script type="text/javascript" src="js/jquery.maskedinput-1.1.4.pack.js"/></script>
+

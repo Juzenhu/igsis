@@ -463,31 +463,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 	</section>
 	
     <? }else{ // Se não existe, exibe um formulario para insercao. ?>
-    <script type="text/javascript">
-	$(document).ready( function() {
-   /* Executa a requisição quando o campo CEP perder o foco */
-   $('#CEP').blur(function(){
-           /* Configura a requisição AJAX */
-           $.ajax({
-                url : 'ajax_cep.php', /* URL que será chamada */ 
-                type : 'POST', /* Tipo da requisição */ 
-                data: 'cep=' + $('#CEP').val(), /* dado que será enviado via POST */
-                dataType: 'json', /* Tipo de transmissão */
-                success: function(data){
-                    if(data.sucesso == 1){
-                        $('#Endereco').val(data.rua);
-                        $('#Bairro').val(data.bairro);
-                        $('#Cidade').val(data.cidade);
-                        $('#estado').val(data.estado);
- 
-                        $('#numero').focus();
-                    }
-                }
-           });   
-   return false;    
-   })
-});
-	</script>
+
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
