@@ -13,6 +13,15 @@ ccsplab.org - centro cultural são paulo
 
 // Esta é a página para as funções gerais do sistema.
 
+
+function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
+	$mysqli = new mysqli("localhost", "root", "lic54eca","igsis");
+	if (!$mysqli->query($sql_inserir)) {
+    printf("Errormessage: %s\n", $mysqli->error);
+	}
+}
+
+
 function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia uma session
 	
 	$sql = "SELECT * FROM ig_usuario, ig_instituicao, ig_papelusuario WHERE ig_usuario.nomeUsuario = '$usuario' AND ig_instituicao.idInstituicao = ig_usuario.idInstituicao AND ig_papelusuario.idPapelUsuario = ig_usuario.ig_papelusuario_idPapelUsuario LIMIT 0,1"; //query que seleciona os campos que voltarão para na matriz
@@ -391,13 +400,6 @@ function retornaUltimo($idTabela){
 	$_SESSION['idEvento'] = $id['idEvento'];
 }
 
-function testaQuery($sql){
-	$mysqli = new mysqli("localhost", "root", "lic54eca","igsis_beta");
-	if (!$mysqli->query($sql)) {
-    return printf("Errormessage: %s\n", $mysqli->error);
-	}
-
-}
 
 function recuperaIdDado($tabela,$id){
 	//recupera os nomes dos campos
@@ -721,6 +723,128 @@ function recuperaPessoa($id,$tipo){
 		break;		
 
 	}
+	
+}
+
+
+
+function geraOpcaoLegal($idEvento){
+	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND tipoPessoa = '3'";
+	$query = mysql_query($sql);
+	while($campo = mysql_fetch_array($query)){
+		$id = $campo['idPessoaFisica'];	
+		$nome = recuperaPessoa($id,3);
+		$representante = $nome['nome'];
+		echo "<option value='".$id."'>".$representante."</option>";
+	}		
+}
+
+function valorPorExtenso($valor=0) {
+	$singular = array("centavo", "real", "mil", "milhão", "bilhão", "trilhão", "quatrilhão");
+	$plural = array("centavos", "reais", "mil", "milhões", "bilhões", "trilhões","quatrilhões");
+ 
+	$c = array("", "cem", "duzentos", "trezentos", "quatrocentos","quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos");
+	$d = array("", "dez", "vinte", "trinta", "quarenta", "cinquenta","sessenta", "setenta", "oitenta", "noventa");
+	$d10 = array("dez", "onze", "doze", "treze", "quatorze", "quinze","dezesseis", "dezesete", "dezoito", "dezenove");
+	$u = array("", "um", "dois", "três", "quatro", "cinco", "seis","sete", "oito", "nove");
+ 
+	$z=0;
+ 
+	$valor = number_format($valor, 2, ".", ".");
+	$inteiro = explode(".", $valor);
+	for($i=0;$i<count($inteiro);$i++)
+		for($ii=strlen($inteiro[$i]);$ii<3;$ii++)
+			$inteiro[$i] = "0".$inteiro[$i];
+ 
+	// $fim identifica onde que deve se dar junção de centenas por "e" ou por "," ;) 
+	$fim = count($inteiro) - ($inteiro[count($inteiro)-1] > 0 ? 1 : 2);
+	for ($i=0;$i<count($inteiro);$i++) {
+		$valor = $inteiro[$i];
+		$rc = (($valor > 100) && ($valor < 200)) ? "cento" : $c[$valor[0]];
+		$rd = ($valor[1] < 2) ? "" : $d[$valor[1]];
+		$ru = ($valor > 0) ? (($valor[1] == 1) ? $d10[$valor[2]] : $u[$valor[2]]) : "";
+	
+		$r = $rc.(($rc && ($rd || $ru)) ? " e " : "").$rd.(($rd && $ru) ? " e " : "").$ru;
+		$t = count($inteiro)-1-$i;
+		$r .= $r ? " ".($valor > 1 ? $plural[$t] : $singular[$t]) : "";
+		if ($valor == "000")$z++; elseif ($z > 0) $z--;
+		if (($t==1) && ($z>0) && ($inteiro[0] > 0)) $r .= (($z>1) ? " de " : "").$plural[$t]; 
+		if ($r) $rt = $rt . ((($i > 0) && ($i <= $fim) && ($inteiro[0] > 0) && ($z < 1)) ? ( ($i < $fim) ? ", " : " e ") : " ") . $r;
+	}
+ 
+	return($rt ? $rt : "zero");
+}
+
+function recuperaModalidade($id){
+	$sql = "SELECT * FROM ig_modalidade WHERE idModalidade = '$id'";
+	$query = mysql_query($sql);
+	$campo = mysql_fetch_array($query);
+	echo $campo['modalidade'];	
+}
+
+function retornaTipo($id){
+	$sql = "SELECT * FROM ig_tipo_evento WHERE idTipoEvento = '$id'";
+	$query = mysql_query($sql);
+	$x = mysql_fetch_array($query);		
+	return $x['tipoEvento'];
+}
+
+function retornaPeriodo($id){
+	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1'";
+	$query = mysql_query($sql);
+	$numero = mysql_num_rows($query);
+	$campo = mysql_fetch_array($query);
+	if($numero == 0){
+		return "Não há registro de ocorrências";
+	}elseif($numero == 1){
+		if($campo['dataFinal'] != '0000-00-00'){
+			return "de ".exibirDataBr($campo['dataInicio'])." a ".exibirDataBr($campo['dataFinal']);
+		}else{
+			return exibirDataBr($campo['dataInicio']);
+		}
+	}elseif($numero > 1){
+		$sql01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio ASC LIMIT 0,1";
+		$sql02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio DESC LIMIT 0,1";
+		$sql03 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataFinal ASC LIMIT 0,1";
+		$sql04 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataFinal DESC LIMIT 0,1";
+
+		$query01 = mysql_query($sql01);
+		$query02 = mysql_query($sql02);
+		$query03 = mysql_query($sql03);
+		$query04 = mysql_query($sql04);
+		
+		$date01 = mysql_fetch_array($query01);
+		$date02 = mysql_fetch_array($query02);
+		$date03 = mysql_fetch_array($query03);
+		$date04 = mysql_fetch_array($query04);
+		
+		$campoInicio[1] = $date01['dataInicio'];
+		$campoInicio[2] = $date02['dataInicio'];
+		$campoInicio[3] = $date03['dataInicio'];
+		$campoInicio[4] = $date04['dataInicio'];
+		$campoFinal[1] = $date01['dataFinal'];
+		$campoFinal[2] = $date02['dataFinal'];
+		$campoFinal[3] = $date03['dataFinal'];
+		$campoFinal[4] = $date04['dataFinal'];
+
+		
+		for($i = 1; $i <=4; $i++){
+				if($campoInicio[$i] < $campoInicio[$i++]){
+					$data['inicio'] = $campoInicio[$i];	
+				}
+				if($campoFinal[$i] != '0000-00-00'){
+					if($campoFinal[$i] > $campoFinal[$i++]){
+						$data['final'] = $campoFinal[$i];		
+					}
+				}else{
+			
+				}
+		}	
+	return "de ".$data['inicio']." a ".$data['final'];			
+	}
+	
+}
+function retornaLocal($id){
 	
 }
 
