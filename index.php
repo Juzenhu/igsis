@@ -7,10 +7,14 @@ ccsplab.org - centro cultural são paulo
 
 // Esta é a página de login do usuário ou de contato com administrador do sistema.
 
+//Imprime erros com o banco
+
+
+@ini_set('display_errors', '1');
+error_reporting(E_ALL);
 
 if(isset($_POST['usuario'])){
-	require "include/conecta_mysql.php";
-	require "funcoes/funcoesGerais.php";
+	include "funcoes/funcoesGerais.php";
 	$usuario = $_POST['usuario'];
 	$senha = $_POST['senha'];
 	autenticaUsuario($usuario,$senha);	

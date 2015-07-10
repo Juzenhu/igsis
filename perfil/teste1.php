@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 
 if(($campo['ig_tipo_evento_idTipoEvento'] == 3) || 
 		($campo['ig_tipo_evento_idTipoEvento'] == 7) ||

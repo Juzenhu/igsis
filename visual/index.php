@@ -1,13 +1,15 @@
-<?
-require "../include/conecta_mysql.php"; //conecta no banco
+<?php
+//Imprime erros com o banco
+@ini_set('display_errors', '1');
+error_reporting(E_ALL);
 require "../funcoes/funcoesGerais.php"; //carrega as funcoes gerais
 
 
  ?>
 
-<? include "cabecalho.php" ?>
+<?php include "cabecalho.php" ?>
 
-<? 
+<?php 
 //include "../perfil/".$_SESSION['include'];
 if(isset($_GET['perfil'])){
 include "../perfil/".$_GET['perfil'].".php";	
@@ -16,4 +18,4 @@ include "../perfil/inicio.php";
 	}
 ?>
 
-<? include "rodape.php" ?>
+<?php include "rodape.php" ?>

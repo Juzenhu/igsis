@@ -1,17 +1,16 @@
-﻿<?php require "../funcoes/funcoesEvento.php"; //carrega as funções específicas ?>
-<?php
+﻿<?php
 
+$con = bancoMysqli(); //conecta o banco;
 // verifica se o usuário tem acesso a página
-$verifica = verificaAcesso($_SESSION['idUsuario'],$_GET['perfil']); 
-if($verifica == 1){
+//$verifica = verificaAcesso($_SESSION['idUsuario'],$_GET['perfil']); 
+//if($verifica == 1){
+//	echo "<h1>".$verifica;".</h1>";
 ?>
 
 
 
 
 <?php
-@ini_set('display_errors', '1');
-error_reporting(E_ALL);
 
 if(isset($_GET['p'])){
 	$p = $_GET['p'];	
@@ -21,7 +20,7 @@ if(isset($_GET['p'])){
 
 switch($p){
 
-case "inicio":
+case 'inicio':
 ?>
 	<div class="menu-area">
 			<div id="dl-menu" class="dl-menuwrapper">
@@ -49,7 +48,7 @@ case "inicio":
                                     </ul>
                                 </li>    
                                 <li><a href="#enviar">Anexar arquivos</a> </li>
-                                <?php //criar um if para o módulo cinema ?>
+                                
                                 <li><a href="#enviar">Módulo Cinema</a> 
     
                                     <ul class="dl-submenu">
@@ -92,13 +91,15 @@ case "inicio":
     </div>
 </section>    
 
-<? break;
+<?php 
+break; 
 case "carregar":
+
 if(isset($_POST['apagar'])){
 	$idApagar = $_POST['apagar'];
 	$sql_apagar_registro = "UPDATE ig_evento SET publicado = 0 WHERE idEvento = $idApagar";
 
-	if(mysql_query($sql_apagar_registro)){	
+	if(mysqli_query($sql_apagar_registro)){	
 		$mensagem = "Evento apagado com sucesso!";
 		gravarLog($sql_apagar_registro);
 	}else{
@@ -132,9 +133,9 @@ if(isset($_POST['apagar'])){
                                     </ul>
                                 </li>    
                                 <li><a href="#enviar">Anexar arquivos</a> </li>
-                                <?php //criar um if para o módulo cinema ?>
+                                <?php if($_SESSION['cinema'] == 1){ ?>
                                 <li><a href="#enviar">Módulo Cinema</a> 
-    
+    							<?php } ?>
                                     <ul class="dl-submenu">
                                         <li><a href="#">Inserir novo filme</a></li>
                                         <li><a href="#">Lista de filmes</a></li>
@@ -174,93 +175,15 @@ if(isset($_POST['apagar'])){
 		</div>
 	</section> <!--/#list_items-->
 
-<? break;
-case "enviadas";
- ?>
- 	<div class="menu-area">
-			<div id="dl-menu" class="dl-menuwrapper">
-						<button class="dl-trigger">Open Menu</button>
-						<ul class="dl-menu">
-							<li><a href="?perfil=inicio">Início</a> </li>
-							<li><a href="#lista">Quadro geral</a></li>
-                            <li><a href="#lista">Inserir novo pedido</a>
-                          		<ul class="dl-submenu">
-                                 <li><a href="#">Evento</a>
-                                    <ul class="dl-submenu">
-                                        <li selected><a href="?perfil=evento&p=basica">Apresentação básica</a></li>
-                                        <li><a href="#">Detalhamento</a></li>
-                                        <li><a href="#">Ocorrências</a></li>
-                                        <li><a href="#">Conteúdo</a></li>
-                                        <li><a href="#">Serviços internos</a></li>
-                                        <li><a href="#">Especificidades de área</a></li>
-                                        <li><a href="#">Previsão de serviços externos</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#enviar">Contratado</a> 
-                                    <ul class="dl-submenu">
-                                        <li><a href="#">Inserir contratado</a></li>
-                                        <li><a href="#">Lista de contratados</a></li>
-                                    </ul>
-                                </li>    
-                                <li><a href="#enviar">Anexar arquivos</a> </li>
-                                <?php //criar um if para o módulo cinema ?>
-                                <li><a href="#enviar">Módulo Cinema</a> 
-    
-                                    <ul class="dl-submenu">
-                                        <li><a href="#">Inserir novo filme</a></li>
-                                        <li><a href="#">Lista de filmes</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#enviar">Enviar</a> </li>
-							</ul>
-                            </li>
-  							<li><a href="#lista">Carregar evento em aberto</a></li> 
-                            <li><a href="#lista">Pedidos enviados</a>   
 
-    
-                                    <ul class="dl-submenu">
-                                        <li><a href="#">Relatório de alterações</a></li>
-                                        <li><a href="#">Enviar alteraçãos</a></li>
-                                        <li><a href="#">Enviar anexo</a></li>
-                                    </ul>
-                                </li>                      
-                        </ul>
-					</div><!-- /dl-menuwrapper -->
-	</div>	
- 	<section id="list_items" class="home-section bg-white">
-		<div class="container">
-      			  <div class="row">
-				  <div class="col-md-offset-2 col-md-8">
-					<div class="section-heading">
-					 <h2>Pedidos enviados</h2>
-					<h5>Selecione para saber detalhes do pedido.</h5>
-					</div>
-				  </div>
-			  </div>  
+<?php 
+break; 
+case "enviadas":
 
-			<div class="table-responsive list_info">
-				<table class="table table-condensed">
-					<thead>
-						<tr class="list_menu">
-							<td>Perfil</td>
-							<td>Descrição</td>
-							<td width="20%"></td>
-						</tr>
-					</thead>
-					<tbody>
-						
-                         <?php listaModulos($_SESSION['perfil']); ?>
-                        
+?>
+<?php break;
+case "basica":
 
-						
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</section> <!--/#list_items-->	
-
-<? break;
-case "basica";
 
 if(isset($_POST['carregar'])){
 	$_SESSION['idEvento'] = $_POST['carregar'];
@@ -310,8 +233,8 @@ if(isset($_POST['atualizar'])){
 	ig_tipo_evento_idTipoEvento = '$ig_tipo_evento_idTipoEvento'
 	WHERE idEvento = ".$_SESSION['idEvento'].";";
 	*/
-	
-	if(mysql_query($sql_atualizar)){
+	$con = bancoMysqli();
+	if(mysqli_query($con,$sql_atualizar)){
 		$mensagem = "Atualizado com sucesso!";
 		gravarLog($sql_atualizar);	
 	}else{
@@ -322,8 +245,13 @@ if(isset($_POST['atualizar'])){
 
 // Cria um array com dados do evento
 $campo = recuperaEvento($_SESSION['idEvento']);
+if($campo['ig_tipo_evento_idTipoEvento'] == 1){
+	$_SESSION['cinema'] = 1;	
+}else{
+	$_SESSION['cinema'] = 0;
+}
 ?>
-<? include "../include/menuEvento.php" ?>
+<?php include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -367,7 +295,7 @@ $campo = recuperaEvento($_SESSION['idEvento']);
             <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
             		<label>Nome do Projeto </label>
-            		<input type="text" name="projeto" class="form-control" id=""  value="<? echo $campo['projeto'] ?>">
+            		<input type="text" name="projeto" class="form-control" id=""  value="<?php echo $campo['projeto'] ?>">
             	</div>
              </div>
             <div class="form-group">
@@ -416,8 +344,6 @@ $campo = recuperaEvento($_SESSION['idEvento']);
         </div>
     </div>
 </section>  
-
-
 <?php 
 break;
 case "detalhe" :
@@ -429,7 +355,6 @@ if(isset($_POST['atualizar'])){
 	$autor = addslashes($_POST['autor']);
 	$fichaTecnica = addslashes($_POST['fichaTecnica']); 
 	$faixaEtaria = $_POST['faixaEtaria'];
-	$sql_inserir = "INSERT INTO ";
 
 	$sql_atualizar = "UPDATE `ig_evento` SET 
 	`autor` = '$autor', 
@@ -438,8 +363,8 @@ if(isset($_POST['atualizar'])){
 	WHERE `ig_evento`.`idEvento` = ".$_SESSION['idEvento'].";";
 
 
-
-	if(mysql_query($sql_atualizar)){
+	$con = bancoMysqli();
+	if(mysqli_query($con,$sql_atualizar)){
 		$mensagem = "Atualizado com sucesso!";
 		gravarLog($sql_atualizar);	
 	}else{
@@ -450,7 +375,7 @@ if(isset($_POST['atualizar'])){
 }
 $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
 ?>
-<? include "../include/menuEvento.php" ?>
+<?php include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -499,10 +424,821 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
         </div>
     </div>
 </section>  
+<?php 
+break;
+case "conteudo" :
+if(isset($_POST['atualizar'])){
+
+		
+	// Atualiza o banco
+	$sinopse = addslashes($_POST['sinopse']);
+	$releaseCom = addslashes($_POST['releaseCom']); 
+	$parecerArtistico = addslashes($_POST['parecerArtistico']); 
+	$linksCom = addslashes($_POST['linksCom']); 
+
+	$sql_atualizar = "UPDATE `ig_evento` SET 
+	`sinopse` = '$sinopse', 
+	`releaseCom` = '$releaseCom', 
+	`parecerArtistico` = '$parecerArtistico', 
+	`linksCom` = '$linksCom'
+	WHERE `ig_evento`.`idEvento` = ".$_SESSION['idEvento'].";";
+
+	
+	if(mysqli_query($con,$sql_atualizar)){
+		$mensagem = "Atualizado com sucesso!";
+		gravarLog($sql_atualizar);	
+	}else{
+		$mensagem = "Erro ao atualizar... tente novamente";
+		
+	}
+
+}
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+
+
+?>
+<?php include "../include/menuEvento.php" ?>
+<section id="inserir" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Evento - Conteúdo</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?></h1>
+                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
+                </div>
+            </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+        <form method="POST" action="?perfil=evento&p=conteudo" class="form-horizontal" role="form">
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Sinopse *</label>
+            		<textarea name="sinopse" class="form-control" rows="10" placeholder="Texto para divulgação e sob editoria da area de comunicação. Não ultrapassar 400 caracteres."><?php echo $campo["sinopse"] ?></textarea>
+            	</div> 
+            </div>
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Release *</label>
+            		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
+            	</div> 
+            </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Parecer artístico*</label>
+            		<textarea name="parecerArtistico" class="form-control" rows="10" placeholder="Texto usado fins jurídicos e confecção de contratos."><?php echo $campo["parecerArtistico"] ?></textarea>
+            	</div> 
+            </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Links *</label>
+            		<textarea name="linksCom" class="form-control" rows="10" placeholder="Links para auxiliar a divulgação e o jurídico. Site oficinal, vídeos, clipping, artigos, etc "><?php echo $campo["linksCom"] ?></textarea>
+            	</div> 
+            </div>
+
+
+            <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>  
+
+<?php 
+break;
+case "internos" :
+
+if(isset($_POST['atualizar'])){
+	//gera as variáveis
+
+	$ig_produtor_nome = $_POST['ig_produtor_nome'];
+	$ig_produtor_telefone = $_POST['ig_produtor_telefone'];
+	$ig_produtor_email = $_POST['ig_produtor_email'];
+	$ig_producao_equipe = addslashes($_POST['ig_producao_equipe']);		
+	$ig_producao_infraestrutura = addslashes($_POST['ig_producao_infraestrutura']);
+
+	if(isset($_POST['ig_comunicacao_registroFotografia'])){
+		$ig_comunicacao_registroFotografia = 1;
+	}else{
+		$ig_comunicacao_registroFotografia = 0;
+	}
+	
+	if(isset($_POST['ig_comunicacao_registroVideo'])){
+		$ig_comunicacao_registroVideo = 1;
+	}else{
+		$ig_comunicacao_registroVideo = 0;
+	}
+
+	if(isset($_POST['ig_comunicacao_registroAudio'])){
+		$ig_comunicacao_registroAudio = 1;
+	}else{
+		$ig_comunicacao_registroAudio = 0;
+	}
+	$idEvento = $_SESSION['idEvento'];
+	
+	//Produtor
+	
+	//verifica se há produtor
+	$ver = recuperaEvento($_SESSION['idEvento']);
+	if($ver['ig_produtor_idProdutor'] == 0){
+	
+		$sql_inserir_produtor = "INSERT INTO  `ig_produtor` (`idProdutor` ,`nome` ,`email` ,`telefone` ,`idSpCultura`
+) VALUES ( NULL ,  '$ig_produtor_nome',  '$ig_produtor_email',  '$ig_produtor_telefone',  '' )";
+
+		if(mysqli_query($con,$sql_inserir_produtor)){		
+			$mensagem = "Produtor inserido com sucesso! ";	
+			$idProdutor = mysql_insert_id(); //recupera o idProdutor inserido
+			mysqli_query($con,"UPDATE ig_evento SET ig_produtor_idProdutor = '$idProdutor' WHERE idEvento = $idEvento");
+			gravarLog($sql_inserir_produtor); //grava log
+		}else{
+			$mensagem = "Erro ao atualizar!";
+		}
+	}else{
+		$sql_atualizar_produtor = "UPDATE ig_produtor SET `nome` = '$ig_produtor_nome' ,`email` = '$ig_produtor_email' ,`telefone` = '$ig_produtor_telefone' WHERE idProdutor = ".$ver['ig_produtor_idProdutor'];
+		if(mysqli_query($con,$sql_atualizar_produtor)){		
+			$mensagem = "Produtor inserido com sucesso! ";	
+			gravarLog($sql_atualizar_produtor); //grava log
+		}else{
+			$mensagem = "Erro ao atualizar!";
+		}
+			
+	}
+	
+	//Produção
+	//Verifica se já existe o registro na tabela
+	$ver = verificaExiste("ig_producao","ig_evento_idEvento",$_SESSION['idEvento'],0);
+	if($ver['numero'] == 0){
+		$idEvento = $_SESSION['idEvento'];
+		$sql_inserir_producao = "INSERT INTO  `ig_producao` (`idProducao` ,`ig_evento_idEvento` ,`carros` ,`equipe` ,`infraestrutura`, `registroAudio`, `registroVideo`, `registroFotografia` ) VALUES ( NULL ,  '$idEvento',  '',  '$ig_producao_equipe',  '$ig_producao_infraestrutura', '$ig_comunicacao_registroAudio', '$ig_comunicacao_registroVideo', '$ig_comunicacao_registroFotografia' )";
+		if(mysqli_query($con,$sql_inserir_producao)){		
+			$mensagem02 = "Informações de produção inseridas com sucesso! ";	
+			gravarLog($sql_inserir_producao); //grava log
+		}else{
+			$mensagem02 = "Erro ao atualizar!";
+		}
+	}else{
+		$sql_atualizar_producao = "UPDATE ig_producao SET  `equipe` = '$ig_producao_equipe' ,`infraestrutura` = '$ig_producao_infraestrutura', `registroAudio` = '$ig_comunicacao_registroAudio', `registroVideo` = '$ig_comunicacao_registroVideo' , `registroFotografia` = '$ig_comunicacao_registroFotografia' WHERE 
+`ig_evento_idEvento` = $idEvento";
+		if(mysqli_query($con,$sql_atualizar_producao)){		
+			$mensagem02 = "Informações de produção inseridas com sucesso! ";	
+			gravarLog($sql_atualizar_producao); //grava log
+		}else{
+			$mensagem02 = "Erro ao atualizar!";
+		}
+	}
+}
+
+
+
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+$interno = recuperaDados("ig_servico",$_SESSION['idEvento'],"ig_evento_idEvento"); // recupera os dados dos serviços internos do evento em questão
+$com = recuperaDados("ig_comunicacao",$_SESSION['idEvento'],"ig_evento_idEvento"); // recupera os dados de comunicação do evento em questão
+$produtor = recuperaProdutor($campo['ig_produtor_idProdutor']); // recupera dados do produtor
+$producao = recuperaDados("ig_producao",$campo['idEvento'],"ig_evento_idEvento"); // recupera dados da produção
+?>
+<?php include "../include/menuEvento.php" ?>
+
+<section id="inserir" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Evento - Serviços internos</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?></h1>
+                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
+                    <h4><?php if(isset($mensagem02)){echo $mensagem02;} ?></h4>
+                </div>
+            </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+        <form method="POST" action="?perfil=evento&p=internos" class="form-horizontal" role="form">
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Nome do produtor do evento</label>
+            		<input type="text" name="ig_produtor_nome" class="form-control" id="ig_produtor_nome" value="<?php echo $produtor['nome'] ?>"/>
+            	</div> 
+            </div>
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Telefones</label>
+            		<input type="text" name="ig_produtor_telefone" class="form-control" id="inputSubject" value="<?php echo $produtor['telefone'] ?>"/>
+            	</div> 
+            </div>       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Email</label>
+            		<input type="text" name="ig_produtor_email" class="form-control" id="inputSubject" value="<?php echo $produtor['email'] ?>"/>
+            	</div> 
+            </div>            
+
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Equipe</label>
+            		<textarea name="ig_producao_equipe" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $producao["equipe"] ?></textarea>
+            	</div> 
+            </div>
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Infraestrutura</label>
+            		<textarea name="ig_producao_infraestrutura" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $producao["infraestrutura"] ?></textarea>
+            	</div> 
+            </div>            
+                <div class="form-group">
+                    
+           			<h5>Pedido de documentação</h5>
+	            	<div class="col-md-offset-2 col-md-8">
+
+    		            <input type="checkbox" name="ig_comunicacao_registroFotografia" id="especial01" <?php checar($producao['registroFotografia']) ?> /><label  style="padding:0 10px 0 5px;">Fotografia</label>
+           			    <input type="checkbox" name="ig_comunicacao_registroAudio" id="especial02" <?php checar($producao['registroAudio']) ?>/><label  style="padding:0 10px 0 5px;">Áudio</label>
+            		    <input type="checkbox" name="ig_comunicacao_registroVideo" id="especial03" <?php checar($producao['registroVideo']) ?>/><label  style="padding:0 10px 0 5px;">Vídeo</label>
+                	</div>                     
+                </div>
+            <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>  
+<?php
+break;
+case "area" :
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+?>
+<?php include "../include/menuEvento.php" ?>
+<section id="inserir" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Evento - Espeficidades de Área</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?></h1>
+                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
+                </div>
+            </div>
+    </div>
+    
+    <div class="row">
+
+        <div class="col-md-offset-1 col-md-10">
+	       <form method="POST" action="?perfil=evento&p=area" class="form-horizontal" role="form">
+
+<?php
+switch($campo['ig_tipo_evento_idTipoEvento']){
+case 2: // Artes Visuais
+
+	$idTabela = "ig_artes_visuais";
+	$idCampo = "idEvento";
+	$idDado = $_SESSION['idEvento'];
+	$st = 0;
+	
+	if(isset($_POST['atualizar'])){
+		
+		$ig_artesvisuais_numero = $_POST['ig_artesvisuais_numero'];
+		$ig_artesvisuais_tipo = $_POST['ig_artesvisuais_tipo'];
+		$ig_artesvisuais_valorTotal = dinheiroDeBr($_POST['ig_artesvisuais_valorTotal']);
+		//verifica se existe um registro na tabela
+		$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
+		
+			if($ver['numero'] == 0){ // insere um registro novo
+				$sql_insere_artes = "INSERT INTO  `ig_artes_visuais` (`idArtes` ,`idEvento` ,`numero` ,`tipo` ,`valorTotal`)VALUES (NULL ,  '$idDado',  '$ig_artesvisuais_numero',  '$ig_artesvisuais_tipo',  '$ig_artesvisuais_valorTotal');";
+				if(mysqli_query($con,$sql_insere_artes)){		
+					$mensagem = "Atualizado com sucesso! ";	
+					gravarLog($sql_insere_artes); //grava log
+				}else{
+					$mensagem = "Erro ao atualizar!";
+				}
+			}else{ //atualiza o registro existente
+				$sql_atualiza_artes = "UPDATE ig_artes_visuais SET numero = '$ig_artesvisuais_numero', tipo = '$ig_artesvisuais_tipo', valorTotal = '$ig_artesvisuais_valorTotal'";
+				if(mysqli_query($con,$sql_atualiza_artes)){		
+					$mensagem = "Atualizado com sucesso! ";	
+					gravarLog($sql_atualiza_artes); //grava log
+				}else{
+					$mensagem = "Erro ao atualizar!";
+				}
+		}
+}
+
+$artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
+?>
+				<h3>Artes Visuais</h3>
+                <h4><? if(isset($mensagem)){echo $mensagem;} ?><? echo $ver['numero'] ?></h4>
+
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+                    	<label>Número de contratados</label>
+                    	<input type="text" class="form-control" name="ig_artesvisuais_numero" value="<?php if(isset($artes)){echo $artes['numero'];} ?>" id="" placeholder="">
+                	</div>
+               		<div class=" col-md-6">
+                    	<label>Tipo de contratação</label>
+                		 <select class="form-control" name="ig_artesvisuais_tipo" id="inputSubject" >
+                        <option value="Edital" <?php if(isset($artes)){if($artes['tipo'] == "Edital"){echo "selected";}} ?> >Edital</option>
+                        <option value="Selecionado" <?php if(isset($artes)){if($artes['tipo'] == "Selecionado"){echo "selected";}} ?>>Selecionado</option>
+                        <option value="Jurado" <?php if(isset($artes)){if($artes['tipo'] == "Jurado"){echo "selected";}} ?>>Jurado</option>
+                        </select>
+                	</div>
+                </div>
+
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Valor do cachê *</label>
+            		<input type="text" name="ig_artesvisuais_valorTotal" class="form-control" id="valor" value="<?php if(isset($artes)){echo dinheiroParaBr($artes['valorTotal']);} ?>"/>
+            	</div> 
+            </div>
+                        <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
+<?php 
+break;
+case 3:
+case 7:
+case 8:
+case 14:
+case 15:
+case 16:
+case 17:
+
+
+	$idTabela = "ig_teatro_danca";
+	$idCampo = "ig_evento_idEvento";
+	$idDado = $_SESSION['idEvento'];
+	$st = 0;
+	
+	if(isset($_POST['atualizar'])){ //Atualizar 02		
+		$ig_teatro_danca_estreia = $_POST['ig_teatro_danca_estreia'];
+		$ig_teatro_danca_genero = $_POST['ig_teatro_danca_genero'];
+		
+		//verifica se existe um registro na tabela
+		$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
+		
+			if($ver['numero'] == 0){ // insere um registro novo 03
+				$sql_insere_teatro = "INSERT INTO  `ig_teatro_danca` (`idTeatro` ,`ig_evento_idEvento` ,`estreia` ,`genero`)VALUES (NULL ,  '$idDado',  '$ig_teatro_danca_estreia',  '$ig_teatro_danca_genero');";
+				if(mysqli_query($con,$sql_insere_teatro)){ //04		
+					$mensagem = "Atualizado com sucesso! ";	
+					gravarLog($sql_insere_teatro); //grava log
+				}else{ //04
+					$mensagem = "Erro ao atualizar!";
+				} //04
+			}else{ //atualiza o registro existente 03
+				$sql_atualiza_teatro = "UPDATE ig_teatro_danca SET estreia = '$ig_teatro_danca_estreia', genero = '$ig_teatro_danca_genero' WHERE ig_evento_idEvento = $idDado";
+				if(mysqli_query($con,$sql_atualiza_teatro)){	//05	
+					$mensagem = "Atualizado com sucesso! ";	
+					gravarLog($sql_atualiza_teatro); //grava log
+				}else{ //05
+					$mensagem = "Erro ao atualizar!";
+				} //05
+			} //insere um novo registro 03
+	} //Atualizar 02
+
+$artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
+
+
+?>
+				<h3>Teatro / Dança</h3>
+                <h4><? if(isset($mensagem)){echo $mensagem;} ?></h4>
+
+                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-2">
+                    	<label>Estréia?</label>
+                		 <select class="form-control" name="ig_teatro_danca_estreia" id="inputSubject" >
+                        <option value="1" <?php if(isset($artes)){if($artes['estreia'] == "1"){echo "selected";}} ?> >Sim</option>
+                        <option value="0" <?php if(isset($artes)){if($artes['estreia'] == "0"){echo "selected";}} ?>>Não</option>
+                        </select>
+                	</div>
+               		<div class=" col-md-6">
+                    	<label>Gênero</label>
+                    	<input type="text" class="form-control" name="ig_teatro_danca_genero" value="<?php if(isset($artes)){echo $artes['genero'];} ?>" id="" placeholder="">
+
+                	</div>
+                </div>
+                            <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<?php 
+break;
+case 11:
+case 12:
+
+	$idTabela = "ig_musica";
+	$idCampo = "ig_evento_idEvento";
+	$idDado = $_SESSION['idEvento'];
+	$st = 0;
+	
+	if(isset($_POST['atualizar'])){
+		
+		$ig_musica_genero = $_POST['ig_musica_genero'];
+		$ig_musica_venda = $_POST['ig_musica_venda'];
+		$ig_musica_material = addslashes($_POST['ig_musica_material']);
+		//verifica se existe um registro na tabela
+		$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
+		
+			if($ver['numero'] == 0){ // insere um registro novo
+				$sql_insere_musica = "INSERT INTO  `ig_musica` (`idMusica` ,`ig_evento_idEvento` ,`genero` ,`venda` ,`material`)VALUES (NULL ,  '$idDado',  '$ig_musica_genero',  '$ig_musica_venda','$ig_musica_material');";
+				if(mysqli_query($con,$sql_insere_musica)){		
+					$mensagem = "Atualizado com sucesso! ";	
+					gravarLog($sql_insere_musica); //grava log
+				}else{
+					$mensagem = "Erro ao atualizar(3)!";
+				}
+			}else{ //atualiza o registro existente
+				$sql_atualiza_musica = "UPDATE ig_musica SET genero = '$ig_musica_genero', venda = '$ig_musica_venda', material = '$ig_musica_material' WHERE ig_evento_idEvento = $idDado";
+				if(mysqli_query($con,$sql_atualiza_musica)){		
+					$mensagem = "Atualizado com sucesso! ";	
+					gravarLog($sql_atualiza_musica); //grava log
+				}else{
+					$mensagem = "Erro ao atualizar(4)!";
+				}
+		}
+}
+
+$artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
+
+
+
+?>
+				<h3>Música</h3>
+                <h4><? if(isset($mensagem)){echo $mensagem;} ?></h4>
+                <div class="form-group">
+               		<div class="col-md-offset-2 col-md-6">
+                    	<label>Gênero</label>
+                    	<input type="text" class="form-control" name="ig_musica_genero" value="<?php if(isset($artes)){echo $artes['genero'];} ?>" id="" placeholder="Erudito, popular, rock, samba, experimental, etc">
+
+                	</div>
+                	<div class=" col-md-2">
+                    	<label>Venda de material</label>
+                		 <select class="form-control" name="ig_musica_venda" id="inputSubject" >
+                        <option value="1" <?php if(isset($artes)){if($artes['venda'] == "1"){echo "selected";}} ?> >Sim</option>
+                        <option value="0" <?php if(isset($artes)){if($artes['venda'] == "0"){echo "selected";}} ?>>Não</option>
+                        </select>
+                	</div>
+
+                </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Descrição o material</label>
+            		<textarea name="ig_musica_material" class="form-control" rows="10" placeholder="Livro, camiseta, CD, DVD, etc"><?php echo $artes["material"] ?></textarea>
+            	</div> 
+            </div>   
+                        <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
+<?php break; 
+default:
+ ?>
+            <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                <?php
+				if($_SESSION['cinema'] == 1){
+					echo "<h4>Você selecionou o evento como 'Mostra de Cinema'. Por favor, acesso o Módulo Cinema</h4>";
+                }else{ 
+                	echo "<h4>Não há campos específicos para o tipo de evento selecionado</h4>";
+                } ?>
+            	</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<?php break;  ?>
+<?php } // fim da especificidade?>
+
+<?php
+break;
+case "externos" :?>
+<?php include "../include/menuEvento.php" ?>
+
+<?php
+	$idTabela = "ig_servico";
+	$idCampo = "ig_evento_idEvento";
+	$idDado = $_SESSION['idEvento'];
+	$st = 0;
+	
+	if(isset($_POST['atualizar'])){
+		
+		//carrega as variáveis
+	$ig_servico_legenda = $_POST['ig_servico_legenda'];
+	$ig_servico_traducao = $_POST['ig_servico_traducao'];
+	$ig_servico_seguro = $_POST['ig_servico_seguro'];
+	$ig_servico_transporte = $_POST['ig_servico_transporte'];
+	$ig_servico_montagem = $_POST['ig_servico_montagem'];
+	$ig_servico_passagens = $_POST['ig_servico_passagens'];
+	$ig_servico_itinerario = $_POST['ig_servico_itinerario'];
+	$ig_servico_hospedagem = $_POST['ig_servico_hospedagem'];
+	$ig_servico_locacao = $_POST['ig_servico_locacao'];
+	$ig_servico_bilhetagem = $_POST['ig_servico_bilhetagem'];
+		
+	//verifica se existe um registro na tabela
+	$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
+		
+	if($ver['numero'] == 0){ // insere um registro novo
+		$sql_insere_ext = "INSERT INTO `ig_servico` (`idServico`, `ig_evento_idEvento`, `legenda`, `traducao`, `graficos`, `passagens`, `itinerario`, `libras`, `audiodescricao`, `montagem`, `hospedagem`, `seguro`, `transporte`, `razaoSocial`, `cpfCnpj`, `banco`, `agencia`, `conta`, `bilhetagem`, `locacao`) VALUES (NULL, '$idDado', '$ig_servico_legenda', '$ig_servico_traducao', NULL, '$ig_servico_passagens', '$ig_servico_itinerario', NULL, NULL, '$ig_servico_montagem', '$ig_servico_hospedagem', '$ig_servico_seguro', '$ig_servico_transporte', NULL, NULL, NULL, NULL, NULL, '$ig_servico_bilhetagem', '$ig_servico_locacao');";
+				if(mysqli_query($con,$sql_insere_ext)){		
+					$mensagem_s = "Atualizado com sucesso! ";	
+					gravarLog($sql_insere_ext); //grava log
+				}else{
+					$mensagem_s = "Erro ao atualizar(1)!";
+				}
+	}else{ //atualiza o registro existente
+				$sql_atualiza_ext = "UPDATE `ig_servico` SET `legenda` = '$ig_servico_legenda', `traducao` = '$ig_servico_traducao', `seguro` = '$ig_servico_seguro', `transporte` = '$ig_servico_transporte',`montagem` = '$ig_servico_montagem', `passagens`= '$ig_servico_passagens', `itinerario`= '$ig_servico_itinerario',`hospedagem` = '$ig_servico_hospedagem',`locacao` = '$ig_servico_locacao',`bilhetagem` = '$ig_servico_bilhetagem'  WHERE `ig_evento_idEvento` = '$idDado'";
+				if(mysqli_query($con,$sql_atualiza_ext)){		
+					$mensagem_s = "Atualizado com sucesso! ";	
+					gravarLog($sql_atualiza_ext); //grava log
+				}else{
+					$mensagem_s = "Erro ao atualizar(2)!";
+				}
+		}
+}
+
+$externo = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo); 
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+?>
+
+<section id="inserir" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Evento - Previsão de demandas de serviços externos</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?>  </h1>
+                    <h4><?php if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
+                </div>
+            </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+        <form method="POST" action="?perfil=evento&p=externos" class="form-horizontal" role="form">
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            	</div> 
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-8">
+             		<label>Legenda / legendagem *</label>
+            		<input type="text" name="ig_servico_legenda" class="form-control" id="inputSubject" value="<?php echo $externo['legenda'] ?>"/>
+                </div>
+            </div>
+            <div class="form-group">
+            <div class="col-md-offset-2 col-md-8">
+            		<label>Tradução *</label>
+            		<input type="text" name="ig_servico_traducao" class="form-control" id="inputSubject" value="<?php echo $externo['traducao'] ?>"/>
+        	    </div>
+      	    </div>
+
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Seguro *</label>
+            		<input type="text" name="ig_servico_seguro" class="form-control" id="inputSubject" value="<?php echo $externo['seguro'] ?>"/>
+            	</div>
+             </div>
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+              		<label>Transporte *</label>
+            		<input type="text" name="ig_servico_transporte" class="form-control" id="inputSubject" value="<?php echo $externo['transporte'] ?>"/>
+          	</div>
+            </div>
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+              		<label>Montagem fina*</label>
+            		<input type="text" name="ig_servico_montagem" class="form-control" id="inputSubject" value="<?php echo $externo['montagem'] ?>"/>
+          	</div>
+            </div>
+
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+              		<label>Passagem aérea *</label>
+            		<input type="text" name="ig_servico_passagens" class="form-control" id="inputSubject" value="<?php echo $externo['passagens'] ?>"/>
+          	</div>
+            </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Descrição das passagens aéreas</label>
+            		<textarea name="ig_servico_itinerario" class="form-control" rows="10" placeholder="Descreva as datas, locais de ida e volta para as passagens aéreas."><?php echo $externo["itinerario"] ?></textarea>
+            	</div> 
+            </div>
+
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+              		<label>Hospedagem</label>
+            		<input type="text" name="ig_servico_hospedagem" class="form-control" id="inputSubject" value="<?php echo $externo['hospedagem'] ?>"/>
+          	</div>
+            </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Equipamentos para locação</label>
+            		<textarea name="ig_servico_locacao" class="form-control" rows="10" placeholder="Descreva equipamentos para locação."><?php echo $externo["locacao"] ?></textarea>
+            	</div> 
+            </div>
+            
+           <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Bilhetagem</label>
+            		<textarea name="ig_servico_bilhetagem" class="form-control" rows="10" placeholder="Ingresso rápido: Nome/Razão Social, CPF/CNPJ, Banco, Agência, Conta"><?php echo $externo["bilhetagem"] ?></textarea>
+            	</div> 
+            </div>
+            
+            <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>  
+
+<?php 
+break;
+case "arquivos" :
+if(isset($_POST['apagar'])){
+	$idArquivo = $_POST['apagar'];
+	$sql_apagar_arquivo = "UPDATE ig_arquivo SET publicado = 0 WHERE idArquivo = '$idArquivo'";
+	if(mysqli_query($con,$sql_apagar_arquivo)){
+		$arq = recuperaDados("ig_arquivo",$idArquivo,"idArquivo");
+		$mensagem =	"Arquivo ".$arq['arquivo']."apagado com sucesso!";
+		gravarLog($sql_apagar_arquivo);
+	}else{
+		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
+	}
+}
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+?>
+<?php include "../include/menuEvento.php" ?>
+
+    
+    	 <section id="enviar" class="home-section bg-white">
+		<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+                                        <h1><?php echo $campo["nomeEvento"] ?>  </h1>
+
+					 <h3>Envio de Arquivos</h3>
+<p>Nesta página, você envia os arquivos como o rider, mapas de cenas e luz, logos de parceiros, programação de filmes de mostras de cinema, etc. O tamanho máximo do arquivo deve ser 60MB.</p>
+<p> Em caso de envio de fotografia, considerar as seguintes especificações técnicas:<br />
+- formato: horizontal <br />
+- tamanho: mínimo de 300dpi”</p>
+
+
+<?php
+
+if( isset( $_POST['enviar'] ) ) {
+
+    $pathToSave = '../uploads/';
+
+    // A variavel $_FILES é uma variável do PHP, e é ela a responsável
+    // por tratar arquivos que sejam enviados em um formulário
+    // Nesse caso agora, a nossa variável $_FILES é um array com 3 dimensoes
+    // e teremos de trata-lo, para realizar o upload dos arquivos
+    // Quando é definido o nome de um campo no form html, terminado por []
+    // ele é tratado como se fosse um array, e por isso podemos ter varios
+    // campos com o mesmo nome
+    $i = 0;
+    $msg = array( );
+    $arquivos = array( array( ) );
+    foreach(  $_FILES as $key=>$info ) {
+        foreach( $info as $key=>$dados ) {
+            for( $i = 0; $i < sizeof( $dados ); $i++ ) {
+                // Aqui, transformamos o array $_FILES de:
+                // $_FILES["arquivo"]["name"][0]
+                // $_FILES["arquivo"]["name"][1]
+                // $_FILES["arquivo"]["name"][2]
+                // $_FILES["arquivo"]["name"][3]
+                // para
+                // $arquivo[0]["name"]
+                // $arquivo[1]["name"]
+                // $arquivo[2]["name"]
+                // $arquivo[3]["name"]
+                // Dessa forma, fica mais facil trabalharmos o array depois, para salvar
+                // o arquivo
+                $arquivos[$i][$key] = $info[$key][$i];
+            }
+        }
+    }
+
+    $i = 1;
+
+    // Fazemos o upload normalmente, igual no exemplo anterior
+    foreach( $arquivos as $file ) {
+
+        // Verificar se o campo do arquivo foi preenchido
+        if( $file['name'] != '' ) {
+            $arquivoTmp = $file['tmp_name'];
+            $arquivo = $pathToSave.$file['name'];
+			$arquivo_base = $file['name'];
+			if(file_exists($arquivo)){
+				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
+			}else{
+				$idEvento = $_SESSION['idEvento'];
+			include "../include/conecta_mysql.php";
+			$sql = "INSERT INTO ig_arquivo (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , '$arquivo_base' , '$idEvento', '1' );";
+			mysqli_query($con,$sql);
+			gravarLog($sql);
+			
+            if( !move_uploaded_file( $arquivoTmp, $arquivo ) ) {
+                $msg[$i] = 'Erro no upload do arquivo '.$i;
+            } else {
+                $msg[$i] = sprintf('Upload do arquivo %s foi um sucesso!',$i);
+            }
+			}
+       } 
+        $i++;
+    }
+
+    // Imprimimos as mensagens geradas pelo sistema
+
+ foreach( $msg as $e ) {
+	 	echo " <div id = 'mensagem_upload'>";
+        printf('%s<br>', $e);
+		echo " </div>";
+    }
+
+}
+
+?>
+
+<br />
+<div class = "center">
+<form method='POST' action="?perfil=evento&p=arquivos" enctype='multipart/form-data'>
+<p><input type='file' name='arquivo[]'></p>
+<p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+  <p><input type='file' name='arquivo[]'></p>
+  <p><input type='file' name='arquivo[]'></p>
+    <br>
+    <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar' name='enviar'>
+</form>
+</div>
+
+
+					</div>
+				  </div>
+                  
+			  </div>
+			  
+		</div>
+	</section>
+
+	<section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+ <h2>Arquivos anexados</h2>
+<h5>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</h5>
+					</div>
+			<div class="table-responsive list_info">
+                         <?php listaArquivos($_SESSION['idEvento']); ?>
+			</div>
+				  </div>
+			  </div>  
+
+
+		</div>
+	</section>
+
 
 <?php 
 break;
 case "ocorrencias" :
+include "../include/menuEvento.php";
 
 if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	
@@ -616,7 +1352,7 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 if(isset($_POST['inserir'])){
 	$sql_inserir = "INSERT INTO `ig_ocorrencia` (`idOcorrencia`, `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`) VALUES (NULL, '$tipoOcorrencia', NULL, '$local', '$idEvento', '$segunda', '$terca', '$quarta', '$quinta', '$sexta', '$sabado', '$domingo', '$dataInicio', '$dataFinal', '$horaInicio', '$horaFinal', '$timezone', '$diaInteiro', '$diaEspecial', '$libras', '$audiodescricao', '$valorIngresso', '$retiradaIngresso', '$localOutros', '$lotacao', '$reservados', '$duracao', '$precoPopular', '$frequencia', '$publicado');";
 
-	if(mysql_query($sql_inserir)){
+	if(mysqli_query($con,$sql_inserir)){
 		$mensagem = "Ocorrência inserida com sucesso!";	
 		gravarLog($sql_inserir);	
 	}else{
@@ -653,7 +1389,7 @@ if(isset($_POST['atualizar'])){
 
 							 WHERE 	`idOcorrencia` = '$idOc'";
 	
-	if(mysql_query($sql_atualizar_ocorrencia)){
+	if(mysqli_query($con,$sql_atualizar_ocorrencia)){
 		$mensagem = "Ocorrência atualizada com sucesso!";	
 		gravarLog($sql_atualizar_ocorrencia);	
 	}else{
@@ -669,9 +1405,9 @@ if(isset($_POST['duplicar'])){
 	$sql_duplicar_ocorrencia = "INSERT INTO ig_ocorrencia (`idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`) SELECT `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado` FROM ig_ocorrencia WHERE `idOcorrencia` = '$idOc'";
 
 
-	if(mysql_query($sql_duplicar_ocorrencia)){
+	if(mysqli_query($con,$sql_duplicar_ocorrencia)){
 		$mensagem = "Ocorrência duplicada com sucesso!";	
-		gravarLog($sql_duplicaragar_ocorrencia);	
+		gravarLog($sql_duplicar_ocorrencia);	
 	}else{
 		$mensagem = "Erro ao duplicar. Tente novamente.";
 	}
@@ -681,7 +1417,7 @@ if(isset($_POST['duplicar'])){
 if(isset($_POST['apagar'])){
 	$idOc = $_POST['apagar'];
 	$sql_apagar_ocorrencia = "UPDATE ig_ocorrencia SET publicado = '0' WHERE idOcorrencia = $idOc";
-	if(mysql_query($sql_apagar_ocorrencia)){
+	if(mysqli_query($con,$sql_apagar_ocorrencia)){
 		$mensagem = "Ocorrência apagada com sucesso!";	
 		gravarLog($sql_apagar_ocorrencia);	
 	}else{
@@ -697,8 +1433,7 @@ $campo = recuperaEvento($_SESSION['idEvento']);
 ?>
 
 
-<? include "../include/menuEvento.php" ?>
-<? 
+<?php 
 	$action = $_GET['action'];
 	switch($action){
 		case "inserir":
@@ -980,8 +1715,8 @@ function habilitar(){
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
-                    <h3>Evento - Inserir ocorrências</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?><? echo $idOcorrencia; ?></h1>
+                    <h3>Evento - Editar ocorrências</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?><?php echo $idOcorrencia; ?></h1>
                     <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
                 </div>
             </div>
@@ -992,17 +1727,17 @@ function habilitar(){
             <form method="POST" action="?perfil=evento&p=ocorrencias&action=listar" class="form-horizontal" role="form">
              	<div class="form-group">  
                 	<div class="col-md-offset-2 col-md-6">
-  <input type="checkbox" name="subEvento" id="subEvento" <? if($ocor['idTipoOcorrencia'] == 6){ echo "checked"; } ?>/><label style="padding:0 10px 0 5px;"> Ocorrência para sub-evento?</label>
+  <input type="checkbox" name="subEvento" id="subEvento" <?php if($ocor['idTipoOcorrencia'] == 6){ echo "checked"; } ?>/><label style="padding:0 10px 0 5px;"> Ocorrência para sub-evento?</label>
                 	</div>
                 </div>
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
-                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" value="<? echo $ocor['dataInicio'] ?>" placeholder="">
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" value="<?php echo $ocor['dataInicio'] ?>" placeholder="">
                		 </div>
                 	<div class=" col-md-6">
                 		<label>Data encerramento</label>
-                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" value="<? echo $ocor['dataFinal'] ?>"placeholder="só preencha se for temporada">
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" value="<?php if($ocor['dataFinal'] != '0000-00-00'){echo $ocor['dataFinal'];} ?>"placeholder="só preencha se for temporada">
                		</div>
                 </div>
                 <div class="form-group">
@@ -1066,7 +1801,7 @@ function habilitar(){
                 	<div class="col-md-offset-2 col-md-8">
                		 	<label>Sala / espaço (antes selecione a instituição)</label>
                 		<select class="form-control" name="local" id="local" >
-                        <? geraOpcao("ig_local",$ocor['local'],$inst); ?></select>
+                        <?php geraOpcao("ig_local",$ocor['local'],$inst); ?></select>
                 	</div>
                 </div>	
                 <div class="form-group">
@@ -1081,7 +1816,7 @@ function habilitar(){
                 </div>
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-8">
-                    	<input type="hidden" name="atualizar" value="<? echo $ocor['idOcorrencia']; ?>"  />
+                    	<input type="hidden" name="atualizar" value="<?php echo $ocor['idOcorrencia']; ?>"  />
                 		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Atualizar ocorrência"  />
                		 </div>
                 </div>
@@ -1207,1221 +1942,10 @@ function habilitar(){
 
 <?php
 	break; // fecha a switch action
-	}
+	} 
 	?>
 
 
-<?php 
-break;
-case "conteudo" :
-if(isset($_POST['atualizar'])){
-
-		
-	// Atualiza o banco
-	$sinopse = addslashes($_POST['sinopse']);
-	$releaseCom = addslashes($_POST['releaseCom']); 
-	$parecerArtistico = addslashes($_POST['parecerArtistico']); 
-	$linksCom = addslashes($_POST['linksCom']); 
-
-	$sql_atualizar = "UPDATE `ig_evento` SET 
-	`sinopse` = '$sinopse', 
-	`releaseCom` = '$releaseCom', 
-	`parecerArtistico` = '$parecerArtistico', 
-	`linksCom` = '$linksCom'
-	WHERE `ig_evento`.`idEvento` = ".$_SESSION['idEvento'].";";
-
-
-	if(mysql_query($sql_atualizar)){
-		$mensagem = "Atualizado com sucesso!";
-		gravarLog($sql_atualizar);	
-	}else{
-		$mensagem = "Erro ao atualizar... tente novamente";
-		
-	}
-
-}
-$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
-
-
-?>
-<? include "../include/menuEvento.php" ?>
-<section id="inserir" class="home-section bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Evento - Conteúdo</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?></h1>
-                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
-                </div>
-            </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-offset-1 col-md-10">
-        <form method="POST" action="?perfil=evento&p=conteudo" class="form-horizontal" role="form">
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Sinopse *</label>
-            		<textarea name="sinopse" class="form-control" rows="10" placeholder="Texto para divulgação e sob editoria da area de comunicação. Não ultrapassar 400 caracteres."><?php echo $campo["sinopse"] ?></textarea>
-            	</div> 
-            </div>
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Release *</label>
-            		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
-            	</div> 
-            </div>
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Parecer artístico*</label>
-            		<textarea name="parecerArtistico" class="form-control" rows="10" placeholder="Texto usado fins jurídicos e confecção de contratos."><?php echo $campo["parecerArtistico"] ?></textarea>
-            	</div> 
-            </div>
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Links *</label>
-            		<textarea name="linksCom" class="form-control" rows="10" placeholder="Links para auxiliar a divulgação e o jurídico. Site oficinal, vídeos, clipping, artigos, etc "><?php echo $campo["linksCom"] ?></textarea>
-            	</div> 
-            </div>
-
-
-            <div class="form-group">
-	            <div class="col-md-offset-2 col-md-8">
-                	<input type="hidden" name="atualizar" value="1" />
-    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
-            	</div>
-            </div>
-            </form>
-        </div>
-    </div>
-</section>  
-<?php 
-break;
-case "internos" :
-
-if(isset($_POST['atualizar'])){
-	//gera as variáveis
-
-	$ig_produtor_nome = $_POST['ig_produtor_nome'];
-	$ig_produtor_telefone = $_POST['ig_produtor_telefone'];
-	$ig_produtor_email = $_POST['ig_produtor_email'];
-	$ig_producao_equipe = addslashes($_POST['ig_producao_equipe']);		
-	$ig_producao_infraestrutura = addslashes($_POST['ig_producao_infraestrutura']);
-
-	if(isset($_POST['ig_comunicacao_registroFotografia'])){
-		$ig_comunicacao_registroFotografia = 1;
-	}else{
-		$ig_comunicacao_registroFotografia = 0;
-	}
-	
-	if(isset($_POST['ig_comunicacao_registroVideo'])){
-		$ig_comunicacao_registroVideo = 1;
-	}else{
-		$ig_comunicacao_registroVideo = 0;
-	}
-
-	if(isset($_POST['ig_comunicacao_registroAudio'])){
-		$ig_comunicacao_registroAudio = 1;
-	}else{
-		$ig_comunicacao_registroAudio = 0;
-	}
-	$idEvento = $_SESSION['idEvento'];
-	
-	//Produtor
-	
-	//verifica se há produtor
-	$ver = recuperaEvento($_SESSION['idEvento']);
-	if($ver['ig_produtor_idProdutor'] == 0){
-	
-		$sql_inserir_produtor = "INSERT INTO  `ig_produtor` (`idProdutor` ,`nome` ,`email` ,`telefone` ,`idSpCultura`
-) VALUES ( NULL ,  '$ig_produtor_nome',  '$ig_produtor_email',  '$ig_produtor_telefone',  '' )";
-
-		if(mysql_query($sql_inserir_produtor)){		
-			$mensagem = "Produtor inserido com sucesso! ";	
-			$idProdutor = mysql_insert_id(); //recupera o idProdutor inserido
-			mysql_query("UPDATE ig_evento SET ig_produtor_idProdutor = '$idProdutor' WHERE idEvento = $idEvento");
-			gravarLog($sql_inserir_produtor); //grava log
-		}else{
-			$mensagem = "Erro ao atualizar!";
-		}
-	}else{
-		$sql_atualizar_produtor = "UPDATE ig_produtor SET `nome` = '$ig_produtor_nome' ,`email` = '$ig_produtor_email' ,`telefone` = '$ig_produtor_telefone' WHERE idProdutor = ".$ver['ig_produtor_idProdutor'];
-		if(mysql_query($sql_atualizar_produtor)){		
-			$mensagem = "Produtor inserido com sucesso! ";	
-			gravarLog($sql_atualizar_produtor); //grava log
-		}else{
-			$mensagem = "Erro ao atualizar!";
-		}
-			
-	}
-	
-	//Produção
-	//Verifica se já existe o registro na tabela
-	$ver = verificaExiste("ig_producao","ig_evento_idEvento",$_SESSION['idEvento'],0);
-	if($ver['numero'] == 0){
-		$idEvento = $_SESSION['idEvento'];
-		$sql_inserir_producao = "INSERT INTO  `ig_producao` (`idProducao` ,`ig_evento_idEvento` ,`carros` ,`equipe` ,`infraestrutura`, `registroAudio`, `registroVideo`, `registroFotografia` ) VALUES ( NULL ,  '$idEvento',  '',  '$ig_producao_equipe',  '$ig_producao_infraestrutura', '$ig_comunicacao_registroAudio', '$ig_comunicacao_registroVideo', '$ig_comunicacao_registroFotografia' )";
-		if(mysql_query($sql_inserir_producao)){		
-			$mensagem02 = "Informações de produção inseridas com sucesso! ";	
-			gravarLog($sql_inserir_producao); //grava log
-		}else{
-			$mensagem02 = "Erro ao atualizar!";
-		}
-	}else{
-		$sql_atualizar_producao = "UPDATE ig_producao SET  `equipe` = '$ig_producao_equipe' ,`infraestrutura` = '$ig_producao_infraestrutura', `registroAudio` = '$ig_comunicacao_registroAudio', `registroVideo` = '$ig_comunicacao_registroVideo' , `registroFotografia` = '$ig_comunicacao_registroFotografia' WHERE 
-`ig_evento_idEvento` = $idEvento";
-		if(mysql_query($sql_atualizar_producao)){		
-			$mensagem02 = "Informações de produção inseridas com sucesso! ";	
-			gravarLog($sql_atualizar_producao); //grava log
-		}else{
-			$mensagem02 = "Erro ao atualizar!";
-		}
-	}
-}
-
-
-
-$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
-$interno = recuperaDados("ig_servico",$_SESSION['idEvento'],"ig_evento_idEvento"); // recupera os dados dos serviços internos do evento em questão
-$com = recuperaDados("ig_comunicaco",$_SESSION['idEvento'],"ig_evento_idEvento"); // recupera os dados de comunicação do evento em questão
-$produtor = recuperaProdutor($campo['ig_produtor_idProdutor']); // recupera dados do produtor
-$producao = recuperaDados("ig_producao",$campo['idEvento'],"ig_evento_idEvento"); // recupera dados da produção
-?>
-<? include "../include/menuEvento.php" ?>
-
-<section id="inserir" class="home-section bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Evento - Serviços internos</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?></h1>
-                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
-                    <h4><?php if(isset($mensagem02)){echo $mensagem02;} ?></h4>
-                </div>
-            </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-offset-1 col-md-10">
-        <form method="POST" action="?perfil=evento&p=internos" class="form-horizontal" role="form">
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Nome do produtor do evento</label>
-            		<input type="text" name="ig_produtor_nome" class="form-control" id="ig_produtor_nome" value="<?php echo $produtor['nome'] ?>"/>
-            	</div> 
-            </div>
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Telefones</label>
-            		<input type="text" name="ig_produtor_telefone" class="form-control" id="inputSubject" value="<?php echo $produtor['telefone'] ?>"/>
-            	</div> 
-            </div>       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Email</label>
-            		<input type="text" name="ig_produtor_email" class="form-control" id="inputSubject" value="<?php echo $produtor['email'] ?>"/>
-            	</div> 
-            </div>            
-
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Equipe</label>
-            		<textarea name="ig_producao_equipe" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $producao["equipe"] ?></textarea>
-            	</div> 
-            </div>
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Infraestrutura</label>
-            		<textarea name="ig_producao_infraestrutura" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $producao["infraestrutura"] ?></textarea>
-            	</div> 
-            </div>            
-                <div class="form-group">
-                    
-           			<h5>Pedido de documentação</h5>
-	            	<div class="col-md-offset-2 col-md-8">
-
-    		            <input type="checkbox" name="ig_comunicacao_registroFotografia" id="especial01" <? checar($producao['registroFotografia']) ?> /><label  style="padding:0 10px 0 5px;">Fotografia</label>
-           			    <input type="checkbox" name="ig_comunicacao_registroAudio" id="especial02" <? checar($producao['registroAudio']) ?>/><label  style="padding:0 10px 0 5px;">Áudio</label>
-            		    <input type="checkbox" name="ig_comunicacao_registroVideo" id="especial03" <? checar($producao['registroVideo']) ?>/><label  style="padding:0 10px 0 5px;">Vídeo</label>
-                	</div>                     
-                </div>
-            <div class="form-group">
-	            <div class="col-md-offset-2 col-md-8">
-                	<input type="hidden" name="atualizar" value="1" />
-    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
-            	</div>
-            </div>
-            </form>
-        </div>
-    </div>
-</section>  
-
-<?php 
-break;
-case "area" :
-$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
-?>
-<? include "../include/menuEvento.php" ?>
-<section id="inserir" class="home-section bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Evento - Espeficidades de Área</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?></h1>
-                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
-                </div>
-            </div>
-    </div>
-    
-    <div class="row">
-
-        <div class="col-md-offset-1 col-md-10">
-	       <form method="POST" action="?perfil=evento&p=area" class="form-horizontal" role="form">
-
-<?php
-
-
-
-
-if($campo['ig_tipo_evento_idTipoEvento'] == 2){ // Artes Visuais
-
-	$idTabela = "ig_artes_visuais";
-	$idCampo = "idEvento";
-	$idDado = $_SESSION['idEvento'];
-	$st = 0;
-	
-	if(isset($_POST['atualizar'])){
-		
-		$ig_artesvisuais_numero = $_POST['ig_artesvisuais_numero'];
-		$ig_artesvisuais_tipo = $_POST['ig_artesvisuais_tipo'];
-		$ig_artesvisuais_valorTotal = dinheiroDeBr($_POST['ig_artesvisuais_valorTotal']);
-		//verifica se existe um registro na tabela
-		$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
-		
-			if($ver['numero'] == 0){ // insere um registro novo
-				$sql_insere_artes = "INSERT INTO  `ig_artes_visuais` (`idArtes` ,`idEvento` ,`numero` ,`tipo` ,`valorTotal`)VALUES (NULL ,  '$idDado',  '$ig_artesvisuais_numero',  '$ig_artesvisuais_tipo',  '$ig_artesvisuais_valorTotal');";
-				if(mysql_query($sql_insere_artes)){		
-					$mensagem = "Atualizado com sucesso! ";	
-					gravarLog($sql_insere_artes); //grava log
-				}else{
-					$mensagem = "Erro ao atualizar!";
-				}
-			}else{ //atualiza o registro existente
-				$sql_atualiza_artes = "UPDATE ig_artes_visuais SET numero = '$ig_artesvisuais_numero', tipo = '$ig_artesvisuais_tipo', valorTotal = '$ig_artesvisuais_valorTotal'";
-				if(mysql_query($sql_atualiza_artes)){		
-					$mensagem = "Atualizado com sucesso! ";	
-					gravarLog($sql_atualiza_artes); //grava log
-				}else{
-					$mensagem = "Erro ao atualizar!";
-				}
-		}
-}
-
-$artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
-?>
-				<h3>Artes Visuais</h3>
-                <h4><? if(isset($mensagem)){echo $mensagem;} ?><? echo $ver['numero'] ?></h4>
-
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-                    	<label>Número de contratados</label>
-                    	<input type="text" class="form-control" name="ig_artesvisuais_numero" value="<?php if(isset($artes)){echo $artes['numero'];} ?>" id="" placeholder="">
-                	</div>
-               		<div class=" col-md-6">
-                    	<label>Tipo de contratação</label>
-                		 <select class="form-control" name="ig_artesvisuais_tipo" id="inputSubject" >
-                        <option value="Edital" <?php if(isset($artes)){if($artes['tipo'] == "Edital"){echo "selected";}} ?> >Edital</option>
-                        <option value="Selecionado" <?php if(isset($artes)){if($artes['tipo'] == "Selecionado"){echo "selected";}} ?>>Selecionado</option>
-                        <option value="Jurado" <?php if(isset($artes)){if($artes['tipo'] == "Jurado"){echo "selected";}} ?>>Jurado</option>
-                        </select>
-                	</div>
-                </div>
-
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Valor do cachê *</label>
-            		<input type="text" name="ig_artesvisuais_valorTotal" class="form-control" id="valor" value="<?php if(isset($artes)){echo $artes['valorTotal'];} ?>"/>
-            	</div> 
-            </div>
-<?
-}else if(($campo['ig_tipo_evento_idTipoEvento'] == 3) OR // Teatro e Dança
-		($campo['ig_tipo_evento_idTipoEvento'] == 7) OR
-		($campo['ig_tipo_evento_idTipoEvento'] == 8) OR
-		($campo['ig_tipo_evento_idTipoEvento'] == 14) OR
-		($campo['ig_tipo_evento_idTipoEvento'] == 15) OR
-		($campo['ig_tipo_evento_idTipoEvento'] == 16) OR
-		($campo['ig_tipo_evento_idTipoEvento'] == 17))
-{ 
-
-	$idTabela = "ig_teatro_danca";
-	$idCampo = "ig_evento_idEvento";
-	$idDado = $_SESSION['idEvento'];
-	$st = 0;
-	
-	if(isset($_POST['atualizar'])){
-		
-		$ig_teatro_danca_estreia = $_POST['ig_teatro_danca_estreia'];
-		$ig_teatro_danca_genero = $_POST['ig_teatro_danca_genero'];
-		
-		//verifica se existe um registro na tabela
-		$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
-		
-			if($ver['numero'] == 0){ // insere um registro novo
-				$sql_insere_teatro = "INSERT INTO  `ig_teatro_danca` (`idTeatro` ,`ig_evento_idEvento` ,`estreia` ,`genero`)VALUES (NULL ,  '$idDado',  '$ig_teatro_danca_estreia',  '$ig_teatro_danca_genero');";
-				if(mysql_query($sql_insere_teatro)){		
-					$mensagem = "Atualizado com sucesso! ";	
-					gravarLog($sql_insere_teatro); //grava log
-				}else{
-					$mensagem = "Erro ao atualizar!";
-				}
-			}else{ //atualiza o registro existente
-				$sql_atualiza_teatro = "UPDATE ig_teatro_danca SET estreia = '$ig_teatro_danca_estreia', genero = '$ig_teatro_danca_genero' WHERE ig_evento_idEvento = $idDado";
-				if(mysql_query($sql_atualiza_teatro)){		
-					$mensagem = "Atualizado com sucesso! ";	
-					gravarLog($sql_atualiza_teatro); //grava log
-				}else{
-					$mensagem = "Erro ao atualizar!";
-				}
-		}
-}
-
-$artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
-
-
-?>
-				<h3>Teatro / Dança</h3>
-                <h4><? if(isset($mensagem)){echo $mensagem;} ?></h4>
-
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-2">
-                    	<label>Estréia?</label>
-                		 <select class="form-control" name="ig_teatro_danca_estreia" id="inputSubject" >
-                        <option value="1" <?php if(isset($artes)){if($artes['estreia'] == "1"){echo "selected";}} ?> >Sim</option>
-                        <option value="0" <?php if(isset($artes)){if($artes['estreia'] == "0"){echo "selected";}} ?>>Não</option>
-                        </select>
-                	</div>
-               		<div class=" col-md-6">
-                    	<label>Gênero</label>
-                    	<input type="text" class="form-control" name="ig_teatro_danca_genero" value="<?php if(isset($artes)){echo $artes['genero'];} ?>" id="" placeholder="">
-
-                	</div>
-                </div>
-
-<?
-}else if(($campo['ig_tipo_evento_idTipoEvento'] == 4) OR // Oficinas e Palestras
-	($campo['ig_tipo_evento_idTipoEvento'] == 5))
-{ 
-?>
-			<h1>Módulo do Siscontrat</h1>
-<!--                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-2">
-                		<label>Certificado</label>
-                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm"/>
-                	</div> 
-                	<div class="col-md-3">
-                		<label>Vagas *</label>
-                		<input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="em reais">
-               		</div>
-             	   <div class=" col-md-3">
-                		<label>Forma de inscrição *</label>
-               			<input type="text" id="duracao" name="duracao" class="form-control" id="" placeholder="em minutos">
-                	</div>
-                </div>
-                
-                <div class="form-group">
-                <h4>Período de Inscrição</h4>
-                	<div class="col-md-offset-2 col-md-6">
-               			 <label>Início</label>
-                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="">
-               		 </div>
-                	<div class=" col-md-6">
-                		<label>Encerramento</label>
-                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" placeholder="só preencha se for temporada">
-               		</div>
-                </div>
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-               			 <label>Resultado</label>
-                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" placeholder="">
-               		 </div>
-                	<div class=" col-md-6">
-                		<label>Material requisitado</label>
-                		<input type="text" name="dataFinal" class="form-control" id="datepicker02"  placeholder="só preencha se for temporada">
-               		</div>
-				</div>
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Público-alvo</label>
-            		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
-            	</div> 
-            </div> 
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Formas de pagamento do oficineiro</label>
-            		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
-            	</div> 
-            </div>                                
-                <div class="form-group">
-	                <div class="col-md-offset-2 col-md-8">
-    		            <input type="checkbox" name="segunda" id="diasemana01" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Segunda</label>
-           			    <input type="checkbox" name="terca" id="diasemana02" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Terça</label>
-            		    <input type="checkbox" name="quarta" id="diasemana03" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quarta</label>
-            		    <input type="checkbox" name="quinta" id="diasemana04" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Quinta</label>
-           				<input type="checkbox" name="sexta" id="diasemana05" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Sexta</label>
-          		      	<input type="checkbox" name="sabado" id="diasemana06" disabled="disabled"/><label style="padding:0 10px 0 5px;"> Sábado</label>
-            		    <input type="checkbox" name="domingo" id="diasemana07" disabled="disabled"/><label  style="padding:0 10px 0 5px;"> Domingo</label>
-                	</div>                     
-                </div>
-                <div class="form-group">
-                    
-           			
-	            	<div class="col-md-offset-2 col-md-8">
-                    <input type="checkbox" name="diaEspecial" id="diaEspecial" onclick="habilitar()"/><label  style="padding:0 20px 0 5px;">Dia especial?</label>
-    		            <input type="checkbox" name="audiodescricao" id="especial01" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Audiodescricão</label>
-           			    <input type="checkbox" name="libras" id="especial02" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Libras</label>
-            		    <input type="checkbox" name="precoPopular" id="especial03" disabled="disabled"/><label  style="padding:0 10px 0 5px;">Preço popular</label>
-                	</div>                     
-                </div>
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-2">
-                		<label>Horário de início</label>
-                		<input type="text" name="hora" class="form-control"id="hora" placeholder="hh:mm"/>
-                	</div> 
-                	<div class="col-md-3">
-                		<label>Valor ingresso *</label>
-                		<input type="text" name="valorIngresso" class="form-control" id="valor" placeholder="em reais">
-               		</div>
-             	   <div class=" col-md-3">
-                		<label>Duração *</label>
-               			<input type="text" id="duracao" name="duracao" class="form-control" id="" placeholder="em minutos">
-                	</div>
-                </div>
-                       
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-8">
-               		 <label>Sistema de retirada de ingressos</label>
-               		 <select class="form-control" name="retiradaIngresso" id="inputSubject" >
-               		 <option>Selecione</option>
-					<?php geraOpcao("ig_retirada","","") ?>
-                	</select>
-                	</div>
-                </div>
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-8">
-                		<label>Local / instituição *</label><img src="images/loading.gif" class="loading" style="display:none" />
-                		<select class="form-control" name="instituicao" id="instituicao" >
-                		<option>Selecione</option>
-                		<?php geraOpcao("ig_instituicao","","") ?>
-                		</select>
-                	</div>
-                </div>
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-8">
-               		 	<label>Sala / espaço (antes selecione a instituição)</label>
-                		<select class="form-control" name="local" id="local" ></select>
-                	</div>
-                </div>	
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-                    	<label>Ingressos disponíveis</label>
-                    	<input type="text" class="form-control" name="ingressosDisponiveis" id="" placeholder="">
-                	</div>
-               		<div class=" col-md-6">
-                    	<label>Ingressos reservados</label>
-                		<input type="text" class="form-control" name="ingressosReservados" id="" placeholder="">
-                	</div>
-                </div>
-                <div class="form-group">
-                	<div class="col-md-offset-2 col-md-8">
-                    	<input type="hidden" name="inserir" value="1"  />
-                		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir ocorrência"  />
-               		 </div>
-                </div>-->
-
-
-<?
-}else if(($campo['ig_tipo_evento_idTipoEvento'] == 11) OR // Música
-		($campo['ig_tipo_evento_idTipoEvento'] == 12))
-{ 
-
-	$idTabela = "ig_musica";
-	$idCampo = "ig_evento_idEvento";
-	$idDado = $_SESSION['idEvento'];
-	$st = 0;
-	
-	if(isset($_POST['atualizar'])){
-		
-		$ig_musica_genero = $_POST['ig_musica_genero'];
-		$ig_musica_venda = $_POST['ig_musica_venda'];
-		$ig_musica_material = addslashes($_POST['ig_musica_material']);
-		//verifica se existe um registro na tabela
-		$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
-		
-			if($ver['numero'] == 0){ // insere um registro novo
-				$sql_insere_musica = "INSERT INTO  `ig_musica` (`idMusica` ,`ig_evento_idEvento` ,`genero` ,`venda` ,`material`)VALUES (NULL ,  '$idDado',  '$ig_musica_genero',  '$ig_musica_venda','$ig_musica_material');";
-				if(mysql_query($sql_insere_musica)){		
-					$mensagem = "Atualizado com sucesso! ";	
-					gravarLog($sql_insere_musica); //grava log
-				}else{
-					$mensagem = "Erro ao atualizar(3)!";
-				}
-			}else{ //atualiza o registro existente
-				$sql_atualiza_musica = "UPDATE ig_musica SET genero = '$ig_musica_genero', venda = '$ig_musica_venda', material = '$ig_musica_material' WHERE ig_evento_idEvento = $idDado";
-				if(mysql_query($sql_atualiza_musica)){		
-					$mensagem = "Atualizado com sucesso! ";	
-					gravarLog($sql_atualiza_musica); //grava log
-				}else{
-					$mensagem = "Erro ao atualizar(4)!";
-				}
-		}
-}
-
-$artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
-
-
-
-?>
-				<h3>Música</h3>
-                <h4><? if(isset($mensagem)){echo $mensagem;} ?></h4>
-                <div class="form-group">
-               		<div class="col-md-offset-2 col-md-6">
-                    	<label>Gênero</label>
-                    	<input type="text" class="form-control" name="ig_musica_genero" value="<?php if(isset($artes)){echo $artes['genero'];} ?>" id="" placeholder="Erudito, popular, rock, samba, experimental, etc">
-
-                	</div>
-                	<div class=" col-md-2">
-                    	<label>Venda de material</label>
-                		 <select class="form-control" name="ig_musica_venda" id="inputSubject" >
-                        <option value="1" <?php if(isset($artes)){if($artes['venda'] == "1"){echo "selected";}} ?> >Sim</option>
-                        <option value="0" <?php if(isset($artes)){if($artes['venda'] == "0"){echo "selected";}} ?>>Não</option>
-                        </select>
-                	</div>
-
-                </div>
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Descrição o material</label>
-            		<textarea name="ig_musica_material" class="form-control" rows="10" placeholder="Livro, camiseta, CD, DVD, etc"><?php echo $artes["material"] ?></textarea>
-            	</div> 
-            </div>                
-
-<? } 
-else if ($campo['ig_tipo_evento_idTipoEvento'] == 1){
-	if(isset($_GET['filme'])){
-		$filme = $_GET['filme'];
-	}else{
-		$filme = "listar";	
-	}
-	if($filme == 'listar'){		
-		
-		 ?>
-         <h1>Listar filmes</h1>
-         <?php 
-	}else if($filme == 'inserir'){
-		 ?>
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Inserir um filme</h3>
-                    <h1><?php echo $campo["cinema"] ?></h1>
-                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
-                </div>
-            </div>
-             <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Título</label>
-            		<input type="text" name="ig_cinema_titulo" class="form-control" id="ig_cinema_titulo" value=""/>
-            	</div> 
-            </div>
-			 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Título Original</label>
-            		<input type="text" name="ig_cinema_tituloOriginal" class="form-control" id="ig_cinema_tituloOriginal" value=""/>
-            	</div> 
-            </div>
-            <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-               			 <label>País de origem</label>
-                		<select class="form-control" name="ig_pais_idPais">
-                		<option>Selecione</option>
-                		<?php geraOpcao("ig_pais","","") ?>
-                		</select>
-               		 </div>
-                	<div class=" col-md-6">
-                		<label>País de origem (co-produção)</label>
-                		<select class="form-control" name="ig_pais_idPais_2">
-                		<option>Selecione</option>
-                		<?php geraOpcao("ig_pais","","") ?>
-                		</select>
-               		</div>
-             </div>
-            <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-            		<label>Ano de Produção</label>
-            		<input type="text" name="ig_cinema_anoProducao" class="form-control" id="ig_cinema_anoProducao" value=""/>
-               		 </div>
-                	<div class=" col-md-6">
-            		<label>Bitola</label>
-            		<input type="text" name="ig_cinema_bitola" class="form-control" id="ig_cinema_bitola" value=""/>
-               		</div>
-            </div>
-            <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-            		<label>Gênero</label>
-            		<input type="text" name="ig_cinema_genero" class="form-control" id="ig_cinema_genero" value=""/>
-               		 </div>
-                	<div class=" col-md-6">
-            		<label>Minutagem</label>
-            		<input type="text" name="ig_cinema_minutagem" class="form-control" id="ig_cinema_minutagem" value=""/>
-               		</div>
-            </div>
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Direção</label>
-            		<textarea name="ig_cinema_direcao" class="form-control" rows="10" placeholder="Listagem de diretores do filme."></textarea>
-            	</div> 
-            </div>
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Sinopse</label>
-            		<textarea name="ig_cinema_sinopse" class="form-control" rows="10" placeholder="Texto para divulgação. Não ultrapassar 400 caracteres."></textarea>
-            	</div> 
-            </div>
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Link do Trailer</label>
-            		<input type="text" name="ig_cinema_linkTrailer" class="form-control" id="ig_cinema_linkTrailer" value="" placeholder="http://"/>
-            	</div> 
-			</div>
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Elenco</label>
-            		<textarea name="ig_cinema_elenco" class="form-control" rows="10" placeholder="Listagem de todos os componentes do elenco."></textarea>
-            	</div> 
-            </div>
-
-         <?php 
-	}else if($filme == 'editar'){
-		 ?>
-         
-             <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Inserir um filme</h3>
-                    <h1><?php echo $campo["cinema"] ?></h1>
-                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
-                </div>
-            </div>
-             <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Título</label>
-            		<input type="text" name="ig_cinema_titulo" class="form-control" id="ig_cinema_titulo" value="<?php echo $sub['ig_cinema_titulo'] ?>"/>
-            	</div> 
-            </div>
-			 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Título Original</label>
-            		<input type="text" name="ig_cinema_tituloOriginal" class="form-control" id="ig_cinema_tituloOriginal" value="<?php echo $sub['ig_cinema_tituloOriginal'] ?>"/>
-            	</div> 
-            </div>
-            <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-               			 <label>País de origem</label>
-                		<select class="form-control" name="ig_pais_idPais">
-                		<option>Selecione</option>
-                		<?php geraOpcao("ig_pais","","") ?>
-                		</select>
-               		 </div>
-                	<div class=" col-md-6">
-                		<label>País de origem (co-produção)</label>
-                		<select class="form-control" name="ig_pais_idPais_2">
-                		<option>Selecione</option>
-                		<?php geraOpcao("ig_pais","","") ?>
-                		</select>
-               		</div>
-             </div>
-            <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-            		<label>Ano de Produção</label>
-            		<input type="text" name="ig_cinema_anoProducao" class="form-control" id="ig_cinema_anoProducao" value="<?php echo $sub['ig_cinema_anoProducao'] ?>"/>
-               		 </div>
-                	<div class=" col-md-6">
-            		<label>Bitola</label>
-            		<input type="text" name="ig_cinema_bitola" class="form-control" id="ig_cinema_bitola" value="<?php echo $sub['ig_cinema_bitola'] ?>"/>
-               		</div>
-            </div>
-            <div class="form-group">
-                	<div class="col-md-offset-2 col-md-6">
-            		<label>Gênero</label>
-            		<input type="text" name="ig_cinema_genero" class="form-control" id="ig_cinema_genero" value="<?php echo $sub['ig_cinema_genero'] ?>"/>
-               		 </div>
-                	<div class=" col-md-6">
-            		<label>Minutagem</label>
-            		<input type="text" name="ig_cinema_minutagem" class="form-control" id="ig_cinema_minutagem" value="<?php echo $sub['ig_cinema_minutagem'] ?>"/>
-               		</div>
-            </div>
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Direção</label>
-            		<textarea name="ig_cinema_direcao" class="form-control" rows="10" placeholder="Listagem de diretores do filme."><?php echo $campo["ig_cinema_direcao"] ?></textarea>
-            	</div> 
-            </div>
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Sinopse</label>
-            		<textarea name="ig_cinema_sinopse" class="form-control" rows="10" placeholder="Texto para divulgação. Não ultrapassar 400 caracteres."><?php echo $campo["ig_cinema_sinopse"] ?></textarea>
-            	</div> 
-            </div>
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Link do Trailer</label>
-            		<input type="text" name="ig_cinema_linkTrailer" class="form-control" id="ig_cinema_linkTrailer" value="<?php echo $sub['ig_cinema_linkTrailer'] ?>"/>
-            	</div> 
-			</div>
-			<div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Elenco</label>
-            		<textarea name="ig_cinema_elenco" class="form-control" rows="10" placeholder="Listagem de todos os componentes do elenco."><?php echo $campo["ig_cinema_elenco"] ?></textarea>
-            	</div> 
-            </div>        
-         <? } //fim da área de cinema ?>
-         
-
-
-
-
-
-	<?php
-	
-} // Fim das áreas 
-
-?>
-
-<?php
-	if($campo['subEvento'] == 1){
-
-	$idTabela = "ig_sub_evento";
-	$idCampo = "ig_evento_idEvento";
-	$idDado = $_SESSION['idEvento'];
-	$st = 0;
-	
-	if(isset($_POST['atualizar'])){
-		
-		$ig_sub_evento_titulo = $_POST['ig_sub_evento_titulo'];
-		$ig_sub_evento_idTipo = $_POST['ig_sub_evento_idTipo'];
-		$ig_sub_evento_descricao = addslashes($_POST['ig_sub_evento_descricao']);
-		//verifica se existe um registro na tabela
-		$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
-		
-			if($ver['numero'] == 0){ // insere um registro novo
-				$sql_insere_sub = "INSERT INTO  `ig_sub_evento` (`idSubEvento` ,`idTipo` ,`ig_evento_idEvento` , `titulo` ,`descricao`)VALUES (NULL ,    '$ig_sub_evento_idTipo', '$idDado', '$ig_sub_evento_titulo','$ig_sub_evento_descricao');";
-				if(mysql_query($sql_insere_sub)){		
-					$mensagem_s = "Atualizado com sucesso! ";	
-					gravarLog($sql_insere_sub); //grava log
-				}else{
-					$mensagem_s = "Erro ao atualizar(1)!";
-				}
-			}else{ //atualiza o registro existente
-				$sql_atualiza_sub = "UPDATE `ig_sub_evento` SET `idTipo` = '$ig_sub_evento_idTipo', `titulo` = '$ig_sub_evento_titulo', `descricao` = '$ig_sub_evento_descricao' WHERE ig_evento_idEvento = '$idDado'";
-				if(mysql_query($sql_atualiza_sub)){		
-					$mensagem_s = "Atualizado com sucesso! ";	
-					gravarLog($sql_atualiza_sub); //grava log
-				}else{
-					$mensagem_s = "Erro ao atualizar(2)!";
-				}
-		}
-}
-
-$sub = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
-?>
-
-
-			<h3>Sub-evento</h3>
-                            <h4><? if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Nome do Sub-evento</label>
-            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
-            	</div> 
-            </div>
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Tipo de Evento do Sub-evento</label>
-            		<select class="form-control" name="ig_sub_evento_idTipo" id="inputSubject" >
-						<option value="1"></option>
-						<?php echo geraOpcao("ig_tipo_evento",$sub['idTipo'],"") ?>
-                    </select>					
-            	</div>
-            </div>
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Descrição</label>
-            		<textarea name="ig_sub_evento_descricao" class="form-control" rows="10" placeholder="Descreva a atividade complementar ao evento."><?php echo $sub["descricao"] ?></textarea>
-            	</div> 
-            </div>
-
-
-
-
-            <div class="form-group">
-	            <div class="col-md-offset-2 col-md-8">
-                	<input type="hidden" name="atualizar" value="1" />
-    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
-            	</div>
-            </div>
-            </form>
-        </div>
-    </div>
-<? 	} //fim do subevento ?>
-</section>  
-
-<?php 
-
-break;
-case "externos" :?>
-<? include "../include/menuEvento.php" ?>
-
-<?
-	$idTabela = "ig_servico";
-	$idCampo = "ig_evento_idEvento";
-	$idDado = $_SESSION['idEvento'];
-	$st = 0;
-	
-	if(isset($_POST['atualizar'])){
-		
-		//carrega as variáveis
-	$ig_servico_legenda = $_POST['ig_servico_legenda'];
-	$ig_servico_traducao = $_POST['ig_servico_traducao'];
-	$ig_servico_seguro = $_POST['ig_servico_seguro'];
-	$ig_servico_transporte = $_POST['ig_servico_transporte'];
-	$ig_servico_montagem = $_POST['ig_servico_montagem'];
-	$ig_servico_passagens = $_POST['ig_servico_passagens'];
-	$ig_servico_itinerario = $_POST['ig_servico_itinerario'];
-	$ig_servico_hospedagem = $_POST['ig_servico_hospedagem'];
-	$ig_servico_locacao = $_POST['ig_servico_locacao'];
-	$ig_servico_bilhetagem = $_POST['ig_servico_bilhetagem'];
-		
-	//verifica se existe um registro na tabela
-	$ver = verificaExiste($idTabela,$idCampo,$idDado,$st);
-		
-	if($ver['numero'] == 0){ // insere um registro novo
-		$sql_insere_ext = "INSERT INTO `ig_servico` (`idServico`, `ig_evento_idEvento`, `legenda`, `traducao`, `graficos`, `passagens`, `itinerario`, `libras`, `audiodescricao`, `montagem`, `hospedagem`, `seguro`, `transporte`, `razaoSocial`, `cpfCnpj`, `banco`, `agencia`, `conta`, `bilhetagem`, `locacao`) VALUES (NULL, '$idDado', '$ig_servico_legenda', '$ig_servico_traducao', NULL, '$ig_servico_passagens', '$ig_servico_itinerario', NULL, NULL, '$ig_servico_montagem', '$ig_servico_hospedagem', '$ig_servico_seguro', '$ig_servico_transporte', NULL, NULL, NULL, NULL, NULL, '$ig_servico_bilhetagem', '$ig_servico_locacao');";
-				if(mysql_query($sql_insere_ext)){		
-					$mensagem_s = "Atualizado com sucesso! ";	
-					gravarLog($sql_insere_ext); //grava log
-				}else{
-					$mensagem_s = "Erro ao atualizar(1)!";
-				}
-			}else{ //atualiza o registro existente
-				$sql_atualiza_ext = "UPDATE `ig_sub_evento` SET `legenda` = '$ig_servico_legenda', traducao` = '$ig_servico_traducao', `seguro` = '$ig_servico_seguro', `transporte` = '$ig_servico_transporte',`montagem` = '$ig_servico_montagem', `passagens`= '$ig_servico_passagens', `itinerario`= '$ig_servico_itinerario',`hospedagem` = '$ig_servico_hospedagem',`locacao` = '$ig_servico_locacao',`bilhetagem` = '$ig_servico_bilhetagem'  WHERE ig_evento_idEvento = '$idDado'";
-				if(mysql_query($sql_atualiza_ext)){		
-					$mensagem_s = "Atualizado com sucesso! ";	
-					gravarLog($sql_atualiza_ext); //grava log
-				}else{
-					$mensagem_s = "Erro ao atualizar(2)!";
-				}
-		}
-}
-
-$externo = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo); 
-$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
-?>
-
-<section id="inserir" class="home-section bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Evento - Previsão de demandas de serviços externos</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?>  </h1>
-                    <h4><?php if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
-                </div>
-            </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-offset-1 col-md-10">
-        <form method="POST" action="?perfil=evento&p=externos" class="form-horizontal" role="form">
-       		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            	</div> 
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-8">
-             		<label>Legenda / legendagem *</label>
-            		<input type="text" name="ig_servico_legenda" class="form-control" id="inputSubject" value="<?php echo $externo['legenda'] ?>"/>
-                </div>
-            </div>
-            <div class="form-group">
-            <div class="col-md-offset-2 col-md-8">
-            		<label>Tradução *</label>
-            		<input type="text" name="ig_servico_traducao" class="form-control" id="inputSubject" value="<?php echo $externo['traducao'] ?>"/>
-        	    </div>
-      	    </div>
-
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Seguro *</label>
-            		<input type="text" name="ig_servico_seguro" class="form-control" id="inputSubject" value="<?php echo $externo['seguro'] ?>"/>
-            	</div>
-             </div>
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-              		<label>Transporte *</label>
-            		<input type="text" name="ig_servico_transporte" class="form-control" id="inputSubject" value="<?php echo $externo['transporte'] ?>"/>
-          	</div>
-            </div>
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-              		<label>Montagem fina*</label>
-            		<input type="text" name="ig_servico_montagem" class="form-control" id="inputSubject" value="<?php echo $externo['montagem'] ?>"/>
-          	</div>
-            </div>
-
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-              		<label>Passagem aérea *</label>
-            		<input type="text" name="ig_servico_passagens" class="form-control" id="inputSubject" value="<?php echo $externo['passagens'] ?>"/>
-          	</div>
-            </div>
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Descrição das passagens aéreas</label>
-            		<textarea name="ig_servico_itinerario" class="form-control" rows="10" placeholder="Descreva as datas, locais de ida e volta para as passagens aéreas."><?php echo $externo["itinerario"] ?></textarea>
-            	</div> 
-            </div>
-
-            <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-              		<label>Hospedagem</label>
-            		<input type="text" name="ig_servico_hospedagem" class="form-control" id="inputSubject" value="<?php echo $externo['hospedagem'] ?>"/>
-          	</div>
-            </div>
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Equipamentos para locação</label>
-            		<textarea name="ig_servico_locacao" class="form-control" rows="10" placeholder="Descreva equipamentos para locação."><?php echo $externo["locacao"] ?></textarea>
-            	</div> 
-            </div>
-            
-           <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Bilhetagem</label>
-            		<textarea name="ig_servico_bilhetagem" class="form-control" rows="10" placeholder="Ingresso rápido: Nome/Razão Social, CPF/CNPJ, Banco, Agência, Conta"><?php echo $externo["bilhetagem"] ?></textarea>
-            	</div> 
-            </div>
-            
-            <div class="form-group">
-	            <div class="col-md-offset-2 col-md-8">
-                	<input type="hidden" name="atualizar" value="1" />
-    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
-            	</div>
-            </div>
-            </form>
-        </div>
-    </div>
-</section>  
-
-<?php 
-break;
-case "arquivos" :
-if(isset($_POST['apagar'])){
-	$idArquivo = $_POST['apagar'];
-	$sql_apagar_arquivo = "UPDATE ig_arquivo SET publicado = 0 WHERE idArquivo = '$idArquivo'";
-	if(mysql_query($sql_apagar_arquivo)){
-		$arq = recuperaDados("ig_arquivo",$idArquivo,"idArquivo");
-		$mensagem =	"Arquivo ".$arq['arquivo']."apagado com sucesso!";
-		gravarLog($sql_apagar_arquivo);
-	}else{
-		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
-	}
-}
-$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
-?>
-<? include "../include/menuEvento.php" ?>
-
-    
-    	 <section id="enviar" class="home-section bg-white">
-		<div class="container">
-			  <div class="row">
-				  <div class="col-md-offset-2 col-md-8">
-					<div class="section-heading">
-                                        <h1><?php echo $campo["nomeEvento"] ?>  </h1>
-
-					 <h3>Envio de Arquivos</h3>
-<p>Nesta página, você envia os arquivos como o rider, mapas de cenas e luz, logos de parceiros, programação de filmes de mostras de cinema, etc. O tamanho máximo do arquivo deve ser 60MB.</p>
-<p> Em caso de envio de fotografia, considerar as seguintes especificações técnicas:<br />
-- formato: horizontal <br />
-- tamanho: mínimo de 300dpi”</p>
-
-
-<?php
-
-if( isset( $_POST['enviar'] ) ) {
-
-    $pathToSave = '../uploads/';
-
-    // A variavel $_FILES é uma variável do PHP, e é ela a responsável
-    // por tratar arquivos que sejam enviados em um formulário
-    // Nesse caso agora, a nossa variável $_FILES é um array com 3 dimensoes
-    // e teremos de trata-lo, para realizar o upload dos arquivos
-    // Quando é definido o nome de um campo no form html, terminado por []
-    // ele é tratado como se fosse um array, e por isso podemos ter varios
-    // campos com o mesmo nome
-    $i = 0;
-    $msg = array( );
-    $arquivos = array( array( ) );
-    foreach(  $_FILES as $key=>$info ) {
-        foreach( $info as $key=>$dados ) {
-            for( $i = 0; $i < sizeof( $dados ); $i++ ) {
-                // Aqui, transformamos o array $_FILES de:
-                // $_FILES["arquivo"]["name"][0]
-                // $_FILES["arquivo"]["name"][1]
-                // $_FILES["arquivo"]["name"][2]
-                // $_FILES["arquivo"]["name"][3]
-                // para
-                // $arquivo[0]["name"]
-                // $arquivo[1]["name"]
-                // $arquivo[2]["name"]
-                // $arquivo[3]["name"]
-                // Dessa forma, fica mais facil trabalharmos o array depois, para salvar
-                // o arquivo
-                $arquivos[$i][$key] = $info[$key][$i];
-            }
-        }
-    }
-
-    $i = 1;
-
-    // Fazemos o upload normalmente, igual no exemplo anterior
-    foreach( $arquivos as $file ) {
-
-        // Verificar se o campo do arquivo foi preenchido
-        if( $file['name'] != '' ) {
-            $arquivoTmp = $file['tmp_name'];
-            $arquivo = $pathToSave.$file['name'];
-			$arquivo_base = $file['name'];
-			if(file_exists($arquivo)){
-				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
-			}else{
-				$idEvento = $_SESSION['idEvento'];
-			include "../include/conecta_mysql.php";
-			$sql = "INSERT INTO ig_arquivo (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , '$arquivo_base' , '$idEvento', '1' );";
-			mysql_query($sql);
-			gravarLog($sql);
-			
-            if( !move_uploaded_file( $arquivoTmp, $arquivo ) ) {
-                $msg[$i] = 'Erro no upload do arquivo '.$i;
-            } else {
-                $msg[$i] = sprintf('Upload do arquivo %s foi um sucesso!',$i);
-            }
-			}
-       } 
-        $i++;
-    }
-
-    // Imprimimos as mensagens geradas pelo sistema
-
- foreach( $msg as $e ) {
-	 	echo " <div id = 'mensagem_upload'>";
-        printf('%s<br>', $e);
-		echo " </div>";
-    }
-
-}
-
-?>
-
-<br />
-<div class = "center">
-<form method='POST' action="?perfil=evento&p=arquivos" enctype='multipart/form-data'>
-<p><input type='file' name='arquivo[]'></p>
-<p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
-  <p><input type='file' name='arquivo[]'></p>
-  <p><input type='file' name='arquivo[]'></p>
-    <br>
-    <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar' name='enviar'>
-</form>
-</div>
-
-
-					</div>
-				  </div>
-                  
-			  </div>
-			  
-		</div>
-	</section>
-
-	<section id="list_items" class="home-section bg-white">
-		<div class="container">
-      			  <div class="row">
-				  <div class="col-md-offset-2 col-md-8">
-					<div class="section-heading">
- <h2>Arquivos anexados</h2>
-<h5>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</h5>
-					</div>
-			<div class="table-responsive list_info">
-                         <?php listaArquivos($_SESSION['idEvento']); ?>
-			</div>
-				  </div>
-			  </div>  
-
-
-		</div>
-	</section>
-
-<?php
-break;
-case "enviar" :
-$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
-?>
-<? include "../include/menuEvento.php" ?>
-<section id="inserir" class="home-section bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-                    <h3>Finalizar e enviar o pedido</h3>
-                    <h1><?php echo $campo["nomeEvento"] ?>  </h1>
-                    <h4><?php if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
-                </div>
-            </div>
-
-		</div>
-        <div class="col-md-offset-2 col-md-8">
-   			<div class="section-heading">
-               <div class="left">
-					 <h4>Descrição</h4>
-					 <?php descricaoEvento($_SESSION['idEvento']);  ?>
-				</div>
-		</div>
-		</div>
-    </div>
-</section>
-
-<?php 
-break;
-} //fim da switch ?>
-
-<?php }else{ //verificacao ?>
-
-<section id="contact" class="home-section bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-offset-2 col-md-8">
-                <div class="text-hide">
-	                <h1>Acesso negado.</h1>
-	                <h2>Contacte o administração do sistema.</h2>
-                </div>
-            </div>
-        </div>
-	</div>
-</section>                
-<?php } ?>
-
+<?php break; ?>
+<?php } 
+// fim eventos ?>

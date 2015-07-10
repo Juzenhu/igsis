@@ -10,7 +10,10 @@
                             <li><a href="?perfil=evento&p=area">Espeficidades</a></li>
                             <li><a href="?perfil=evento&p=externos">Serviços externos</a></li>
                             <li><a href="?perfil=evento&p=arquivos">Anexar arquivos</a></li>
-                            <li><a href="?perfil=contratados">Contratados - Siscontrat</a></li>
+                            <?php if($_SESSION['cinema'] == 1){ ?>
+                                <li><a href="#enviar">Módulo Cinema</a> 
+    						<?php } ?>
+                            <li><a href="?perfil=contratados">Contratados</a></li>
                             <li><a href="#">Ocorrências</a>
                              		<ul class="dl-submenu">
                                     	<li><a href="?perfil=evento&p=ocorrencias&action=listar">Listar ocorrências</a>

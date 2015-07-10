@@ -6,19 +6,20 @@ error_reporting(E_ALL);
 //header( 'Cache-Control: no-cache' );
 //header( 'Content-type: application/xml; charset="utf-8"', true );
 
-$con = mysql_connect( 'localhost', 'root', 'lic54eca' ) ;
-mysql_select_db( 'igsis_beta', $con );
+$con = mysqli_connect('localhost','root','','igsis');
+//mysqli_set_charset($con,"utf8");
 
-$cod = mysql_real_escape_string( $_GET['instituicao'] );
+$cod = mysqli_real_escape_string( $con,$_GET['instituicao'] );
 
 $cidades = array();
 
-$sql = "SELECT idEspaco, espaco
+$sql = "SELECT *
 		FROM ig_espaco
-		WHERE ig_instituicao_idInstituicao= '$cod'
+		WHERE ig_instituicao_idInstituicao = '$cod'
 		ORDER BY espaco";
-$res = mysql_query( $sql );
-while ( $row = mysql_fetch_assoc( $res ) ) {
+$res = mysqli_query($con,$sql);
+
+while ( $row = mysqli_fetch_array( $res ) ) {
 	$cidades[] = array(
 		'idEspaco'	=> $row['idEspaco'],
 		'espaco'			=> (utf8_encode($row['espaco'])),

@@ -39,19 +39,21 @@ NULL ,  '',  '',  '',  '',  '', NULL , NULL ,  '',  '',  '',  '',  '',  '',  '',
 )
 ";
 	// Executa a query
-	mysql_query($sql_inicio);
+	$con = bancoMysqli();
+	mysqli_query($con,$sql_inicio);
 	
 	// Retorna o ID gerado na tabela ig_evento
 	$sql_ultimo = "SELECT * FROM ig_evento ORDER BY idEvento DESC LIMIT 1";
-	$id_evento = mysql_query($sql_ultimo);
-	$id = mysql_fetch_array($id_evento);
+	$id_evento = mysqli_query($con,$sql_ultimo);
+	$id = mysqli_fetch_array($id_evento);
 	$_SESSION['idEvento'] = $id['idEvento'];
 	
 }
 
 function recuperaResponsavel($nomeResponsavel){
 	$sql = "SELECT * FROM ig_usuario WHERE nomeUsuario = '%$nomeResponsavel%'";
-	$query = mysql_query($sql);
+	$con = bancoMysqli();
+	$query = mysqli_query($sql,$con);
 	$num_resultado = mysql_num_rows($query);
 	if($num_resultado = 0){
 		$campo['existe'] = 0;

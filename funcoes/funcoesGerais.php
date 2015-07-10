@@ -5,15 +5,19 @@ igSmc v0.1 - 2015
 ccsplab.org - centro cultural são paulo
 */
 
-	//Verifica erro na string
-	//$mysqli = new mysqli("localhost", "root", "lic54eca","igsis_beta");
-	//if (!$mysqli->query($sql_inserir)) {
-    //printf("Errormessage: %s\n", $mysqli->error);
-	//}
+
 
 // Esta é a página para as funções gerais do sistema.
-
-
+function bancoMysqli(){ // Cria conexao ao banco. Substitui o include "conecta_mysql.php" .
+	$servidor = 'localhost';
+	$usuario = 'root';
+	$senha = '';
+	$banco = 'igsis';
+	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
+	mysqli_set_charset($con,"utf8");
+	return $con;
+}
+// Conecta-se ao banco de dados MySQL
 function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
 	$mysqli = new mysqli("localhost", "root", "lic54eca","igsis");
 	if (!$mysqli->query($sql_inserir)) {
@@ -23,12 +27,13 @@ function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
 
 
 function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia uma session
-	
-	$sql = "SELECT * FROM ig_usuario, ig_instituicao, ig_papelusuario WHERE ig_usuario.nomeUsuario = '$usuario' AND ig_instituicao.idInstituicao = ig_usuario.idInstituicao AND ig_papelusuario.idPapelUsuario = ig_usuario.ig_papelusuario_idPapelUsuario LIMIT 0,1"; //query que seleciona os campos que voltarão para na matriz
-	if(mysql_query($sql)){ //verifica erro no banco de dados
-	$query = mysql_query($sql);
-		if(mysql_num_rows($query) > 0){ // verifica se retorna usuário válido
-			$user = mysql_fetch_array($query);
+	$sql = "SELECT * FROM ig_usuario, ig_instituicao, ig_papelusuario WHERE ig_usuario.nomeUsuario = '$usuario' AND ig_instituicao.idInstituicao = ig_usuario.idInstituicao AND ig_papelusuario.idPapelUsuario = ig_usuario.ig_papelusuario_idPapelUsuario LIMIT 0,1";
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	 //query que seleciona os campos que voltarão para na matriz
+	if($query){ //verifica erro no banco de dados
+		if(mysqli_num_rows($query) > 0){ // verifica se retorna usuário válido
+			$user = mysqli_fetch_array($query);
 				if($user['senha'] == md5($_POST['senha'])){ // compara as senhas
 					session_start();
 					$_SESSION['usuario'] = $user['nomeUsuario'];
@@ -43,6 +48,7 @@ function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia u
 					header("Location: visual/index.php"); 
 
 				}else{
+
 			echo "A senha está incorreta.";
 			}
 		}else{
@@ -248,8 +254,8 @@ function gravarLog($log){ //grava na tabela ig_log os inserts e updates
 	$ip = $_SERVER["REMOTE_ADDR"];
 	$data = date('Y-m-d H:i:s');
 	$sql = "INSERT INTO `ig_log` (`idLog`, `ig_usuario_idUsuario`, `enderecoIP`, `dataLog`, `descricao`) VALUES (NULL, '$idUsuario', '$ip', '$data', '$logTratado')";
-
-	mysql_query($sql);
+		$mysqli = bancoMysqli();
+	$mysqli->query($sql);
 
 
 	
@@ -274,9 +280,9 @@ function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 	}else{
 		$sql = "SELECT * FROM $tabela";
 	}
-	
-	$query = mysql_query($sql);
-	while($option = mysql_fetch_row($query)){
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	while($option = mysqli_fetch_row($query)){
 		if($option[0] == $select){
 			echo "<option value='".$option[0]."' selected >".$option[1]."</option>";	
 		}else{
@@ -286,61 +292,38 @@ function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 }
 function recuperaModulo($pag){
 	$sql = "SELECT * FROM ig_modulo WHERE pag = '$pag'";
-	$query = mysql_query($sql);
-	$modulo = mysql_fetch_array($query);
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	$modulo = mysqli_fetch_array($query);
 	return $modulo;
 }
 	
 function listaModulos($perfil){ //gera as tds dos módulos a carregar
-
-	// gera uma array com todos os módulos instalados no sistema
-
-
 	// recupera quais módulos o usuário tem acesso
 	$sql = "SELECT * FROM ig_papelusuario WHERE idPapelUsuario = $perfil"; 
-	$query = mysql_query($sql);
-	$campoFetch = mysql_fetch_array($query,MYSQL_BOTH); // retorna a array com resultados
-
-	for($i = 1; $i < sizeof($campoFetch); $i++){
-		if($campoFetch[$i] == 1){
-			$k = mysql_field_name($query, $i);
-			$descricao = recuperaModulo($k);
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	$campoFetch = mysqli_fetch_array($query);
+	while($fieldinfo = mysqli_fetch_field($query)){
+		if(($campoFetch[$fieldinfo->name] == 1) AND ($fieldinfo->name != 'idPapelUsuario')){
+			$descricao = recuperaModulo($fieldinfo->name);
 			echo "<tr>";
 			echo "<td class='list_description'><b>".$descricao['nome']."</b></td>";
 			echo "<td class='list_description'>".$descricao['descricao']."</td>";
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=$k'>
+			<form method='POST' action='?perfil=$fieldinfo->name'>
 			<input type ='submit' class='btn btn-theme btn-lg btn-block' value='carregar'></td></form>"	;
 			echo "</tr>";
-		}	
-		
+		}
 	}
 		
-/*	function retornaNomeModulo($pag){
-		$sql = "SELECT * FROM ig_modulo WHERE pag = $pag";
-		$query = mysql_query($sql);
-		$campo = mysql_fetch_array($sql);
-		return $campo;	
-	}
-
-	for($i = 1; $i <= $numCampos; $i++){
-		if($campoFetch[$i] == 1){
-			$pag = mysql_field_name($query, $i);
-			$descricao = retornaNomeModulo($pag);
-			echo "<td class='list_description'>".$descricao['nome']."</td>";
-			echo "<td class='list_description'>".$descricao['descricao']."</td>";
-			echo "<td class='list_description'><button type='button' class='btn btn-theme btn-lg btn-block'>carregar</button></td>";		
-		} 	
-		
-	}
-*/	
-
 }
 function verificaAcesso($usuario,$pagina){
 	$sql = "SELECT * FROM ig_usuario,ig_papelusuario WHERE ig_usuario.idUsuario = $usuario AND ig_usuario.ig_papelusuario_idPapelUsuario = ig_papelusuario.idPapelUsuario LIMIT 0,1";
-	$query = mysql_query($sql);
-	$verifica = mysql_fetch_array($query);
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	$verifica = mysqli_fetch_array($query);
 	if($verifica["$pagina"] == 1){
 		return 1;
 	}else{
@@ -349,16 +332,18 @@ function verificaAcesso($usuario,$pagina){
 }
 
 function recuperaEvento($idEvento){
-	$sql = "SELECT * FROM ig_evento WHERE idEvento = $idEvento LIMIT 0,1";
-	$query = mysql_query($sql);
-	$campo = mysql_fetch_array($query);
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM ig_evento WHERE idEvento = '$idEvento' LIMIT 0,1";
+	$query = mysqli_query($con,$sql);
+	$campo = mysqli_fetch_array($query);
 	return $campo;		
 }	
 
 function recuperaDados($tabela,$idEvento,$campo){
-	$sql = "SELECT * FROM $tabela WHERE $campo = '$idEvento' LIMIT 0,1";
-	$query = mysql_query($sql);
-	$campo = mysql_fetch_array($query);
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM $tabela WHERE ".$campo." = '$idEvento' LIMIT 0,1";
+	$query = mysqli_query($con,$sql);
+	$campo = mysqli_fetch_array($query);
 	return $campo;		
 }
 
@@ -367,8 +352,9 @@ function recuperaDados($tabela,$idEvento,$campo){
 
 function opcaoUsuario($idInstituicao,$idUsuario){
 	$sql = "SELECT DISTINCT * FROM ig_usuario,ig_papelusuario WHERE ig_usuario.ig_papelusuario_idPapelUsuario = ig_papelusuario.idPapelUsuario AND ig_papelusuario.evento = 1";
-	$query = mysql_query($sql);
-	while($campo = mysql_fetch_array($query)){
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	while($campo = mysqli_fetch_array($query)){
 		if($campo['idUsuario'] == $idUsuario){
 			echo "<option value=".$campo['idUsuario']." selected >".$campo['nomeCompleto']."</option>";
 		}else{
@@ -379,14 +365,15 @@ function opcaoUsuario($idInstituicao,$idUsuario){
 }
 
 function verificaExiste($idTabela,$idCampo,$idDado,$st){
+	$con = bancoMysqli();
 	if($st == 1){ // se for 1, é uma string
 		$sql = "SELECT * FROM $idTabela WHERE $idCampo = '%$idDado%'";
 	}else{
 		$sql = "SELECT * FROM $idTabela WHERE $idCampo = '$idDado'";
 	}
-	$query = mysql_query($sql);
-	$numero = mysql_num_rows($query);
-	$dados = mysql_fetch_array($query);
+	$query = mysqli_query($con,$sql);
+	$numero = mysqli_num_rows($query);
+	$dados = mysqli_fetch_array($query);
 	$campo['numero'] = $numero;
 	$campo['dados'] = $dados;	
 	return $campo;
@@ -402,11 +389,12 @@ function retornaUltimo($idTabela){
 
 
 function recuperaIdDado($tabela,$id){
+	$con = bancoMysqli();
 	//recupera os nomes dos campos
 	$sql = "SELECT * FROM $tabela";
-	$query = mysql_query($sql);
-	$campo01 = mysql_field_name($query, 0);
-	$campo02 = mysql_field_name($query, 1);
+	$query = mysqli_query($con,$sql);
+	$campo01 = mysqli_field_name($query, 0);
+	$campo02 = mysqli_field_name($query, 1);
 	
 	$sql = "SELECT * FROM $tabela WHERE $campo01 = $id";
 	$query = mysql_query($sql);
@@ -415,15 +403,17 @@ function recuperaIdDado($tabela,$id){
 }
 
 function recuperaProdutor($idProdutor){
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_produtor WHERE idProdutor = $idProdutor";
-	$query = mysql_query($sql);
-	$campo = mysql_fetch_array($query);
+	$query = mysqli_query($con,$sql);
+	$campo = mysqli_fetch_array($query);
 	return $campo;	
 }
 
 function listaEventosGravados($idUsuario){ 
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 1";
-	$query = mysql_query($sql);
+	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
@@ -435,10 +425,10 @@ function listaEventosGravados($idUsuario){
 						</tr>
 					</thead>
 					<tbody>";
-	while($campo = mysql_fetch_array($query)){
+	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
 			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
-			echo "<td class='list_description'>".recuperaIdDado("ig_tipo_evento",$campo['ig_tipo_evento_idTipoEvento'])."</td>";
+			echo "<td class='list_description'>".retornaTipo($campo['ig_tipo_evento_idTipoEvento'])."</td>";
 			echo "<td class='list_description'></td>";
 			echo "
 			<td class='list_description'>
@@ -473,7 +463,8 @@ function retornaInstituicao($local){
 
 function listaOcorrencias($idEvento){ 
 	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 ORDER BY dataInicio";
-	$query = mysql_query($sql);
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
@@ -484,8 +475,8 @@ function listaOcorrencias($idEvento){
 						</tr>
 					</thead>
 					<tbody>";
-	while($campo = mysql_fetch_array($query)){
-			$tipo_de_evento = recuperaIdDado("ig_tipo_ocorrencia",$campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
+	while($campo = mysqli_fetch_array($query)){
+			$tipo_de_evento = retornaTipoOcorrencia($campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
 			if($campo['dataFinal'] == '0000-00-00'){
 				$data = exibirDataBr($campo['dataInicio'])." - ".diasemana($campo['dataInicio']); //precisa tirar a hora para fazer a função funcionar
 					$semana = "";
@@ -513,7 +504,7 @@ function listaOcorrencias($idEvento){
 			
 			//recuperaDados($tabela,$idEvento,$campo)
 			$hora = exibirHora($campo['horaInicio']);
-			$retirada = recuperaIdDado("ig_retirada",$campo['retiradaIngresso']);
+			$retirada = recuperaIngresso($campo['retiradaIngresso']);
 			$valor = dinheiroParaBr($campo['valorIngresso']);
 			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
 			$espaco = $local['espaco'];
@@ -570,8 +561,9 @@ function checar($id){
 }
 
 function listaArquivos($idEvento){
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_arquivo WHERE 	ig_evento_idEvento = $idEvento AND publicado = 1";
-	$query = mysql_query($sql);
+	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
@@ -580,7 +572,7 @@ function listaArquivos($idEvento){
 						</tr>
 					</thead>
 					<tbody>";
-	while($campo = mysql_fetch_array($query)){
+	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
 			echo "<td class='list_description'><a href='../uploads/".$campo['arquivo']."' target='_blank'>".$campo['arquivo']."</a></td>";
 			echo "
@@ -692,11 +684,12 @@ function verificaEdicao($idEvento){
 }
 
 function recuperaPessoa($id,$tipo){
+	$con = bancoMysqli();
 	switch($tipo){
 		case '1':
 			$sql = "SELECT * FROM sis_pessoa_fisica WHERE Id_PessoaFisica = $id";
-			$query = mysql_query($sql);
-			$x = mysql_fetch_array($query);
+			$query = mysqli_query($con,$sql);
+			$x = mysqli_fetch_array($query);
 			$y['nome'] = $x['Nome']; 
 			$y['tipo'] = "Pessoa física";
 			$y['numero'] = $x['CPF'];
@@ -705,8 +698,8 @@ function recuperaPessoa($id,$tipo){
 		break;
 		case '2':
 			$sql = "SELECT * FROM sis_pessoa_juridica WHERE Id_PessoaJuridica = $id";
-			$query = mysql_query($sql);
-			$x = mysql_fetch_array($query);
+			$query = mysqli_query($con,$sql);
+			$x = mysqli_fetch_array($query);
 			$y['nome'] = $x['RazaoSocial']; 
 			$y['tipo'] = "Pessoa jurídica";
 			$y['numero'] = $x['CNPJ'];	
@@ -714,8 +707,8 @@ function recuperaPessoa($id,$tipo){
 		break;
 		case '3':
 			$sql = "SELECT * FROM sis_representante_legal WHERE Id_RepresentanteLegal = $id";
-			$query = mysql_query($sql);
-			$x = mysql_fetch_array($query);
+			$query = mysqli_query($con,$sql);
+			$x = mysqli_fetch_array($query);
 			$y['nome'] = $x['RepresentanteLegal']; 
 			$y['tipo'] = "Representante legal";
 			$y['numero'] = $x['CPF'];		
@@ -730,9 +723,10 @@ function recuperaPessoa($id,$tipo){
 
 function geraOpcaoLegal($idEvento){
 	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND tipoPessoa = '3'";
-	$query = mysql_query($sql);
-	while($campo = mysql_fetch_array($query)){
-		$id = $campo['idPessoaFisica'];	
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	while($campo = mysqli_fetch_array($query)){
+		$id = $campo['idPessoa'];	
 		$nome = recuperaPessoa($id,3);
 		$representante = $nome['nome'];
 		echo "<option value='".$id."'>".$representante."</option>";
@@ -776,16 +770,18 @@ function valorPorExtenso($valor=0) {
 }
 
 function recuperaModalidade($id){
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_modalidade WHERE idModalidade = '$id'";
-	$query = mysql_query($sql);
-	$campo = mysql_fetch_array($query);
+	$query = mysqli_query($con,$sql);
+	$campo = mysqli_fetch_array($query);
 	echo $campo['modalidade'];	
 }
 
 function retornaTipo($id){
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_tipo_evento WHERE idTipoEvento = '$id'";
-	$query = mysql_query($sql);
-	$x = mysql_fetch_array($query);		
+	$query = mysqli_query($con,$sql);
+	$x = mysqli_fetch_array($query);		
 	return $x['tipoEvento'];
 }
 
@@ -846,6 +842,100 @@ function retornaPeriodo($id){
 }
 function retornaLocal($id){
 	
+}
+
+?>
+<?php 
+/* Funções para o módulo evento
+
+*/
+
+function iniciaFormulario($idUsuario){
+	unset($_SESSION['idEvento']);
+
+	// Query para inserir um registro em branco
+	$sql_inicio = "INSERT INTO  `ig_evento` (
+
+`idEvento` ,
+`ig_produtor_idProdutor` ,
+`ig_tipo_evento_idTipoEvento` ,
+`ig_programa_idPrograma` ,
+`projetoEspecial` ,
+`nomeEvento` ,
+`projeto` ,
+`memorando` ,
+`idResponsavel` ,
+`suplente` ,
+`autor` ,
+`fichaTecnica` ,
+`faixaEtaria` ,
+`sinopse` ,
+`releaseCom` ,
+`parecerArtistico` ,
+`confirmaFinanca` ,
+`confirmaDiretoria` ,
+`confirmaComunicacao` ,
+`confirmaDocumentacao` ,
+`confirmaProducao` ,
+`numeroProcesso` ,
+`publicado` ,
+`idUsuario`
+)
+VALUES (
+NULL ,  '',  '',  '',  '',  '', NULL , NULL ,  '',  '',  '',  '',  '',  '',  '',  '', NULL , NULL , NULL , NULL , NULL , NULL , NULL , $idUsuario
+)
+";
+	// Executa a query
+	$con = bancoMysqli();
+	mysqli_query($con,$sql_inicio);
+	
+	// Retorna o ID gerado na tabela ig_evento
+	$sql_ultimo = "SELECT * FROM ig_evento ORDER BY idEvento DESC LIMIT 1";
+	$id_evento = mysqli_query($con,$sql_ultimo);
+	$id = mysqli_fetch_array($id_evento);
+	$_SESSION['idEvento'] = $id['idEvento'];
+	
+}
+
+function recuperaResponsavel($nomeResponsavel){
+	$sql = "SELECT * FROM ig_usuario WHERE nomeUsuario = '%$nomeResponsavel%'";
+	$con = bancoMysqli();
+	$query = mysqli_query($sql,$con);
+	$num_resultado = mysql_num_rows($query);
+	if($num_resultado = 0){
+		$campo['existe'] = 0;
+		$campo['idUsuario'] = 0;
+		$campo['nomeUsuario'] = "";
+		return $campo; // retorna uma array com ['existe'] e ['idResponsavel']
+
+	}else if($num_resultado = 1){
+		$id = mysql_fetch_array($query);
+		$campo['existe'] = 1;
+		$campo['idResponsavel'] = $id['idUsuario']; 
+		$campo['nomeUsuario'] = $id['nomeUsuario']; 
+		return $campo;
+	}
+	
+}
+
+function recuperaIngresso($id){
+	$sql = "SELECT * FROM ig_retirada WHERE idRetirada = '$id'";
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	$campo = mysqli_fetch_array($query);
+	return $campo['retirada'];	
+}
+
+function retornaTipoOcorrencia($id){
+	$sql = "SELECT * FROM ig_tipo_ocorrencia WHERE idTipoOcorrencia = '$id'";
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	$campo = mysqli_fetch_array($query);
+	return $campo['tipoOcorrencia'];	
+}
+
+function apagarRepresentante($id,$pessoa){
+	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$id'";	
 }
 
 ?>
