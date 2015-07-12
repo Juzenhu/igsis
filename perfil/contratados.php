@@ -131,7 +131,24 @@ if(isset($_POST['cadastrarFisica'])){ //cadastra e insere pessoa física
 	
 
 if(isset($_POST['insereFisica'])){ //insere pessoa física
-	
+	print_r($_POST);
+	$idPessoa = $_POST['Id_PessoaFisica'];
+	$idEvento = $_SESSION['idEvento'];
+	$sql_verifica_cpf = "SELECT * FROM igsis_pedido_contratacao WHERE idPessoa = '$idPessoa' AND tipoPessoa = '1' AND publicado = '1' AND idEvento = '$idEvento' ";
+	$query_verifica_cpf = mysqli_query($con,$sql_verifica_cpf);
+	$num_rows = mysqli_num_rows($query_verifica_cpf);
+	if($num_rows > 0){
+		$mensagem = "A pessoa física já está na lista de pedido de contratação.";	
+	}else{
+		$sql_insere_pf = "INSERT INTO igsis_pedido_contratacao (idPessoa, tipoPessoa, publicado,idEvento) VALUES ('$idPessoa','1','1','$idEvento')";
+		$query_insere_pf = mysqli_query($con,$sql_insere_pf);
+		if($query_insere_pf){
+			$mensagem = "Pedido inserido com sucesso!";
+		}else{
+			$mensagem = "Erro ao criar pedido. Tente novamente.";
+	}
+		 	
+	}
 }
 if(isset($_POST['cadastrarJuridica'])){ //cadastra e insere pessoa jurídica
 	$verificaCNPJ = verificaExiste("sis_pessoa_juridica","CNPJ",$_POST['CNPJ'],"");
@@ -179,6 +196,17 @@ if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
 	
 }
 
+if(isset($_POST['apagarPedido'])){	
+	print_r($_POST);
+	$idPedidoContratacao = $_POST['idPedidoContratacao'];
+	$sql_apagar_pedido = "UPDATE igsis_pedido_contratacao SET publicado = '0' WHERE idPedidoContratacao = '$idPedidoContratacao'";
+	$query_apagar_pedido = mysqli_query($con,$sql_apagar_pedido);
+	if($query_apagar_pedido){
+		$mensagem = "Pedido apagado com sucesso.";	
+	}else{
+		$mensagem = "Erro ao apagar o pedido. Tente novamente.";	
+	}
+}
 ?>	
 	 <section id="services" class="home-section bg-white">
 		<div class="container">
@@ -186,9 +214,9 @@ if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
 					 <h2>Contratados</h2>
-                     <p>Você está inserindo pessoas físicas ou jurídicas para serem contratadas para o evento <strong><?  echo $nomeEvento['nomeEvento']; ?></strong></p>
+                     <p>Você está inserindo pessoas físicas ou jurídicas para serem contratadas para o evento <strong><?php  echo $nomeEvento['nomeEvento']; ?></strong></p>
                      <p>Para inserir pessoas jurídicas, é necessário antes inserir seus <a href="?perfil=contratados&p=representante">representantes</a>.</p>
-                     <p><? if(isset($mensagem)){ echo $mensagem; } ?></p>
+                     <p><?php if(isset($mensagem)){ echo $mensagem; } ?></p>
 <p><?php print_r($_SESSION); ?></p>
 
 					</div>
@@ -203,9 +231,10 @@ if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
 						<td>Tipo de Pessoa</td>
 						<td>CPF/CNPJ</td>
    						<td>Valor</td>
-							<td width="12%">
-  							<td width="12%">
-							<td width="12%"></td>
+   							<td width="10%">
+							<td width="10%">
+  							<td width="10%">
+							<td width="10%"></td>
 						</tr>
 					</thead>
 					<tbody>
@@ -220,23 +249,35 @@ if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
 						echo "<td class='list_description'>".$recuperaPessoa['tipo']."</td>";
 						echo "<td class='list_description'>".$recuperaPessoa['numero']."</td>";
 						echo "<td class='list_description'>".dinheiroParaBr($descricao['valor'])."</td>";
+						
 						echo "
 						<td class='list_description'>
 						<form method='POST' action='?perfil=contratados&p=edicaoPessoa'>
 						<input type='hidden' name='idPedidoContratacao' value='".$descricao['idPedidoContratacao']."'>
-						<input type ='submit' class='btn btn-theme btn-md btn-block' value='editar pessoa'></td></form>"	; //botão de edição
+						<input type ='submit' class='btn btn-theme btn-sm btn-block' value='anexos'></td></form>"	; //botão de edição
+						
+						echo "
+						<td class='list_description'>
+						<form method='POST' action='?perfil=contratados&p=edicaoPessoa'>
+						<input type='hidden' name='idPedidoContratacao' value='".$descricao['idPedidoContratacao']."'>
+						<input type ='submit' class='btn btn-theme btn-sm btn-block' value='editar pessoa'></td></form>"	; //botão de edição
+						
 						echo "
 						<td class='list_description'>
 						<form method='POST' action='?perfil=contratados&p=edicaoPedido'>
 						<input type='hidden' name='idPedidoContratacao' value='".$descricao['idPedidoContratacao']."'>
-						<input type ='submit' class='btn btn-theme btn-md btn-block' value='editar pedido'";
+						<input type ='submit' class='btn btn-theme btn-sm btn-block' value='editar pedido'";
 						if($descricao['tipoPessoa'] == 3){ echo "disabled"; } //não permite que Representante legal faça pedido.
 						echo " ></td></form>"	; //botão de edição
+						
 						echo "
 						<td class='list_description'>
-						<form method='POST' action='?perfil=contratados&p=apagarPedido'>
+						<form method='POST' action='?perfil=contratados&p=lista'>
+						<input type='hidden' name=apagarPedido value='1'>
 						<input type='hidden' name='idPedidoContratacao' value='".$descricao['idPedidoContratacao']."'>
-						<input type ='submit' class='btn btn-theme btn-md btn-block'".apagarRepresentante($descricao['idPedidoContratacao'],$descricao['tipoPessoa'])." value='apagar pedido'></td></form>"	; //botão de apagar
+						<input type ='submit' class='btn btn-theme btn-sm btn-block'";
+						apagarRepresentante($descricao['idPessoa'],$descricao['tipoPessoa'],$_SESSION['idEvento']);
+						echo " value='apagar pedido'></td></form>"	; //botão de apagar
 
 						echo "</tr>";
 					}
@@ -475,9 +516,9 @@ case 'fisica':
 <?php
 if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 	$busca = $_POST['busca'];
-	$sql_busca = "SELECT * FROM sis_pessoa_fisica WHERE Nome LIKE '%$busca%' OR CPF NomeArtistico '%$busca%' OR CPF LIKE '%$busca%' ORDER BY Nome";
-	$query_busca = mysql_query($sql_busca); 
-	$num_busca = mysql_num_rows($query_busca);
+	$sql_busca = "SELECT * FROM sis_pessoa_fisica WHERE CPF = '$busca' ORDER BY Nome";
+	$query_busca = mysqli_query($con,$sql_busca); 
+	$num_busca = mysqli_num_rows($query_busca);
 	if($num_busca > 0){ // Se exisitr, lista a resposta.
 	?>
 	 <section id="services" class="home-section bg-white">
@@ -486,8 +527,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
 					 <h2>Contratados - Pessoa Física</h2>
-                                          <p>Você está inserindo pessoas jurídicas para serem contratadas para o evento <strong><?php echo $nomeEvento['nomeEvento']; ?></strong></p>
-
+                                          
 <p><?php print_r($_SESSION); ?></p>
 
 					</div>
@@ -501,19 +541,27 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 						<tr class="list_menu">
 							<td>Nome</td>
 							<td>CPF</td>
-							<td width="20%"></td>
+							<td width="15%"></td>
+                            <td width="15%"></td>
 						</tr>
 					</thead>
 					<tbody>
                     <?php
-				while($descricao = mysql_fetch_array($query_busca)){			
+				while($descricao = mysqli_fetch_array($query_busca)){			
 			echo "<tr>";
 			echo "<td class='list_description'><b>".$descricao['Nome']."</b></td>";
 			echo "<td class='list_description'>".$descricao['CPF']."</td>";
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=$k'>
-			<input type ='submit' class='btn btn-theme btn-lg btn-block' value='carregar'></td></form>"	;
+			<form method='POST' action='?perfil=contratados&p=lista'>
+			<input type='hidden' name='insereFisica' value='1'>
+			<input type='hidden' name='Id_PessoaFisica' value='".$descricao['Id_PessoaFisica']."'>
+			<input type ='submit' class='btn btn-theme btn-md btn-block' value='inserir'></td></form>"	;
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=contratados&p=lista'>
+			<input type='hidden' name='detalhe' value='".$descricao['Id_PessoaFisica']."'>
+			<input type ='submit' class='btn btn-theme btn-md btn-block' value='detalhe'></td></form>"	;
 			echo "</tr>";
 				}
 ?>
@@ -522,14 +570,21 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 				</table>
 			</div>
             		</div>
+                    </div>
+                    
 	</section>
 	
     <?php }else{ // Se não existe, exibe um formulario para insercao. ?>
-
+	<?php
+	$ultimo = cadastroPessoa($_SESSION['idEvento'],$CPF,'1'); 
+	$campo = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
+	?>
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
-					<div class="sub-title">CADASTRO DE PESSOA FÍSICA</div>
+					<h3>CADASTRO DE PESSOA FÍSICA</h3>
+                    <p> O CPF <?php echo $busca; ?> não está cadastrado no nosso sistema. <br />Por favor, insira as informações da Pessoa Física a ser contratada. </p>
+                    <p><a href="?perfil=contratados&p=fisica"> Pesquisar outro CPF</a> </p>
 			  </div>
 
 	  		<div class="row">
@@ -551,88 +606,99 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 				  </div>
 				  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>RG *:</strong><br/>
-					  <input type="text" class="form-control" id="RG" name="RG" placeholder="RG" >
+					<div class="col-md-offset-2 col-md-6"><strong>Tipo de documento *:</strong><br/>
+					  <select class="form-control" id="tipoDocumento" name="tipoDocumento" >
+					   <?php
+						geraOpcao("igsis_tipo_documento","","");
+						?>  
+					  </select>
+
 					</div>				  
-					<div class=" col-md-6"><strong>CPF *:</strong><br/>
-					  <input type="text" class="form-control" id="cpf" name="CPF" placeholder="CPF">
+					<div class=" col-md-6"><strong>Documento *:</strong><br/>
+                      <input type="text" class="form-control" id="RG" name="RG" placeholder="Documento" >
 					</div>
 				  </div>
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>CPF *:</strong><br/>
+					  <input type="text" class="form-control" id="cpf" name="CPF" placeholder="CPF" value="<?php echo $busca; ?> ">
+					</div>				  
+					<div class=" col-md-6"><strong>CCM *:</strong><br/>
+					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" >
+					</div>
+				  </div>
+
 				  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>CCM:</strong><br/>
-					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" >
-					</div>				  
-					<div class=" col-md-6"><strong>Estado Civil:</strong><br/>
+					<div class="col-md-offset-2 col-md-6"><strong>Estado civil:</strong><br/>
 					  <select class="form-control" id="IdEstadoCivil" name="IdEstadoCivil" >
 					   <?php
 						geraOpcao("sis_estado_civil","","");
 						?>  
 					  </select>
+					</div>				  
+					<div class=" col-md-6"><strong>Data de nascimento:</strong><br/>
+ <input type="text" class="form-control" id="datepicker01" name="DataNascimento" placeholder="Data de Nascimento" >
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Data de Nascimento:</strong><br/>
-					  <input type="text" class="form-control" id="datepicker01" name="DataNascimento" placeholder="Data de Nascimento" >
+					<div class="col-md-offset-2 col-md-6"><strong>Nacionalidade:</strong><br/>
+					   <input type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Nacionalidade">
 					</div>				  
-					<div class=" col-md-6"><strong>Nacionalidade:</strong><br/>
-					  <input type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Nacionalidade">
+					<div class=" col-md-6"><strong>CEP:</strong><br/>
+					 					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="CEP">
 					</div>
 				  </div>
-				  
-				  <div class="form-group">
-                  					<div class="col-md-offset-2 col-md-6"><strong>CEP *:</strong><br/>
-					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="Bairro">
-					</div>				  
-					<div class=" col-md-6"><strong>Estado *:</strong><br/>
-					  <input type="text" class="form-control" id="Estado" name="Estado" placeholder="Estado">
-					</div>
-
-				  </div>
-				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Endereço *:</strong><br/>
 					  <input type="text" class="form-control" id="Endereco" name="Endereco" placeholder="Endereço">
 					</div>
 				  </div>
-				  
-				  <div class="form-group">
+                  				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Número *:</strong><br/>
 					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero">
 					</div>				  
-					<div class=" col-md-6"><strong>Complemento:</strong><br/>
-					  <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento">
-					</div>
-				  </div>
-				  
-				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Bairro *:</strong><br/>
+					<div class=" col-md-6"><strong>Bairro:</strong><br/>
 					  <input type="text" class="form-control" id="Bairro" name="Bairro" placeholder="Bairro">
-					</div>				  
-					<div class=" col-md-6"><strong>Cidade *:</strong><br/>
-					  <input type="text" class="form-control" id="Cidade" name="Cidade" placeholder="Cidade">
 					</div>
 				  </div>
-				  
+                  	 <div class="form-group">
+                     
+					<div class="col-md-offset-2 col-md-8"><strong>Complemento *:</strong><br/>
+					    <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento">
+					</div>
+				  </div>		
+                  				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Cidade *:</strong><br/>
+										  <input type="text" class="form-control" id="Cidade" name="Cidade" placeholder="Cidade">
+
+					</div>				  
+					<div class=" col-md-6"><strong>Estado *:</strong><br/>
+					  <input type="text" class="form-control" id="Estado" name="Estado" placeholder="Estado">
+					</div>
+				  </div>		  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Telefone #1 *:</strong><br/>
+                  					<div class="col-md-offset-2 col-md-6"><strong>E-mail *:</strong><br/>
+					<input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail" >
+					</div>				  
+
+
+					<div class=" col-md-6"><strong>Telefone #1 *:</strong><br/>
+
 					  <input type="text" class="form-control" id="Telefone1" name="Telefone1" placeholder="Telefone" >
-					</div>				  
-					<div class="col-md-6"><strong>Telefone #2:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone2" name="Telefone2" placeholder="Telefone" >
 					</div>
+
 				  </div>
-				  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Telefone #3:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone3" name="Telefone3" placeholder="Telefone">
+					<div class="col-md-offset-2 col-md-6"><strong>Telefone #2:</strong><br/>
+					  <input type="text" class="form-control" id="Telefone1" name="Telefone2" placeholder="Telefone" >
 					</div>				  
-					<div class=" col-md-6"><strong>E-mail:</strong><br/>
-					  <input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail" >
+					<div class="col-md-6"><strong>Telefone #3:</strong><br/>
+					  <input type="text" class="form-control" id="Telefone2" name="Telefone3" placeholder="Telefone" >
 					</div>
 				  </div>
-				  
+
+							  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>DRT:</strong><br/>
 					  <input type="text" class="form-control" id="DRT" name="DRT" placeholder="DRT" >
@@ -666,6 +732,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 				  </div>
 				</form>
 	
+    
 	  			</div>
 			
 				
@@ -701,8 +768,8 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
             	<div class="col-md-offset-2 col-md-8">
             
                         <form method="POST" action="?perfil=contratados&p=fisica" class="form-horizontal" role="form">
-            		<label>Insira o CNPJ ou a Razão social</label>
-            		<input type="text" name="busca" class="form-control" id="" >
+            		<label>Insira o CPF</label>
+            		<input type="text" name="busca" class="form-control" id="cpf" >
             	</div>
              </div>
 				<br />             
@@ -892,10 +959,6 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 <?php 
 break;
 case "edicaoPedido":
-//Imprime erros com o banco
-@ini_set('display_errors', '1');
-error_reporting(E_ALL);
-
 
 	$idPedido = $_POST['idPedidoContratacao'];
 echo "<h1>$idPedido</h1>";
@@ -972,8 +1035,13 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContrataca
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Verba:</strong><br/>
-					   <input type='text' class='form-control' readonly >
-					</div>
+					  	 <select class="form-control" id="verba" name="verba" >
+					   <?php
+						geraOpcao("sis_verba","","");
+						?>  
+					  </select>
+					</div>		
+
 				  </div>
  
                   <div class="form-group">
@@ -991,7 +1059,12 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContrataca
                     
 				  </div>
 				</form>
-	
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                    <a href="?perfil=contratados" value="VOLTAR" class="btn btn-theme btn-lg btn-block">VOLTAR para area de pedidos de contratação</a>
+					</div>
+                    
+				  </div>	
 	  			</div>
 			
 				
@@ -1009,6 +1082,156 @@ case "apagarPedido":
 break;
 case "edicaoPessoa":
 ?>
+
+<?php
+break;
+case "arquivos":
+if(isset($_POST['apagar'])){
+	$idArquivo = $_POST['apagar'];
+	$sql_apagar_arquivo = "UPDATE ig_arquivos_pessoa SET publicado = 0 WHERE idArquivosPessoa = '$idArquivo'";
+	if(mysqli_query($con,$sql_apagar_arquivo)){
+		$arq = recuperaDados("ig_arquivo",$idArquivo,"idArquivo");
+		$mensagem =	"Arquivo ".$arq['arquivo']."apagado com sucesso!";
+		gravarLog($sql_apagar_arquivo);
+	}else{
+		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
+	}
+}
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+?>
+    
+    	 <section id="enviar" class="home-section bg-white">
+		<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+                                        <h1><?php echo $campo["nomeEvento"] ?>  </h1>
+
+					 <h3>Envio de Arquivos</h3>
+<p>Nesta página, você envia documentos digitalizados. O tamanho máximo do arquivo deve ser 60MB.</p>
+
+
+<?php
+
+if( isset( $_POST['enviar'] ) ) {
+
+    $pathToSave = '../uploadsdocs/';
+
+    // A variavel $_FILES é uma variável do PHP, e é ela a responsável
+    // por tratar arquivos que sejam enviados em um formulário
+    // Nesse caso agora, a nossa variável $_FILES é um array com 3 dimensoes
+    // e teremos de trata-lo, para realizar o upload dos arquivos
+    // Quando é definido o nome de um campo no form html, terminado por []
+    // ele é tratado como se fosse um array, e por isso podemos ter varios
+    // campos com o mesmo nome
+    $i = 0;
+    $msg = array( );
+    $arquivos = array( array( ) );
+    foreach(  $_FILES as $key=>$info ) {
+        foreach( $info as $key=>$dados ) {
+            for( $i = 0; $i < sizeof( $dados ); $i++ ) {
+                // Aqui, transformamos o array $_FILES de:
+                // $_FILES["arquivo"]["name"][0]
+                // $_FILES["arquivo"]["name"][1]
+                // $_FILES["arquivo"]["name"][2]
+                // $_FILES["arquivo"]["name"][3]
+                // para
+                // $arquivo[0]["name"]
+                // $arquivo[1]["name"]
+                // $arquivo[2]["name"]
+                // $arquivo[3]["name"]
+                // Dessa forma, fica mais facil trabalharmos o array depois, para salvar
+                // o arquivo
+                $arquivos[$i][$key] = $info[$key][$i];
+            }
+        }
+    }
+
+    $i = 1;
+
+    // Fazemos o upload normalmente, igual no exemplo anterior
+    foreach( $arquivos as $file ) {
+
+        // Verificar se o campo do arquivo foi preenchido
+        if( $file['name'] != '' ) {
+            $arquivoTmp = $file['tmp_name'];
+			$data = date('Y-m-i');
+            $arquivo = $pathToSave.$data."_".$file['name'];
+			$arquivo_base = $file['name'];
+			if(file_exists($arquivo)){
+				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
+			}else{
+				$idEvento = $_SESSION['idEvento'];
+			$arquivo_base_alterado = $data."_".$arquivo_base;
+			$sql = "INSERT INTO ig_arquivos_pessoa (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , '$arquivo_base' , '$idEvento', '1' );";
+			mysqli_query($con,$sql);
+			gravarLog($sql);
+			
+            if( !move_uploaded_file( $arquivoTmp, $arquivo ) ) {
+                $msg[$i] = 'Erro no upload do arquivo '.$i;
+            } else {
+                $msg[$i] = sprintf('Upload do arquivo %s foi um sucesso!',$i);
+            }
+			}
+       } 
+        $i++;
+    }
+
+    // Imprimimos as mensagens geradas pelo sistema
+
+ foreach( $msg as $e ) {
+	 	echo " <div id = 'mensagem_upload'>";
+        printf('%s<br>', $e);
+		echo " </div>";
+    }
+
+}
+
+?>
+
+<br />
+<div class = "center">
+<form method='POST' action="?perfil=evento&p=arquivos" enctype='multipart/form-data'>
+<p><input type='file' name='arquivo[]'></p>
+<p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+ <p><input type='file' name='arquivo[]'></p>
+  <p><input type='file' name='arquivo[]'></p>
+  <p><input type='file' name='arquivo[]'></p>
+    <br>
+    <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar' name='enviar'>
+</form>
+</div>
+
+
+					</div>
+				  </div>
+                  
+			  </div>
+			  
+		</div>
+	</section>
+
+	<section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+ <h2>Arquivos anexados</h2>
+<h5>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</h5>
+					</div>
+			<div class="table-responsive list_info">
+                         <?php listaArquivos($_SESSION['idEvento']); ?>
+			</div>
+				  </div>
+			  </div>  
+
+
+		</div>
+	</section>
 
 
 <?php

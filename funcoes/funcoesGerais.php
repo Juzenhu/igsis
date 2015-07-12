@@ -290,7 +290,7 @@ function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 		}
 	}
 }
-function recuperaModulo($pag){
+function recuperaModulo($pag){ 
 	$sql = "SELECT * FROM ig_modulo WHERE pag = '$pag'";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -319,7 +319,7 @@ function listaModulos($perfil){ //gera as tds dos módulos a carregar
 	}
 		
 }
-function verificaAcesso($usuario,$pagina){
+function verificaAcesso($usuario,$pagina){ //verifica se o usuário tem permissão de acesso a uma determinada página
 	$sql = "SELECT * FROM ig_usuario,ig_papelusuario WHERE ig_usuario.idUsuario = $usuario AND ig_usuario.ig_papelusuario_idPapelUsuario = ig_papelusuario.idPapelUsuario LIMIT 0,1";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -331,7 +331,7 @@ function verificaAcesso($usuario,$pagina){
 	}
 }
 
-function recuperaEvento($idEvento){
+function recuperaEvento($idEvento){ //retorna uma array com os dados da tabela ig_evento
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_evento WHERE idEvento = '$idEvento' LIMIT 0,1";
 	$query = mysqli_query($con,$sql);
@@ -339,7 +339,7 @@ function recuperaEvento($idEvento){
 	return $campo;		
 }	
 
-function recuperaDados($tabela,$idEvento,$campo){
+function recuperaDados($tabela,$idEvento,$campo){ //retorna uma array com os dados de qualquer tabela. serve apenas para 1 registro.
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM $tabela WHERE ".$campo." = '$idEvento' LIMIT 0,1";
 	$query = mysqli_query($con,$sql);
@@ -350,7 +350,7 @@ function recuperaDados($tabela,$idEvento,$campo){
 
 
 
-function opcaoUsuario($idInstituicao,$idUsuario){
+function opcaoUsuario($idInstituicao,$idUsuario){ //cria as options com usuários de uma instituicao
 	$sql = "SELECT DISTINCT * FROM ig_usuario,ig_papelusuario WHERE ig_usuario.ig_papelusuario_idPapelUsuario = ig_papelusuario.idPapelUsuario AND ig_papelusuario.evento = 1";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -364,7 +364,7 @@ function opcaoUsuario($idInstituicao,$idUsuario){
 	}	
 }
 
-function verificaExiste($idTabela,$idCampo,$idDado,$st){
+function verificaExiste($idTabela,$idCampo,$idDado,$st){ //retorna uma array com indice 'numero' de registros e 'dados' da tabela
 	$con = bancoMysqli();
 	if($st == 1){ // se for 1, é uma string
 		$sql = "SELECT * FROM $idTabela WHERE $idCampo = '%$idDado%'";
@@ -379,7 +379,7 @@ function verificaExiste($idTabela,$idCampo,$idDado,$st){
 	return $campo;
 }
 
-function retornaUltimo($idTabela){
+function retornaUltimo($idTabela){ //retorna o id do ultimo dado inserido. em desuso e subsitutir por mysqli_insert_id()
 
 	$sql_ultimo = "SELECT * FROM $idTabela ORDER BY idEvento DESC LIMIT 1";
 	$id_evento = mysql_query($sql_ultimo);
@@ -388,7 +388,7 @@ function retornaUltimo($idTabela){
 }
 
 
-function recuperaIdDado($tabela,$id){
+function recuperaIdDado($tabela,$id){ 
 	$con = bancoMysqli();
 	//recupera os nomes dos campos
 	$sql = "SELECT * FROM $tabela";
@@ -402,7 +402,7 @@ function recuperaIdDado($tabela,$id){
 	return $campo[$campo02];	
 }
 
-function recuperaProdutor($idProdutor){
+function recuperaProdutor($idProdutor){ //recupera dados da tabela produtor
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_produtor WHERE idProdutor = $idProdutor";
 	$query = mysqli_query($con,$sql);
@@ -410,7 +410,7 @@ function recuperaProdutor($idProdutor){
 	return $campo;	
 }
 
-function listaEventosGravados($idUsuario){ 
+function listaEventosGravados($idUsuario){ //tabela para gerenciar eventos em aberto
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 1";
 	$query = mysqli_query($con,$sql);
@@ -443,25 +443,18 @@ function listaEventosGravados($idUsuario){
 			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
 			echo "</tr>";		
 	}
-					
-						
-
-                        
-
-						
-		
 	echo "					</tbody>
 				</table>";
 }
 
-function retornaInstituicao($local){
+function retornaInstituicao($local){ 
 	$sql = "SELECT idInstituicao FROM ig_local WHERE idLocal = $local";
 	$query = mysql_query($sql);
 	$campo = mysql_fetch_array($query);
 	return $campo['idInstituicao'];
 }
 
-function listaOcorrencias($idEvento){ 
+function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
 	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 ORDER BY dataInicio";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -542,25 +535,18 @@ function listaOcorrencias($idEvento){
 			<input type ='submit' class='btn btn-theme  btn-block' value='Apagar'></td></form>"	;
 			echo "</tr>";		
 	}
-					
-						
-
-                        
-
-						
-		
 	echo "					</tbody>
 				</table>";
 }
 
 
-function checar($id){
+function checar($id){ //funcao para imprimir checked do checkbox
 	if($id == 1){
 		echo "checked";	
 	}	
 }
 
-function listaArquivos($idEvento){
+function listaArquivos($idEvento){ //lista arquivos de determinado evento
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_arquivo WHERE 	ig_evento_idEvento = $idEvento AND publicado = 1";
 	$query = mysqli_query($con,$sql);
@@ -593,7 +579,7 @@ function listaArquivos($idEvento){
 				</table>";	
 }
 
-function verificaSubEvento($idEvento){
+function verificaSubEvento($idEvento){ //retorna os dados de um subevento
 	$sql = "SELECT * FROM ig_sub_evento WHERE ig_evento_idEvento = '$idEvento'";
 	$query = mysql_query($sql);
 	$num = mysql_num_rows($query);
@@ -604,13 +590,13 @@ function verificaSubEvento($idEvento){
 	return $subEvento ;
 }
 
-function recuperaUsuario($idUsuario){
+function recuperaUsuario($idUsuario){ //retorna dados do usuário
 	$recupera = recuperaDados('ig_usuario',$idUsuario,'idUsuario');
 	return $recupera;	
 }
 
 
-function descricaoEvento($idEvento){
+function descricaoEvento($idEvento){ //imprime dados de um evento
 	$evento = recuperaEvento($idEvento);
 	$tipoEvento = recuperaDados('ig_tipo_evento',$evento['ig_tipo_evento_idTipoEvento'],'idTipoEvento');
 	$programa = recuperaDados('ig_programa',$evento['ig_programa_idPrograma'],'idPrograma');
@@ -674,7 +660,7 @@ function descricaoEspecificidades($idEvento,$tipo){
 	
 }
 
-function verificaEdicao($idEvento){
+function verificaEdicao($idEvento){ //exibe o evento que está sendo editado.
 	if(isset($idEvento)){
 		if($idEvento != ''){
 		$campo = recuperaEvento($idEvento);
@@ -683,7 +669,7 @@ function verificaEdicao($idEvento){
 	}
 }
 
-function recuperaPessoa($id,$tipo){
+function recuperaPessoa($id,$tipo){ //recupera os dados de uma pessoa
 	$con = bancoMysqli();
 	switch($tipo){
 		case '1':
@@ -721,7 +707,7 @@ function recuperaPessoa($id,$tipo){
 
 
 
-function geraOpcaoLegal($idEvento){
+function geraOpcaoLegal($idEvento){ //gera options de representantes legais
 	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND tipoPessoa = '3'";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -733,7 +719,7 @@ function geraOpcaoLegal($idEvento){
 	}		
 }
 
-function valorPorExtenso($valor=0) {
+function valorPorExtenso($valor=0) { //retorna um valor por extenso
 	$singular = array("centavo", "real", "mil", "milhão", "bilhão", "trilhão", "quatrilhão");
 	$plural = array("centavos", "reais", "mil", "milhões", "bilhões", "trilhões","quatrilhões");
  
@@ -769,7 +755,7 @@ function valorPorExtenso($valor=0) {
 	return($rt ? $rt : "zero");
 }
 
-function recuperaModalidade($id){
+function recuperaModalidade($id){ //imprime a modalidade
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_modalidade WHERE idModalidade = '$id'";
 	$query = mysqli_query($con,$sql);
@@ -777,7 +763,7 @@ function recuperaModalidade($id){
 	echo $campo['modalidade'];	
 }
 
-function retornaTipo($id){
+function retornaTipo($id){ //retorna o tipo de evento
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_tipo_evento WHERE idTipoEvento = '$id'";
 	$query = mysqli_query($con,$sql);
@@ -785,7 +771,7 @@ function retornaTipo($id){
 	return $x['tipoEvento'];
 }
 
-function retornaPeriodo($id){
+function retornaPeriodo($id){ //retorna o período
 	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1'";
 	$query = mysql_query($sql);
 	$numero = mysql_num_rows($query);
@@ -840,17 +826,12 @@ function retornaPeriodo($id){
 	}
 	
 }
-function retornaLocal($id){
+function retornaLocal($id){ //retorna os locais do evento
 	
 }
 
-?>
-<?php 
-/* Funções para o módulo evento
 
-*/
-
-function iniciaFormulario($idUsuario){
+function iniciaFormulario($idUsuario){ //inicia um evento zerado
 	unset($_SESSION['idEvento']);
 
 	// Query para inserir um registro em branco
@@ -897,7 +878,7 @@ NULL ,  '',  '',  '',  '',  '', NULL , NULL ,  '',  '',  '',  '',  '',  '',  '',
 	
 }
 
-function recuperaResponsavel($nomeResponsavel){
+function recuperaResponsavel($nomeResponsavel){ //retorna um array com os dados do responsavel
 	$sql = "SELECT * FROM ig_usuario WHERE nomeUsuario = '%$nomeResponsavel%'";
 	$con = bancoMysqli();
 	$query = mysqli_query($sql,$con);
@@ -918,7 +899,7 @@ function recuperaResponsavel($nomeResponsavel){
 	
 }
 
-function recuperaIngresso($id){
+function recuperaIngresso($id){ //retorna o tipo de retirada de ingresso
 	$sql = "SELECT * FROM ig_retirada WHERE idRetirada = '$id'";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -926,7 +907,7 @@ function recuperaIngresso($id){
 	return $campo['retirada'];	
 }
 
-function retornaTipoOcorrencia($id){
+function retornaTipoOcorrencia($id){ //retorna o tipo de ocorrencia
 	$sql = "SELECT * FROM ig_tipo_ocorrencia WHERE idTipoOcorrencia = '$id'";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -934,8 +915,45 @@ function retornaTipoOcorrencia($id){
 	return $campo['tipoOcorrencia'];	
 }
 
-function apagarRepresentante($id,$pessoa){
-	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$id'";	
+
+function cadastroPessoa($idEvento,$doc,$tipo){ //cria um cadastro de pessoa zerado
+	$con = bancoMysqli();
+	switch($tipo){	
+	case 1:	
+		$sql = "INSERT INTO sis_pessoa_fisica (CPF,publicado,idEvento) VALUES ('$doc','0','idEvento')";
+		break;
+	
+	case 2:	
+		$sql = "INSERT INTO sis_pessoa_juridica (CNPJ,publicado,idEvento) VALUES ('$doc','0','idEvento')";
+		break;
+	
+	case 3:
+		$sql = "INSERT INTO sis_representante_legal (CPF,publicado,idEvento) VALUES ('$doc','0','idEvento')";
+		break;
+	}
+	$query = mysqli_query($con,$sql); 
+	$ultimo = mysqli_insert_id($query);
+	return $ultimo;
+
+}
+function apagarRepresentante($pedido,$tipo,$evento){ //atualiza o publicado do representante para 0
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idPessoa = '$pedido' AND idEvento = '$evento' AND tipoPessoa = '3'  AND publicado = '1' LIMIT 0,1";
+	$query = mysqli_query($con,$sql);
+	$num_rows = mysqli_num_rows($query);
+	if($num_rows > 0){
+		while($campo = mysqli_fetch_array($query)){
+			$sql_jur = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$evento' AND tipoPessoa = '2' AND publicado = '1'";
+			$query_jur = mysqli_query($con,$sql_jur);
+			while($campo_jur = mysqli_fetch_array($query_jur)){
+				if(($campo_jur['idRepresentante01'] == $campo['idPessoa']) OR ($campo_jur['idRepresentante02'] == $campo['idPessoa'])){
+					echo " disabled ";
+				}else{
+					echo " erro 1 ";
+				}
+			}
+		}
+	}
 }
 
 ?>

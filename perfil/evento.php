@@ -1108,6 +1108,7 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
 
 					 <h3>Envio de Arquivos</h3>
 <p>Nesta página, você envia os arquivos como o rider, mapas de cenas e luz, logos de parceiros, programação de filmes de mostras de cinema, etc. O tamanho máximo do arquivo deve ser 60MB.</p>
+<p>Não envie cópias de documentos nesta página. Para o envio, vá até a área de "<a href="?perfil=contratados&p=lista">Pedidos de contratação</a>" e anexe direto em cada contratado.</p>
 <p> Em caso de envio de fotografia, considerar as seguintes especificações técnicas:<br />
 - formato: horizontal <br />
 - tamanho: mínimo de 300dpi”</p>
