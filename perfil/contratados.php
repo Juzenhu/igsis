@@ -252,8 +252,10 @@ if(isset($_POST['apagarPedido'])){
 						
 						echo "
 						<td class='list_description'>
-						<form method='POST' action='?perfil=contratados&p=edicaoPessoa'>
-						<input type='hidden' name='idPedidoContratacao' value='".$descricao['idPedidoContratacao']."'>
+						<form method='POST' action='?perfil=contratados&p=arquivos'>
+						<input type='hidden' name='idPessoa' value='".$descricao['idPessoa']."'>
+						<input type='hidden' name='tipoPessoa' value='".$descricao['tipoPessoa']."'>
+
 						<input type ='submit' class='btn btn-theme btn-sm btn-block' value='anexos'></td></form>"	; //botão de edição
 						
 						echo "
@@ -727,6 +729,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     <input type="hidden" name="cadastrarFisica" value="1" />
+                    <input type="hidden" name="Sucesso" id="Sucesso" />
 					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
 					</div>
 				  </div>
@@ -1097,7 +1100,7 @@ if(isset($_POST['apagar'])){
 		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
 	}
 }
-$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+$campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']); //carrega os dados do evento em questão
 ?>
     
     	 <section id="enviar" class="home-section bg-white">
@@ -1105,7 +1108,8 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-                                        <h1><?php echo $campo["nomeEvento"] ?>  </h1>
+                                        <h2><?php echo $campo["nome"] ?>  </h2>
+                                        <p><?php echo $campo["tipo"] ?></p>
 
 					 <h3>Envio de Arquivos</h3>
 <p>Nesta página, você envia documentos digitalizados. O tamanho máximo do arquivo deve ser 60MB.</p>
@@ -1157,16 +1161,32 @@ if( isset( $_POST['enviar'] ) ) {
             $arquivoTmp = $file['tmp_name'];
 			$data = date('Y-m-i');
             $arquivo = $pathToSave.$data."_".$file['name'];
-			$arquivo_base = $file['name'];
+			$arquivo_base = $data."_".$file['name'];
+			$idPessoa = $_POST['idPessoa'];
+			$tipoPessoa = $_POST['tipoPessoa'];
 			if(file_exists($arquivo)){
 				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
 			}else{
 				$idEvento = $_SESSION['idEvento'];
 			$arquivo_base_alterado = $data."_".$arquivo_base;
-			$sql = "INSERT INTO ig_arquivos_pessoa (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , '$arquivo_base' , '$idEvento', '1' );";
-			mysqli_query($con,$sql);
-			gravarLog($sql);
-			
+			$sql = "INSERT INTO  `igsis_arquivos_pessoa` (
+`idArquivosPessoa` ,
+`idTipoPessoa` ,
+`idPessoa` ,
+`arquivo` ,
+`dataEnvio` ,
+`publicado`
+)
+VALUES (
+NULL ,  '$tipoPessoa',  '$idPessoa',  '$arquivo_base',  '$data',  '1'
+);";
+			if(mysqli_query($con,$sql)){
+				echo "Arquivo inserido com sucesso";
+				gravarLog($sql);
+			}else{
+				echo "Erro ao registrar o arquivo.";
+				
+			}
             if( !move_uploaded_file( $arquivoTmp, $arquivo ) ) {
                 $msg[$i] = 'Erro no upload do arquivo '.$i;
             } else {
@@ -1191,7 +1211,7 @@ if( isset( $_POST['enviar'] ) ) {
 
 <br />
 <div class = "center">
-<form method='POST' action="?perfil=evento&p=arquivos" enctype='multipart/form-data'>
+<form method='POST' action="?perfil=contratados&p=arquivos" enctype='multipart/form-data'>
 <p><input type='file' name='arquivo[]'></p>
 <p><input type='file' name='arquivo[]'></p>
  <p><input type='file' name='arquivo[]'></p>
@@ -1202,6 +1222,9 @@ if( isset( $_POST['enviar'] ) ) {
   <p><input type='file' name='arquivo[]'></p>
   <p><input type='file' name='arquivo[]'></p>
     <br>
+    <input type="hidden" name="idPessoa" value="<?php echo $_POST['idPessoa']; ?>"  />
+    <input type="hidden" name="tipoPessoa" value="<?php echo $_POST['tipoPessoa']; ?>"  />
+
     <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar' name='enviar'>
 </form>
 </div>
@@ -1224,7 +1247,7 @@ if( isset( $_POST['enviar'] ) ) {
 <h5>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</h5>
 					</div>
 			<div class="table-responsive list_info">
-                         <?php listaArquivos($_SESSION['idEvento']); ?>
+                         <?php listaArquivosPessoa($_POST['idPessoa'],$_POST['tipoPessoa']); ?>
 			</div>
 				  </div>
 			  </div>  

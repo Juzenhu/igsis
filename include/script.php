@@ -46,9 +46,12 @@
                         $('#Bairro').val(data.bairro);
                         $('#Cidade').val(data.cidade);
                         $('#Estado').val(data.estado);
+						$('#Sucesso').val(data.sucesso);
  
                         $('#Numero').focus();
-                    }
+                    }else{
+						$('#Sucesso').val(0);
+					}
                 }
            });   
    return false;    

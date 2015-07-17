@@ -956,4 +956,48 @@ function apagarRepresentante($pedido,$tipo,$evento){ //atualiza o publicado do r
 	}
 }
 
+function listaArquivosPessoa($idPessoa,$tipo){
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM igsis_arquivos_pessoa WHERE idPessoa = $idPessoa AND idTipoPessoa = $tipo AND publicado = 1";
+	$query = mysqli_query($con,$sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>Nome do arquivo</td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysqli_fetch_array($query)){
+			echo "<tr>";
+			echo "<td class='list_description'><a href='../uploadsdocs/".$campo['arquivo']."' target='_blank'>".$campo['arquivo']."</a></td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=contratados&p=arquivos'>
+			<input type='hidden' name='apagar' value='".$campo['idArquivosPessoa']."' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+					
+						
+
+                        
+
+						
+		
+	echo "					</tbody>
+				</table>";	
+}	
+
+function recuperaSiscontratArray($tipoPessoa,$idPessoa){
+	$con = bancoMysqli();
+	if($idPessoa = 0){
+		$sql = "SELECT * FROM sis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa'";
+		$query = mysqli_query($con,$sql);
+		$campo = mysql_fetch_assoc($query);
+		return $campo;		
+
+	}
+}
+
 ?>

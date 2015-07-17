@@ -1,0 +1,24 @@
+Nome da atração
+Departamento
+Programador
+Recursos
+Cachê Total
+Status do Contrato
+Número de parcelas
+Quantas vezes ocorrerá no 2 semestre
+Quais regiões
+Duração
+Histórico do Artista
+Estilos e/ou Linguagem
+Número de pessoas envolvidas
+CNPJ
+Nome da Empresa
+Email da empresa
+Telefone da empresa
+
+Data da apresentação com hora
+Equipamento da apresentação
+Rider
+Estimativa de público
+Espaços internos ou externo
+Link SPCultura
