@@ -61,7 +61,7 @@ function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia u
 
 function exibirDataBr($data){ //retorna data d/m/y de mysql/date(a-m-d)
 	$timestamp = strtotime($data); 
-	return date('d/m/y', $timestamp);	
+	return date('d/m/Y', $timestamp);	
 }
 
 function retornaDataSemHora($data){
@@ -771,64 +771,7 @@ function retornaTipo($id){ //retorna o tipo de evento
 	return $x['tipoEvento'];
 }
 
-function retornaPeriodo($id){ //retorna o período
-	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1'";
-	$query = mysql_query($sql);
-	$numero = mysql_num_rows($query);
-	$campo = mysql_fetch_array($query);
-	if($numero == 0){
-		return "Não há registro de ocorrências";
-	}elseif($numero == 1){
-		if($campo['dataFinal'] != '0000-00-00'){
-			return "de ".exibirDataBr($campo['dataInicio'])." a ".exibirDataBr($campo['dataFinal']);
-		}else{
-			return exibirDataBr($campo['dataInicio']);
-		}
-	}elseif($numero > 1){
-		$sql01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio ASC LIMIT 0,1";
-		$sql02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio DESC LIMIT 0,1";
-		$sql03 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataFinal ASC LIMIT 0,1";
-		$sql04 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataFinal DESC LIMIT 0,1";
 
-		$query01 = mysql_query($sql01);
-		$query02 = mysql_query($sql02);
-		$query03 = mysql_query($sql03);
-		$query04 = mysql_query($sql04);
-		
-		$date01 = mysql_fetch_array($query01);
-		$date02 = mysql_fetch_array($query02);
-		$date03 = mysql_fetch_array($query03);
-		$date04 = mysql_fetch_array($query04);
-		
-		$campoInicio[1] = $date01['dataInicio'];
-		$campoInicio[2] = $date02['dataInicio'];
-		$campoInicio[3] = $date03['dataInicio'];
-		$campoInicio[4] = $date04['dataInicio'];
-		$campoFinal[1] = $date01['dataFinal'];
-		$campoFinal[2] = $date02['dataFinal'];
-		$campoFinal[3] = $date03['dataFinal'];
-		$campoFinal[4] = $date04['dataFinal'];
-
-		
-		for($i = 1; $i <=4; $i++){
-				if($campoInicio[$i] < $campoInicio[$i++]){
-					$data['inicio'] = $campoInicio[$i];	
-				}
-				if($campoFinal[$i] != '0000-00-00'){
-					if($campoFinal[$i] > $campoFinal[$i++]){
-						$data['final'] = $campoFinal[$i];		
-					}
-				}else{
-			
-				}
-		}	
-	return "de ".$data['inicio']." a ".$data['final'];			
-	}
-	
-}
-function retornaLocal($id){ //retorna os locais do evento
-	
-}
 
 
 function iniciaFormulario($idUsuario){ //inicia um evento zerado
@@ -989,15 +932,108 @@ function listaArquivosPessoa($idPessoa,$tipo){
 				</table>";	
 }	
 
-function recuperaSiscontratArray($tipoPessoa,$idPessoa){
+function listaLocais($idEvento){
 	$con = bancoMysqli();
-	if($idPessoa = 0){
-		$sql = "SELECT * FROM sis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa'";
-		$query = mysqli_query($con,$sql);
-		$campo = mysql_fetch_assoc($query);
-		return $campo;		
-
+	$sql = "SELECT DISTINCT local FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1'";
+	$query = mysqli_query($con,$sql);	
+	$locais = "";
+	
+	while($local = mysqli_fetch_array($query)){
+		$sala = recuperaDados("ig_local",$local['local'],"idLocal");
+		$instituicao = recuperaDados("ig_instituicao",$sala['idInstituicao'],"idInstituicao");
+		$locais = $locais.", ".$sala['sala']." (".$instituicao['sigla'].")";
 	}
+	return $locais;
+
+}
+
+function retornaDuracao($idEvento){
+	$con = bancoMysqli();
+	$sql = "SELECT DISTINCT duracao FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' ORDER BY duracao DESC LIMIT 0,1";
+	$query = mysqli_query($con,$sql);	
+	$campo = mysqli_fetch_array($query);
+	return $campo['duracao'];
+	
+}
+
+
+function siscontrat($idPedido,$tipoPessoa,$instituicao){ 
+	$con = bancoMysqli();
+	if($instituicao != ""){
+		$filtroInstituicao = " AND instituicao = '$instituicao' ";
+	}else{
+		$filtroInstituicao = "";
+	}
+	if($idPedido != ""){ //retorna 1 array do pedido ['nomedocampo'];
+		
+		$pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContratacao");
+		$evento = recuperaDados("ig_evento",$pedido['idEvento'],"idEvento"); //$tabela,$idEvento,$campo
+		$usuario = recuperaDados("ig_usuario",$evento['idUsuario'],"idUsuario");
+		$instituicao = recuperaDados("ig_instituicao",$usuario['idInstituicao'],"idInstituicao");
+		$local = listaLocais($pedido['idEvento']);
+		$periodo = retornaPeriodo($pedido['idEvento']);
+		$duracao = retornaDuracao($pedido['idEvento']);
+		$x = array(
+			"idSetor" => $usuario['idInstituicao'],
+			"Setor" => $instituicao['instituicao']  ,
+			"CategoriaContratacao" => $evento['ig_modalidade_IdModalidade'] , //precisa ver se retorna o id
+			"Objeto" => $evento['ig_tipo_evento_idTipoEvento']." - ".$evento['nomeEvento'] ,
+			"Local" => substr($local,1) , //retira a virgula no começo da string
+			"ValorGlobal" => $pedido['valor'],
+			"ValorIndividual" => $pedido['valorIndividual'],
+			"FormaPagamento" => $pedido['formaPagamento'],
+			"Periodo" => $periodo, 
+			"Duracao" => $duracao, 
+			//"CargaHoraria" => $carga , //fazer a funcao
+			"Verba" => $pedido['idVerba'] ,
+			"Justificativa" => $evento['justificativa'] ,
+			"ParecerTecnico" => $evento['parecerArtistico'],
+			"DataCadastro" => $evento['dataEnvio'],
+			"Fiscal" => $evento['idResponsavel'] ,
+			"Suplente" => $evento['suplente'],
+			"Observacao"=> $pedido['observacao'] //verificar
+			
+			
+		);
+		
+	return $x;	
+	}else{
+		return "Erro";
+	}
+
+	if($tipoPessoa != ""){ //retorna 1 arrey duas dimensões [$i]['nomedocampo']
+		
+	}
+}
+
+function retornaPeriodo($id){ //retorna o período
+	$con = bancoMysqli();
+	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
+	$query_anterior = mysqli_query($con,$sql_anterior);
+	$data = mysqli_fetch_array($query_anterior);
+	$data_inicio = $data['dataInicio'];
+	
+	$sql_posterior01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataFinal DESC LIMIT 0,1"; //quando existe data final
+	$sql_posterior02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicial DESC LIMIT 0,1"; //quando há muitas datas únicas
+	
+	$query_anterior01 = mysqli_query($con,$sql_posterior01);
+	$data = mysqli_fetch_array($query_anterior01);
+	$num = mysqli_num_rows($query_anterior01);
+	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00')){
+		$dataFinal = $data['dataFinal'];	
+	}else{
+		$query_anterior02 = mysqli_query($con,$sql_posterior02);
+		$data = mysqli_fetch_array($query_anterior02);
+		$dataFinal = $data['dataFinal'];
+				
+	}
+
+	if($data_inicio == $dataFinal){
+		return exibirDataBr($data_inicio);
+	}else{
+		return "de ".exibirDataBr($data_inicio)." a ".exibirDataBr($dataFinal);
+	}
+	
 }
 
 ?>

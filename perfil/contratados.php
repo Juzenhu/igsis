@@ -972,10 +972,12 @@ if(isset($_POST['atualizar'])){
 	$ValorIndividual = dinheiroDeBr($_POST['ValorIndividual']);
 	$FormaPagamento = $_POST['FormaPagamento'];
 	$Observacao = $_POST['Observacao'];
+	$Verba = $_POST['verba'];
 	$idPedidoContratacao = $_POST['idPedidoContratacao'];
 	$sql_atualizar_pedido = "UPDATE  `igsis_pedido_contratacao` SET  `valor` =  '$Valor',
 `formaPagamento` =  '$FormaPagamento',
 `observacao` =  '$Observacao',
+`idVerba` =  '$Verba',
 `valorIndividual` =  '$ValorIndividual' WHERE  `igsis_pedido_contratacao`.`idPedidoContratacao` = '$idPedidoContratacao';
 ";
 	$query_atualizar_pedido = mysqli_query($con,$sql_atualizar_pedido);
@@ -1040,7 +1042,7 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContrataca
 					<div class="col-md-offset-2 col-md-8"><strong>Verba:</strong><br/>
 					  	 <select class="form-control" id="verba" name="verba" >
 					   <?php
-						geraOpcao("sis_verba","","");
+						geraOpcao("sis_verba",$pedido['idVerba'],"");
 						?>  
 					  </select>
 					</div>		

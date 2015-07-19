@@ -435,11 +435,14 @@ if(isset($_POST['atualizar'])){
 	$releaseCom = addslashes($_POST['releaseCom']); 
 	$parecerArtistico = addslashes($_POST['parecerArtistico']); 
 	$linksCom = addslashes($_POST['linksCom']); 
+	$justificativa = addslashes($_POST['justificativa']); 
 
 	$sql_atualizar = "UPDATE `ig_evento` SET 
 	`sinopse` = '$sinopse', 
 	`releaseCom` = '$releaseCom', 
-	`parecerArtistico` = '$parecerArtistico', 
+	`parecerArtistico` = '$parecerArtistico',
+	`justificativa` = '$justificativa', 
+ 
 	`linksCom` = '$linksCom'
 	WHERE `ig_evento`.`idEvento` = ".$_SESSION['idEvento'].";";
 
@@ -485,6 +488,13 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
             		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
             	</div> 
             </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Justificativa*</label>
+            		<textarea name="justificativa" class="form-control" rows="10" placeholder="Texto usado fins jurídicos e confecção de contratos."><?php echo $campo["justificativa"] ?></textarea>
+            	</div> 
+            </div>
+
       		 <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
             		<label>Parecer artístico*</label>
