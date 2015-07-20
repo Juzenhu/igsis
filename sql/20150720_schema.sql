@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.2deb1ubuntu1
+-- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- Servidor: localhost
--- Tempo de Geração: Jul 10, 2015 as 04:52 PM
--- Versão do Servidor: 5.1.73
--- Versão do PHP: 5.4.39-1+deb.sury.org~lucid+2
+-- Host: 127.0.0.1
+-- Generation Time: 20-Jul-2015 às 14:49
+-- Versão do servidor: 5.6.17
+-- PHP Version: 5.5.12
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,8 +17,61 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Banco de Dados: `igsis`
+-- Database: `igsis`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `igsis_arquivos_pessoa`
+--
+
+DROP TABLE IF EXISTS `igsis_arquivos_pessoa`;
+CREATE TABLE IF NOT EXISTS `igsis_arquivos_pessoa` (
+  `idArquivosPessoa` int(11) NOT NULL AUTO_INCREMENT,
+  `idTipoPessoa` int(1) DEFAULT NULL,
+  `idPessoa` int(11) DEFAULT NULL,
+  `arquivo` longtext,
+  `dataEnvio` date DEFAULT NULL,
+  `publicado` int(1) DEFAULT NULL,
+  PRIMARY KEY (`idArquivosPessoa`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+
+--
+-- Extraindo dados da tabela `igsis_arquivos_pessoa`
+--
+
+INSERT INTO `igsis_arquivos_pessoa` (`idArquivosPessoa`, `idTipoPessoa`, `idPessoa`, `arquivo`, `dataEnvio`, `publicado`) VALUES
+(1, 0, 0, '$arquivo_base', '0000-00-00', 0),
+(2, 0, 0, 'legendas_tv_20150616110604.rar', '0000-00-00', 1),
+(3, 0, 0, 'legendas_tv_20150630015737.rar', '0000-00-00', 1),
+(4, 0, 0, 'legendas_tv_20150630015737.rar', '2015-07-01', 1),
+(5, 3, 15, 'legendas_tv_20150630015737.rar', '2015-07-02', 1),
+(6, 3, 15, 'legendas_tv_20150703172610.rar', '2015-07-02', 1),
+(7, 3, 15, 'legendas_tv_20150702202836.rar', '2015-07-03', 1),
+(8, 3, 15, 'legendas_tv_20150702202836.rar', '2015-07-04', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `igsis_endereco`
+--
+
+DROP TABLE IF EXISTS `igsis_endereco`;
+CREATE TABLE IF NOT EXISTS `igsis_endereco` (
+  `idEndereco` int(11) NOT NULL AUTO_INCREMENT,
+  `cidade` varchar(60) DEFAULT NULL,
+  `logradouro` longtext,
+  `bairro` varchar(120) DEFAULT NULL,
+  `cep` varchar(9) DEFAULT NULL,
+  `tp_logradouro` varchar(30) DEFAULT NULL,
+  `estado` varchar(2) DEFAULT NULL,
+  `numero` varchar(12) DEFAULT NULL,
+  `complemento` longtext,
+  `tipoPessoa` int(1) DEFAULT NULL,
+  `idPessoa` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idEndereco`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -27,11 +81,11 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 DROP TABLE IF EXISTS `igsis_pedido_contratacao`;
 CREATE TABLE IF NOT EXISTS `igsis_pedido_contratacao` (
-  `idPedidoContratacao` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `idPedidoContratacao` int(11) NOT NULL AUTO_INCREMENT,
   `idEvento` int(11) NOT NULL,
   `tipoPessoa` int(1) DEFAULT NULL,
-  `idPessoaJuridica` int(11) DEFAULT NULL,
-  `idPessoaFisica` int(11) DEFAULT NULL,
+  `idRepresentante01` int(11) DEFAULT NULL,
+  `idPessoa` int(11) DEFAULT NULL,
   `valor` decimal(10,2) DEFAULT NULL,
   `valorPorExtenso` varchar(120) DEFAULT NULL,
   `formaPagamento` longtext,
@@ -40,18 +94,43 @@ CREATE TABLE IF NOT EXISTS `igsis_pedido_contratacao` (
   `observacao` longtext,
   `publicado` int(1) DEFAULT NULL,
   `valorIndividual` decimal(10,2) DEFAULT NULL,
+  `idRepresentante02` int(11) DEFAULT NULL,
+  `instituicao` int(3) DEFAULT NULL,
   PRIMARY KEY (`idPedidoContratacao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
 --
 -- Extraindo dados da tabela `igsis_pedido_contratacao`
 --
 
-INSERT INTO `igsis_pedido_contratacao` (`idPedidoContratacao`, `idEvento`, `tipoPessoa`, `idPessoaJuridica`, `idPessoaFisica`, `valor`, `valorPorExtenso`, `formaPagamento`, `idVerba`, `anexo`, `observacao`, `publicado`, `valorIndividual`) VALUES
-(00000007, 109, 3, NULL, 15, '0.00', NULL, 'teste123', NULL, NULL, 'teste123', 1, '0.00'),
-(00000008, 109, 1, NULL, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL),
-(00000009, 109, 2, NULL, 18, '5000.00', NULL, 'teste123', NULL, NULL, 'Será que funciona', 1, '0.00'),
-(00000010, 109, 1, NULL, 16, '3000.00', NULL, '', NULL, NULL, '', 1, '0.00');
+INSERT INTO `igsis_pedido_contratacao` (`idPedidoContratacao`, `idEvento`, `tipoPessoa`, `idRepresentante01`, `idPessoa`, `valor`, `valorPorExtenso`, `formaPagamento`, `idVerba`, `anexo`, `observacao`, `publicado`, `valorIndividual`, `idRepresentante02`, `instituicao`) VALUES
+(7, 109, 3, NULL, 15, '0.00', NULL, 'teste123', NULL, NULL, 'teste123', 1, '0.00', NULL, NULL),
+(8, 109, 1, NULL, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL),
+(9, 109, 2, 15, 18, '5000.00', NULL, 'teste123', NULL, NULL, 'Será que funciona', 0, '1200.00', NULL, NULL),
+(10, 109, 1, NULL, 16, '1200.00', NULL, '', NULL, NULL, '', 1, '0.00', NULL, NULL),
+(11, 109, 1, NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `igsis_tipo_documento`
+--
+
+DROP TABLE IF EXISTS `igsis_tipo_documento`;
+CREATE TABLE IF NOT EXISTS `igsis_tipo_documento` (
+  `idTipoDocumento` int(1) NOT NULL AUTO_INCREMENT,
+  `documento` varchar(30) NOT NULL,
+  PRIMARY KEY (`idTipoDocumento`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Extraindo dados da tabela `igsis_tipo_documento`
+--
+
+INSERT INTO `igsis_tipo_documento` (`idTipoDocumento`, `documento`) VALUES
+(1, 'RG'),
+(2, 'RNE'),
+(3, 'Passaporte');
 
 -- --------------------------------------------------------
 
@@ -73,11 +152,6 @@ CREATE TABLE IF NOT EXISTS `ig_alteracao` (
   KEY `ig_alteracao_FKIndex1` (`ig_evento_idEvento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `ig_alteracao`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -95,11 +169,6 @@ CREATE TABLE IF NOT EXISTS `ig_anexos` (
   KEY `ig_anexos_FKIndex2` (`ig_alteracao_idAlteracao`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `ig_anexos`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -114,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `ig_arquivo` (
   `publicado` int(1) NOT NULL,
   PRIMARY KEY (`idArquivo`),
   KEY `ig_arquivo_FKIndex1` (`ig_evento_idEvento`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=9 ;
 
 --
 -- Extraindo dados da tabela `ig_arquivo`
@@ -126,7 +195,9 @@ INSERT INTO `ig_arquivo` (`idArquivo`, `ig_evento_idEvento`, `arquivo`, `publica
 (3, 111, 'As Armas da Persuasao - Robert B. Cialdini.mobi', 1),
 (4, 131, '20150517_080746.jpg', 1),
 (5, 109, 'release_leilão_aprovado.doc', 1),
-(6, 109, 'Chrysanthemum.jpg', 1);
+(6, 109, 'Chrysanthemum.jpg', 1),
+(7, 109, 'igsis (2).sql', 0),
+(8, 109, 'igsis (1).sql', 0);
 
 -- --------------------------------------------------------
 
@@ -176,11 +247,6 @@ CREATE TABLE IF NOT EXISTS `ig_cinema` (
   PRIMARY KEY (`idCinema`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `ig_cinema`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -215,11 +281,6 @@ CREATE TABLE IF NOT EXISTS `ig_comunicacao` (
   PRIMARY KEY (`idCom`),
   KEY `ig_comunicao_FKIndex1` (`ig_ocorrencia_idOcorrencia`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `ig_comunicacao`
---
-
 
 -- --------------------------------------------------------
 
@@ -346,6 +407,8 @@ CREATE TABLE IF NOT EXISTS `ig_evento` (
   `ig_modalidade_IdModalidade` int(2) DEFAULT NULL,
   `linksCom` longtext,
   `subEvento` int(1) DEFAULT NULL,
+  `dataEnvio` date DEFAULT NULL,
+  `justificativa` longtext,
   PRIMARY KEY (`idEvento`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=166 ;
 
@@ -353,57 +416,57 @@ CREATE TABLE IF NOT EXISTS `ig_evento` (
 -- Extraindo dados da tabela `ig_evento`
 --
 
-INSERT INTO `ig_evento` (`idEvento`, `ig_produtor_idProdutor`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma`, `projetoEspecial`, `nomeEvento`, `projeto`, `memorando`, `idResponsavel`, `suplente`, `autor`, `fichaTecnica`, `faixaEtaria`, `sinopse`, `releaseCom`, `parecerArtistico`, `confirmaFinanca`, `confirmaDiretoria`, `confirmaComunicacao`, `confirmaDocumentacao`, `confirmaProducao`, `numeroProcesso`, `publicado`, `idUsuario`, `ig_modalidade_IdModalidade`, `linksCom`, `subEvento`) VALUES
-(108, 0, 3, 0, 1, 'The Beatles', '', NULL, 8, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, 1, NULL, NULL),
-(109, 10, 12, 0, 1, 'The Beatles', 'Quinta na Faixa', NULL, 1, 8, 'The Beatles', 'John, Paul, Ringo e George', '4', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 9, 'http://pt.wikipedia.org/wiki/The_Beatles', 1),
-(110, 0, 16, 0, 3, 'Rolling Stones', '', NULL, 8, 1, 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', '5', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', NULL),
-(111, 8, 4, 0, 3, 'Blur no CCSP', '', NULL, 1, 7, 'Blur é uma banda inglesa de rock alternativo. Formada em 1989, em Londres, o grupo é formado pelo vocalista Damon Albarn, o guitarrista Graham Coxon, o baixista Alex James e o baterista Dave Rowntree. Legal, né? "Teste"', 'Blur é uma banda inglesa de rock alternativo. Formada em 1989, em Londres, o grupo é formado pelo vocalista Damon Albarn, o guitarrista Graham Coxon, o baixista Alex James e o baterista Dave Rowntree.', '2', 'Leisure (1991)[editar | editar código-fonte]\r\nO primeiro álbum da banda estilisticamente não se diferenciava muito do que se fazia na época na Inglaterra, explorava letras curtas, simples e diretas, por vezes sem refrões, com os vocais de Damon Albarn se fundindo com a guitarra de Graham Coxon, estes sim já se destacando, junto com a combinação do baixo de Alex James e a bateria de Rowntree. As músicas exploravam uma sonoridade inclinada ao psicodelismo advindo dos Stone Roses e outros representantes da cena musical “Madchester”, que já mostrava declínio naquele ano de 1991. A primeira faixa, e também o primeiro single da banda, She’s So High abria o álbum de forma musicalmente fantástica, com sua letra curta e vaga, o que era uma regra poucas vezes desobedecida no álbum. Aqui é explorado um dos lados mais sombrios de Blur, com a canção Sing, que pode ser considerada um dos grandes clássicos da banda e já apresentava um lado diferenciado de Blur, e talvez o seu potencial, que seria melhor explorado a partir do álbum “Blur”. Sing seria incluída, bem posteriormente, na trilha sonora do filme Trainspotting.\r\n\r\nModern Life Is Rubbish (1993)[editar | editar código-fonte]\r\nO segundo álbum da banda abandonou boa parte da psicodelia e as letras curtas de Leisure e mostrou letras que indicam uma localização e uma época. For Tomorrow abre o disco, onde são citados vários pontos de Londres. Em Blue Jeans mais um passeio por Londres, supostamente retratando o relacionamento de Damon Albarn com Justine (Elastica). Neste álbum começam a aparecer as músicas centradas em personagens, retratados de forma irônica, sendo Colin Zeal o mais famoso. Destaque neste álbum também para Chemical World e Sunday Sunday. Chemical World merece destaque por si só, é um retrato da vida moderna nas grandes cidades, trabalhos ingratos, dificuldades para pagar o aluguel, falta de perspectivas e a solidão, ironicamente em um lugar superpopuloso.\r\n\r\nParklife (1994)[editar | editar código-fonte]\r\nParklife, praticamente uma continuação de Modern Life Is Rubbish, abria com Girls & Boys, um dos maiores "hits" da banda. Os personagens que retratam a sociedade continuam, um Inglês que sonha em se mudar para os USA em Magic America e Tracy Jacks, um funcionário público. As críticas ou ironias com a sociedada inglesa também aparecem em London Loves. Porém, há também a melancolia de This is a Low, Badhead, To the End eEnd of Century. Parklife é um álbum consistente em termos musicais, embora seja uma coletânea de histórias que nem sempre se interligam.\r\n\r\nThe Great Escape (1995)[editar | editar código-fonte]\r\nThe Great Escape continua com os personagens, estereótipos satirizados em diversas faixas, não é a toa que o álbum abre com Stereotypes. O álbum, embora tenha tido relativo sucesso, já demonstrava uma queda na fórmula e indicava novos rumos em canções como He Thought of Cars e The Universal, uma das canções mais significativas da banda. The Great Escape recebeu boas avaliações, recebendo a nota 9 em 10 por parte da NME3 . Este álbum o último do que ficou conhecido como The Life Trilogy4 , complementando Modern Life Is Rubbish e Parklife.\r\n\r\nBlur (1997)[editar | editar código-fonte]\r\nBlur rompeu com a linha que a banda vinha seguindo nos três últimos álbuns, centrados em personagens da vida britânica pós-thatcherismo5 . Na sonoridade a banda buscou se aproximar do cenário independente dos Estados Unidos como o Pavement e Sonic Youth 6 , essa diferença fica clara em músicas como M.O.R., On Your Own e You''re So Great. O álbum conta com Song 2, o maior êxito radiofônico da banda, inclusive no Brasil. Pelo lado melancólico o álbum conta com Beetlebum, Death of a Party e a imensuravelmente triste Strange News From Another Star.\r\n\r\n13 (1999)[editar | editar código-fonte]\r\nEm 13 a banda continua sua mudança de sonoridade, o produtor de longa data Stephen Street foi substituído por Willian Orbit neste álbum. O resultado foi adição de mais elementos experimentais e eletrônicos, se distanciando do rótulo Britpop. 13 abre com Tender, canção que virou hino em praticamente todas as apresentações da banda e, supostamente, mais uma canção dedicada a amada ex-companheira de Damon Albarn, Justine Frischmann. No entanto, 13 é um álbum com temática diversa, com canções novamente baseadas em personagens como Bugman e canções mais leves sobre a infância na cidade natal da banda, como Coffee & TV, que deu luz a um dos vídeo clipes mais famosos da banda, em que uma caixa de leite se aventura pela cidade. Neste álbum também se encontram dois grandes B-Sides do lado mais sombrios da banda Caramel e Battle. Blur teve boa receptividade por parte da crítica especializada7 .\r\n\r\nThink Tank (2003)[editar | editar código-fonte]\r\nGraham Coxon se afasta da banda para se dedicar a seus trabalhos solos. "Think Tank" é lançado em 2003. Para o lugar de Coxon, foi recrutado Simon Tong, ex-guitarrista do Verve. A única faixa que Coxon participa deste álbum é a última, chamada Battery in your Leg. "Think Tank" foi aclamado pela crítica, sendo citado em vigésimo lugar nos melhores álbuns da década, pela revista NME. Out of Time, Crazy Beat e Battery in Your Leg são os destaques desse trabalho.\r\n\r\nThe Magic Whip (2015)[editar | editar código-fonte]\r\nApós 12 anos sem criar álbuns de estúdio, já com a volta de Graham Coxon, a banda anuncia seu novo álbum, The Magic Whip, previsto para lançamento em 27 de Abril de 2015, e o lançamento do single Go Out junto com seu videoclipe, capa do álbum e o nome de todas as faixas.', 'Leisure (1991)[editar | editar código-fonte]\r\nO primeiro álbum da banda estilisticamente não se diferenciava muito do que se fazia na época na Inglaterra, explorava letras curtas, simples e diretas, por vezes sem refrões, com os vocais de Damon Albarn se fundindo com a guitarra de Graham Coxon, estes sim já se destacando, junto com a combinação do baixo de Alex James e a bateria de Rowntree. As músicas exploravam uma sonoridade inclinada ao psicodelismo advindo dos Stone Roses e outros representantes da cena musical “Madchester”, que já mostrava declínio naquele ano de 1991. A primeira faixa, e também o primeiro single da banda, She’s So High abria o álbum de forma musicalmente fantástica, com sua letra curta e vaga, o que era uma regra poucas vezes desobedecida no álbum. Aqui é explorado um dos lados mais sombrios de Blur, com a canção Sing, que pode ser considerada um dos grandes clássicos da banda e já apresentava um lado diferenciado de Blur, e talvez o seu potencial, que seria melhor explorado a partir do álbum “Blur”. Sing seria incluída, bem posteriormente, na trilha sonora do filme Trainspotting.\r\n\r\nModern Life Is Rubbish (1993)[editar | editar código-fonte]\r\nO segundo álbum da banda abandonou boa parte da psicodelia e as letras curtas de Leisure e mostrou letras que indicam uma localização e uma época. For Tomorrow abre o disco, onde são citados vários pontos de Londres. Em Blue Jeans mais um passeio por Londres, supostamente retratando o relacionamento de Damon Albarn com Justine (Elastica). Neste álbum começam a aparecer as músicas centradas em personagens, retratados de forma irônica, sendo Colin Zeal o mais famoso. Destaque neste álbum também para Chemical World e Sunday Sunday. Chemical World merece destaque por si só, é um retrato da vida moderna nas grandes cidades, trabalhos ingratos, dificuldades para pagar o aluguel, falta de perspectivas e a solidão, ironicamente em um lugar superpopuloso.\r\n\r\nParklife (1994)[editar | editar código-fonte]\r\nParklife, praticamente uma continuação de Modern Life Is Rubbish, abria com Girls & Boys, um dos maiores "hits" da banda. Os personagens que retratam a sociedade continuam, um Inglês que sonha em se mudar para os USA em Magic America e Tracy Jacks, um funcionário público. As críticas ou ironias com a sociedada inglesa também aparecem em London Loves. Porém, há também a melancolia de This is a Low, Badhead, To the End eEnd of Century. Parklife é um álbum consistente em termos musicais, embora seja uma coletânea de histórias que nem sempre se interligam.\r\n\r\nThe Great Escape (1995)[editar | editar código-fonte]\r\nThe Great Escape continua com os personagens, estereótipos satirizados em diversas faixas, não é a toa que o álbum abre com Stereotypes. O álbum, embora tenha tido relativo sucesso, já demonstrava uma queda na fórmula e indicava novos rumos em canções como He Thought of Cars e The Universal, uma das canções mais significativas da banda. The Great Escape recebeu boas avaliações, recebendo a nota 9 em 10 por parte da NME3 . Este álbum o último do que ficou conhecido como The Life Trilogy4 , complementando Modern Life Is Rubbish e Parklife.\r\n\r\nBlur (1997)[editar | editar código-fonte]\r\nBlur rompeu com a linha que a banda vinha seguindo nos três últimos álbuns, centrados em personagens da vida britânica pós-thatcherismo5 . Na sonoridade a banda buscou se aproximar do cenário independente dos Estados Unidos como o Pavement e Sonic Youth 6 , essa diferença fica clara em músicas como M.O.R., On Your Own e You''re So Great. O álbum conta com Song 2, o maior êxito radiofônico da banda, inclusive no Brasil. Pelo lado melancólico o álbum conta com Beetlebum, Death of a Party e a imensuravelmente triste Strange News From Another Star.\r\n\r\n13 (1999)[editar | editar código-fonte]\r\nEm 13 a banda continua sua mudança de sonoridade, o produtor de longa data Stephen Street foi substituído por Willian Orbit neste álbum. O resultado foi adição de mais elementos experimentais e eletrônicos, se distanciando do rótulo Britpop. 13 abre com Tender, canção que virou hino em praticamente todas as apresentações da banda e, supostamente, mais uma canção dedicada a amada ex-companheira de Damon Albarn, Justine Frischmann. No entanto, 13 é um álbum com temática diversa, com canções novamente baseadas em personagens como Bugman e canções mais leves sobre a infância na cidade natal da banda, como Coffee & TV, que deu luz a um dos vídeo clipes mais famosos da banda, em que uma caixa de leite se aventura pela cidade. Neste álbum também se encontram dois grandes B-Sides do lado mais sombrios da banda Caramel e Battle. Blur teve boa receptividade por parte da crítica especializada7 .\r\n\r\nThink Tank (2003)[editar | editar código-fonte]\r\nGraham Coxon se afasta da banda para se dedicar a seus trabalhos solos. "Think Tank" é lançado em 2003. Para o lugar de Coxon, foi recrutado Simon Tong, ex-guitarrista do Verve. A única faixa que Coxon participa deste álbum é a última, chamada Battery in your Leg. "Think Tank" foi aclamado pela crítica, sendo citado em vigésimo lugar nos melhores álbuns da década, pela revista NME. Out of Time, Crazy Beat e Battery in Your Leg são os destaques desse trabalho.\r\n\r\nThe Magic Whip (2015)[editar | editar código-fonte]\r\nApós 12 anos sem criar álbuns de estúdio, já com a volta de Graham Coxon, a banda anuncia seu novo álbum, The Magic Whip, previsto para lançamento em 27 de Abril de 2015, e o lançamento do single Go Out junto com seu videoclipe, capa do álbum e o nome de todas as faixas.', 'Leisure (1991)[editar | editar código-fonte]\r\nO primeiro álbum da banda estilisticamente não se diferenciava muito do que se fazia na época na Inglaterra, explorava letras curtas, simples e diretas, por vezes sem refrões, com os vocais de Damon Albarn se fundindo com a guitarra de Graham Coxon, estes sim já se destacando, junto com a combinação do baixo de Alex James e a bateria de Rowntree. As músicas exploravam uma sonoridade inclinada ao psicodelismo advindo dos Stone Roses e outros representantes da cena musical “Madchester”, que já mostrava declínio naquele ano de 1991. A primeira faixa, e também o primeiro single da banda, She’s So High abria o álbum de forma musicalmente fantástica, com sua letra curta e vaga, o que era uma regra poucas vezes desobedecida no álbum. Aqui é explorado um dos lados mais sombrios de Blur, com a canção Sing, que pode ser considerada um dos grandes clássicos da banda e já apresentava um lado diferenciado de Blur, e talvez o seu potencial, que seria melhor explorado a partir do álbum “Blur”. Sing seria incluída, bem posteriormente, na trilha sonora do filme Trainspotting.\r\n\r\nModern Life Is Rubbish (1993)[editar | editar código-fonte]\r\nO segundo álbum da banda abandonou boa parte da psicodelia e as letras curtas de Leisure e mostrou letras que indicam uma localização e uma época. For Tomorrow abre o disco, onde são citados vários pontos de Londres. Em Blue Jeans mais um passeio por Londres, supostamente retratando o relacionamento de Damon Albarn com Justine (Elastica). Neste álbum começam a aparecer as músicas centradas em personagens, retratados de forma irônica, sendo Colin Zeal o mais famoso. Destaque neste álbum também para Chemical World e Sunday Sunday. Chemical World merece destaque por si só, é um retrato da vida moderna nas grandes cidades, trabalhos ingratos, dificuldades para pagar o aluguel, falta de perspectivas e a solidão, ironicamente em um lugar superpopuloso.\r\n\r\nParklife (1994)[editar | editar código-fonte]\r\nParklife, praticamente uma continuação de Modern Life Is Rubbish, abria com Girls & Boys, um dos maiores "hits" da banda. Os personagens que retratam a sociedade continuam, um Inglês que sonha em se mudar para os USA em Magic America e Tracy Jacks, um funcionário público. As críticas ou ironias com a sociedada inglesa também aparecem em London Loves. Porém, há também a melancolia de This is a Low, Badhead, To the End eEnd of Century. Parklife é um álbum consistente em termos musicais, embora seja uma coletânea de histórias que nem sempre se interligam.\r\n\r\nThe Great Escape (1995)[editar | editar código-fonte]\r\nThe Great Escape continua com os personagens, estereótipos satirizados em diversas faixas, não é a toa que o álbum abre com Stereotypes. O álbum, embora tenha tido relativo sucesso, já demonstrava uma queda na fórmula e indicava novos rumos em canções como He Thought of Cars e The Universal, uma das canções mais significativas da banda. The Great Escape recebeu boas avaliações, recebendo a nota 9 em 10 por parte da NME3 . Este álbum o último do que ficou conhecido como The Life Trilogy4 , complementando Modern Life Is Rubbish e Parklife.\r\n\r\nBlur (1997)[editar | editar código-fonte]\r\nBlur rompeu com a linha que a banda vinha seguindo nos três últimos álbuns, centrados em personagens da vida britânica pós-thatcherismo5 . Na sonoridade a banda buscou se aproximar do cenário independente dos Estados Unidos como o Pavement e Sonic Youth 6 , essa diferença fica clara em músicas como M.O.R., On Your Own e You''re So Great. O álbum conta com Song 2, o maior êxito radiofônico da banda, inclusive no Brasil. Pelo lado melancólico o álbum conta com Beetlebum, Death of a Party e a imensuravelmente triste Strange News From Another Star.\r\n\r\n13 (1999)[editar | editar código-fonte]\r\nEm 13 a banda continua sua mudança de sonoridade, o produtor de longa data Stephen Street foi substituído por Willian Orbit neste álbum. O resultado foi adição de mais elementos experimentais e eletrônicos, se distanciando do rótulo Britpop. 13 abre com Tender, canção que virou hino em praticamente todas as apresentações da banda e, supostamente, mais uma canção dedicada a amada ex-companheira de Damon Albarn, Justine Frischmann. No entanto, 13 é um álbum com temática diversa, com canções novamente baseadas em personagens como Bugman e canções mais leves sobre a infância na cidade natal da banda, como Coffee & TV, que deu luz a um dos vídeo clipes mais famosos da banda, em que uma caixa de leite se aventura pela cidade. Neste álbum também se encontram dois grandes B-Sides do lado mais sombrios da banda Caramel e Battle. Blur teve boa receptividade por parte da crítica especializada7 .\r\n\r\nThink Tank (2003)[editar | editar código-fonte]\r\nGraham Coxon se afasta da banda para se dedicar a seus trabalhos solos. "Think Tank" é lançado em 2003. Para o lugar de Coxon, foi recrutado Simon Tong, ex-guitarrista do Verve. A única faixa que Coxon participa deste álbum é a última, chamada Battery in your Leg. "Think Tank" foi aclamado pela crítica, sendo citado em vigésimo lugar nos melhores álbuns da década, pela revista NME. Out of Time, Crazy Beat e Battery in Your Leg são os destaques desse trabalho.\r\n\r\nThe Magic Whip (2015)[editar | editar código-fonte]\r\nApós 12 anos sem criar álbuns de estúdio, já com a volta de Graham Coxon, a banda anuncia seu novo álbum, The Magic Whip, previsto para lançamento em 27 de Abril de 2015, e o lançamento do single Go Out junto com seu videoclipe, capa do álbum e o nome de todas as faixas.', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 3, 'http://pt.wikipedia.org/wiki/Blur\r\nhttp://www.uol.com.br/\r\n', 0),
-(113, 0, 12, 0, 1, 'The Beatles', 'Quinta na Faixa', NULL, 1, 8, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 7, NULL, NULL),
-(114, 0, 4, 0, 3, 'Teste123', '', NULL, 8, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, NULL, 0),
-(115, 0, 7, 0, 2, 'Teste PHPMySQL', '', NULL, 1, 8, 'Retorna uma string com barras invertidas antes de caracteres que precisam ser escapados para serem escapados em query a banco de dados, etc. Estes caracteres são aspas simples (''), aspas duplas ("), barra invertida (\\) e NUL (o byte NULL).\r\n\r\nUm exemplo do uso de addslashes() é quando você esta entrando com dados em um banco de dados. Por exemplo, para inserir o nome O''reilly em um banco de dados, você vai precisar escapa-lo. A maior parte dos banco de dados faz isto com \\ o que nos leva a O\\''reilly. Isto é apenas para colocar os dados no banco de dados, a \\ não será inserida. Tendo a diretiva do PHP magic_quotes_sybase em on fará com que '' seja escapada com outra ''.\r\n\r\nA diretiva do PHP magic_quotes_gpc é on por padrão, e ela essencialmente executa addslashes() para todos dados de GET, POST e COOKIE. Não use addslashes() em strings que já foram escapadas com magic_quotes_gpc já que você acabara escapando duas vezes. A função get_magic_quotes_gpc() pode dar uma mão para conferir isto.', 'Retorna uma string com barras invertidas antes de caracteres que precisam ser escapados para serem escapados em query a banco de dados, etc. Estes caracteres são aspas simples (''), aspas duplas ("), barra invertida (\\) e NUL (o byte NULL).\r\n\r\nUm exemplo do uso de addslashes() é quando você esta entrando com dados em um banco de dados. Por exemplo, para inserir o nome O''reilly em um banco de dados, você vai precisar escapa-lo. A maior parte dos banco de dados faz isto com \\ o que nos leva a O\\''reilly. Isto é apenas para colocar os dados no banco de dados, a \\ não será inserida. Tendo a diretiva do PHP magic_quotes_sybase em on fará com que '' seja escapada com outra ''.\r\n\r\nA diretiva do PHP magic_quotes_gpc é on por padrão, e ela essencialmente executa addslashes() para todos dados de GET, POST e COOKIE. Não use addslashes() em strings que já foram escapadas com magic_quotes_gpc já que você acabara escapando duas vezes. A função get_magic_quotes_gpc() pode dar uma mão para conferir isto.', '1', 'Para compartilhar esse conteúdo, por favor utilize o link http://www1.folha.uol.com.br/ilustrada/2015/05/1635367-documentario-constroi-colagem-sensivel-e-divertida-da-vida-de-cauby-peixoto.shtml ou as ferramentas oferecidas na página. Textos, fotos, artes e vídeos da Folha estão protegidos pela legislação brasileira sobre direito autoral. Não reproduza o conteúdo do jornal em qualquer meio de comunicação, eletrônico ou impresso, sem autorização da Folhapress (pesquisa@folhapress.com.br). As regras têm como objetivo proteger o investimento que a Folha faz na qualidade de seu jornalismo. Se precisa copiar trecho de texto da Folha para uso privado, por favor logue-se como assinante ou cadastrado.', 'Para compartilhar esse conteúdo, por favor utilize o link http://www1.folha.uol.com.br/ilustrada/2015/05/1635367-documentario-constroi-colagem-sensivel-e-divertida-da-vida-de-cauby-peixoto.shtml ou as ferramentas oferecidas na página. Textos, fotos, artes e vídeos da Folha estão protegidos pela legislação brasileira sobre direito autoral. Não reproduza o conteúdo do jornal em qualquer meio de comunicação, eletrônico ou impresso, sem autorização da Folhapress (pesquisa@folhapress.com.br). As regras têm como objetivo proteger o investimento que a Folha faz na qualidade de seu jornalismo. Se precisa copiar trecho de texto da Folha para uso privado, por favor logue-se como assinante ou cadastrado.', 'Workshop de propostas para o desenvolvimento de políticas públicas para a Inovação Cidadã\r\n30 de julho de 2014\r\nCentro Cultural São Paulo\r\nRua Vergueiro 1000\r\nSão Paulo, Brasil\r\n\r\nRepresentantes de governos locais e nacionais, empresas, organismos internacionais, academia e coletivos sociais reúnem-se em São Paulo para debater sobre propostas para o desenvolvimento de políticas públicas para o impulso da Inovação Cidadã em Ibero-América.\r\nDos aportes feitos no workshop vão sistematizar-se as idéias para a conformação do documento que será entregue às Chefas e aos Chefes de Estado e de Governo na Cúpula de Veracruz de este ano.\r\n\r\nPrograma\r\n9:00 Bem-vinda e introdução: Políticas públicas e inovação cidadã\r\nJuca Ferreira, Secretário de Cultura da Prefeitura de São Paulo\r\n9:15 Apresentação Cidadania 2.0 / Inovação Cidadã\r\nCidadania 2.0 \r\n9:25 Objetivos e metodologia do workshop: \r\nCidadania 2.0 \r\n9:30 Inicio workshop \r\nTrabalho em subgrupos sobre propostas do documento, e novas propostas\r\n12:00 Almoço\r\n13:00 Sessão plenária \r\nDebate coletivo sobre propostas do documento e novas propostas:\r\n13:00-13:30 conexão com Madrid (Medialab-Prado): propostas documento e novas propostas\r\n13:30-15:00 debate propostas documento (SPaulo)\r\n15:00-16:30 apresentação e debate de propostas novas (SPaulo)  \r\n17:00 Orientações futuras e encerramento\r\nJuca Ferreira, Secretário de Cultura da Prefeitura de São Paulo e Cidadania 2.0 \r\n\r\n\r\n\r\nMetodología do Workshop\r\n\r\n1.	Objetivo \r\nDebater sobre propostas para o desenvolvimento de políticas públicas para o impulso da inovação cidadã, realizadas pelos participantes da Equipe de trabalho. O objetivo e criar um documento de propostas numa base consensual para entregar as Chefas e Chefes de Estado ibero-americanos durante a Cúpula de Veracruz.\r\n\r\n2.	Processo\r\nAs propostas realizadas previamente via Web no formulário http://www.ciudadania20.org/politicaspublicas/ pela Equipe de trabalho e cidadãos em geral vão ser categorizadas previamente em temáticas principais por Cidadania 2.0 e levadas ao workshop de São Paulo para trabalhar sobre elas num documento.\r\nOs participantes vão reunir-se em grupos heterogêneos (representantes de movimentos sociais, empresas, academia, organismos internacionais e governos) e vão debater sobre cada uma das propostas do documento, além de gerar novas propostas que posteriormente podam ser incluídas no documento para as Chefas e os Chefes de Estado. Dado que não todos os participantes estarão presentes em São Paulo, serão incluídos nos grupos mediante Skype através de dispositivo portátil. \r\nSimultaneamente vai reunir-se um grupo no Medialab-Prado em Madrid com o mesmo objetivo de debater e gerar novas propostas.\r\nSeguidamente, vai haver um espaço de apresentação coletiva das propostas de cada grupo mediante o seu porta-voz (incluindo o grupo de Madrid), e um debate entre todos os participantes, com o fim de gerar uma visão coletiva das propostas. \r\nFinalmente, o workshop vai finalizar com conclusões de Juca Ferreira e a equipe de Cidadania 2.0. \r\n\r\n3.	Ferramenta \r\nCommentpress vai ser a ferramenta a utilizar (a mesma utilizada durante todos os processos colaborativos de Inovação Cidadã), onde cada grupo vai funcionar como um usuário (grupo 1, grupo 2, etc.) plasmando em forma de comentário os seus aportes a cada proposta. Também os comentários sobre o debate coletivo vão ser incluídos em commentpress como um novo usuário. \r\nDe esta forma, a relatoria se irá construindo in situ de forma aberta e online. Isso permite que cidadãos não presentes no workshop também podam incluir os seus comentários em forma de propostas que vão ser incorporados ao debate.\r\n\r\n4.	Produto esperado \r\nAs propostas numa base consensual surgidas no workshop vão ser sistematizadas nos dias posteriores por Cidadania 2.0 para conformar o documento de propostas para o desenvolvimento de políticas públicas para as Chefas e os Chefes de Estado que vamos levar a Veracruz. O documento estará online até novembro.\r\n', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 7, 'http://futebol.placar.esporte.uol.com.br/futebol/brasileirao/2015/05/31/internacional-x-sao-paulo.htm', 0),
-(121, 0, 1, 0, 1, 'teste123', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 1, NULL, NULL),
-(123, 0, 12, 0, 7, 'The Beatles', 'Quinta na faixa', NULL, 1, 7, 'The Beatles', 'John, Paul, George e Ringo', '6', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.', 'Durante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', 'Em Março de 1957, empolgado com o skiffle que Lonnie Donegan popularizou com seus sons improvisados, John Lennon criou uma banda composta por colegas da escola Quarry Bank School — que incluía seu melhor amigo na época, Pete Shotton — primeiramente chamada de The Black Jacks, mas logo definida como The Quarrymen (em homenagem à escola).12 Inicialmente, além dos dois, a banda era composta por Eric Griffths (violão), Bill Smith (baixo improvisado) e Rod Davis (banjo). Em 6 de julho de 1957, Paul McCartney havia assistido uma apresentação da banda em uma festa na Igreja St. Peter, e Ivan Vaughan, amigo de John Lennon e colega de classe de Paul, apresentou-lhe a Lennon; Paul foi convidado a ingressar na banda e, no mesmo ano, mostrou a Lennon a composição "I''ve Lost My Little Girl".12 Em 6 de fevereiro de 1958, o jovem guitarrista George Harrison juntou-se à banda,13 apresentado por Paul que o teria conhecido por acaso num ônibus.14 Apesar da relutância inicial de Lennon pelo fato de Harrison ser três anos mais novo que ele (na época, com quinze anos),14 McCartney insistiu depois de uma demonstração de George e este terminou ingressando no grupo. Lennon e McCartney desempenharam a guitarra rítmica durante esse período e, após o baterista oficial do Quarrymen, Colin Hanton deixar a banda, em 1959, depois de uma discussão com os outros membros, teve uma alta rotatividade de bateristas. Stuart Sutcliffe, colega de Lennon numa escola de arte de Liverpool, aderiu ao baixo em janeiro de 1960, a pedido do amigo.12', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 7, 'http://pt.wikipedia.org/wiki/The_Beatles', NULL),
-(125, 0, 1, 0, 1, 'The Beatles', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 1, NULL, NULL),
-(126, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, NULL, NULL, NULL),
-(127, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(128, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 9, NULL, NULL, NULL),
-(129, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(130, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(131, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(132, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(133, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(134, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(135, 9, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(136, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(137, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(138, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(139, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 8, 1, NULL, NULL),
-(140, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(141, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(142, 0, 7, 0, 1, 'Hair Spray', '', NULL, 7, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 7, 1, NULL, NULL),
-(143, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(144, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(145, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 8, 1, NULL, NULL),
-(146, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 7, 1, NULL, NULL),
-(147, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 8, 1, NULL, NULL),
-(148, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(149, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(150, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(151, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(152, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(153, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(154, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(155, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(156, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(157, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(158, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(159, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL),
-(160, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(161, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(162, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(163, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL),
-(164, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL),
-(165, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL);
+INSERT INTO `ig_evento` (`idEvento`, `ig_produtor_idProdutor`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma`, `projetoEspecial`, `nomeEvento`, `projeto`, `memorando`, `idResponsavel`, `suplente`, `autor`, `fichaTecnica`, `faixaEtaria`, `sinopse`, `releaseCom`, `parecerArtistico`, `confirmaFinanca`, `confirmaDiretoria`, `confirmaComunicacao`, `confirmaDocumentacao`, `confirmaProducao`, `numeroProcesso`, `publicado`, `idUsuario`, `ig_modalidade_IdModalidade`, `linksCom`, `subEvento`, `dataEnvio`, `justificativa`) VALUES
+(108, 0, 3, 0, 1, 'The Beatles', '', NULL, 8, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, 1, NULL, NULL, NULL, NULL),
+(109, 10, 12, 0, 1, 'The Beatles', 'Quinta na Faixa', NULL, 1, 8, 'The Beatles', 'John, Paul, Ringo e George', '4', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 9, 'http://pt.wikipedia.org/wiki/The_Beatles', 1, NULL, 'teste123'),
+(110, 0, 16, 0, 3, 'Rolling Stones', '', NULL, 8, 1, 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', '5', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, 'The Rolling Stones é uma banda de rock inglesa formada em 12 de julho de 1962, e é uma das bandas mais antigas ainda em atividade. Ao lado dos Beatles, foram considerados a banda mais importante da chamada Invasão Britânica ocorrida nos anos 1960, que adicionou diversos artistas ingleses nas paradas norte-americanas e que decisivamente influenciaram na música pop e nos costumes.', NULL, NULL, NULL),
+(111, 8, 4, 0, 3, 'Blur no CCSP', '', NULL, 1, 7, 'Blur é uma banda inglesa de rock alternativo. Formada em 1989, em Londres, o grupo é formado pelo vocalista Damon Albarn, o guitarrista Graham Coxon, o baixista Alex James e o baterista Dave Rowntree. Legal, né? "Teste"', 'Blur é uma banda inglesa de rock alternativo. Formada em 1989, em Londres, o grupo é formado pelo vocalista Damon Albarn, o guitarrista Graham Coxon, o baixista Alex James e o baterista Dave Rowntree.', '2', 'Leisure (1991)[editar | editar código-fonte]\r\nO primeiro álbum da banda estilisticamente não se diferenciava muito do que se fazia na época na Inglaterra, explorava letras curtas, simples e diretas, por vezes sem refrões, com os vocais de Damon Albarn se fundindo com a guitarra de Graham Coxon, estes sim já se destacando, junto com a combinação do baixo de Alex James e a bateria de Rowntree. As músicas exploravam uma sonoridade inclinada ao psicodelismo advindo dos Stone Roses e outros representantes da cena musical “Madchester”, que já mostrava declínio naquele ano de 1991. A primeira faixa, e também o primeiro single da banda, She’s So High abria o álbum de forma musicalmente fantástica, com sua letra curta e vaga, o que era uma regra poucas vezes desobedecida no álbum. Aqui é explorado um dos lados mais sombrios de Blur, com a canção Sing, que pode ser considerada um dos grandes clássicos da banda e já apresentava um lado diferenciado de Blur, e talvez o seu potencial, que seria melhor explorado a partir do álbum “Blur”. Sing seria incluída, bem posteriormente, na trilha sonora do filme Trainspotting.\r\n\r\nModern Life Is Rubbish (1993)[editar | editar código-fonte]\r\nO segundo álbum da banda abandonou boa parte da psicodelia e as letras curtas de Leisure e mostrou letras que indicam uma localização e uma época. For Tomorrow abre o disco, onde são citados vários pontos de Londres. Em Blue Jeans mais um passeio por Londres, supostamente retratando o relacionamento de Damon Albarn com Justine (Elastica). Neste álbum começam a aparecer as músicas centradas em personagens, retratados de forma irônica, sendo Colin Zeal o mais famoso. Destaque neste álbum também para Chemical World e Sunday Sunday. Chemical World merece destaque por si só, é um retrato da vida moderna nas grandes cidades, trabalhos ingratos, dificuldades para pagar o aluguel, falta de perspectivas e a solidão, ironicamente em um lugar superpopuloso.\r\n\r\nParklife (1994)[editar | editar código-fonte]\r\nParklife, praticamente uma continuação de Modern Life Is Rubbish, abria com Girls & Boys, um dos maiores "hits" da banda. Os personagens que retratam a sociedade continuam, um Inglês que sonha em se mudar para os USA em Magic America e Tracy Jacks, um funcionário público. As críticas ou ironias com a sociedada inglesa também aparecem em London Loves. Porém, há também a melancolia de This is a Low, Badhead, To the End eEnd of Century. Parklife é um álbum consistente em termos musicais, embora seja uma coletânea de histórias que nem sempre se interligam.\r\n\r\nThe Great Escape (1995)[editar | editar código-fonte]\r\nThe Great Escape continua com os personagens, estereótipos satirizados em diversas faixas, não é a toa que o álbum abre com Stereotypes. O álbum, embora tenha tido relativo sucesso, já demonstrava uma queda na fórmula e indicava novos rumos em canções como He Thought of Cars e The Universal, uma das canções mais significativas da banda. The Great Escape recebeu boas avaliações, recebendo a nota 9 em 10 por parte da NME3 . Este álbum o último do que ficou conhecido como The Life Trilogy4 , complementando Modern Life Is Rubbish e Parklife.\r\n\r\nBlur (1997)[editar | editar código-fonte]\r\nBlur rompeu com a linha que a banda vinha seguindo nos três últimos álbuns, centrados em personagens da vida britânica pós-thatcherismo5 . Na sonoridade a banda buscou se aproximar do cenário independente dos Estados Unidos como o Pavement e Sonic Youth 6 , essa diferença fica clara em músicas como M.O.R., On Your Own e You''re So Great. O álbum conta com Song 2, o maior êxito radiofônico da banda, inclusive no Brasil. Pelo lado melancólico o álbum conta com Beetlebum, Death of a Party e a imensuravelmente triste Strange News From Another Star.\r\n\r\n13 (1999)[editar | editar código-fonte]\r\nEm 13 a banda continua sua mudança de sonoridade, o produtor de longa data Stephen Street foi substituído por Willian Orbit neste álbum. O resultado foi adição de mais elementos experimentais e eletrônicos, se distanciando do rótulo Britpop. 13 abre com Tender, canção que virou hino em praticamente todas as apresentações da banda e, supostamente, mais uma canção dedicada a amada ex-companheira de Damon Albarn, Justine Frischmann. No entanto, 13 é um álbum com temática diversa, com canções novamente baseadas em personagens como Bugman e canções mais leves sobre a infância na cidade natal da banda, como Coffee & TV, que deu luz a um dos vídeo clipes mais famosos da banda, em que uma caixa de leite se aventura pela cidade. Neste álbum também se encontram dois grandes B-Sides do lado mais sombrios da banda Caramel e Battle. Blur teve boa receptividade por parte da crítica especializada7 .\r\n\r\nThink Tank (2003)[editar | editar código-fonte]\r\nGraham Coxon se afasta da banda para se dedicar a seus trabalhos solos. "Think Tank" é lançado em 2003. Para o lugar de Coxon, foi recrutado Simon Tong, ex-guitarrista do Verve. A única faixa que Coxon participa deste álbum é a última, chamada Battery in your Leg. "Think Tank" foi aclamado pela crítica, sendo citado em vigésimo lugar nos melhores álbuns da década, pela revista NME. Out of Time, Crazy Beat e Battery in Your Leg são os destaques desse trabalho.\r\n\r\nThe Magic Whip (2015)[editar | editar código-fonte]\r\nApós 12 anos sem criar álbuns de estúdio, já com a volta de Graham Coxon, a banda anuncia seu novo álbum, The Magic Whip, previsto para lançamento em 27 de Abril de 2015, e o lançamento do single Go Out junto com seu videoclipe, capa do álbum e o nome de todas as faixas.', 'Leisure (1991)[editar | editar código-fonte]\r\nO primeiro álbum da banda estilisticamente não se diferenciava muito do que se fazia na época na Inglaterra, explorava letras curtas, simples e diretas, por vezes sem refrões, com os vocais de Damon Albarn se fundindo com a guitarra de Graham Coxon, estes sim já se destacando, junto com a combinação do baixo de Alex James e a bateria de Rowntree. As músicas exploravam uma sonoridade inclinada ao psicodelismo advindo dos Stone Roses e outros representantes da cena musical “Madchester”, que já mostrava declínio naquele ano de 1991. A primeira faixa, e também o primeiro single da banda, She’s So High abria o álbum de forma musicalmente fantástica, com sua letra curta e vaga, o que era uma regra poucas vezes desobedecida no álbum. Aqui é explorado um dos lados mais sombrios de Blur, com a canção Sing, que pode ser considerada um dos grandes clássicos da banda e já apresentava um lado diferenciado de Blur, e talvez o seu potencial, que seria melhor explorado a partir do álbum “Blur”. Sing seria incluída, bem posteriormente, na trilha sonora do filme Trainspotting.\r\n\r\nModern Life Is Rubbish (1993)[editar | editar código-fonte]\r\nO segundo álbum da banda abandonou boa parte da psicodelia e as letras curtas de Leisure e mostrou letras que indicam uma localização e uma época. For Tomorrow abre o disco, onde são citados vários pontos de Londres. Em Blue Jeans mais um passeio por Londres, supostamente retratando o relacionamento de Damon Albarn com Justine (Elastica). Neste álbum começam a aparecer as músicas centradas em personagens, retratados de forma irônica, sendo Colin Zeal o mais famoso. Destaque neste álbum também para Chemical World e Sunday Sunday. Chemical World merece destaque por si só, é um retrato da vida moderna nas grandes cidades, trabalhos ingratos, dificuldades para pagar o aluguel, falta de perspectivas e a solidão, ironicamente em um lugar superpopuloso.\r\n\r\nParklife (1994)[editar | editar código-fonte]\r\nParklife, praticamente uma continuação de Modern Life Is Rubbish, abria com Girls & Boys, um dos maiores "hits" da banda. Os personagens que retratam a sociedade continuam, um Inglês que sonha em se mudar para os USA em Magic America e Tracy Jacks, um funcionário público. As críticas ou ironias com a sociedada inglesa também aparecem em London Loves. Porém, há também a melancolia de This is a Low, Badhead, To the End eEnd of Century. Parklife é um álbum consistente em termos musicais, embora seja uma coletânea de histórias que nem sempre se interligam.\r\n\r\nThe Great Escape (1995)[editar | editar código-fonte]\r\nThe Great Escape continua com os personagens, estereótipos satirizados em diversas faixas, não é a toa que o álbum abre com Stereotypes. O álbum, embora tenha tido relativo sucesso, já demonstrava uma queda na fórmula e indicava novos rumos em canções como He Thought of Cars e The Universal, uma das canções mais significativas da banda. The Great Escape recebeu boas avaliações, recebendo a nota 9 em 10 por parte da NME3 . Este álbum o último do que ficou conhecido como The Life Trilogy4 , complementando Modern Life Is Rubbish e Parklife.\r\n\r\nBlur (1997)[editar | editar código-fonte]\r\nBlur rompeu com a linha que a banda vinha seguindo nos três últimos álbuns, centrados em personagens da vida britânica pós-thatcherismo5 . Na sonoridade a banda buscou se aproximar do cenário independente dos Estados Unidos como o Pavement e Sonic Youth 6 , essa diferença fica clara em músicas como M.O.R., On Your Own e You''re So Great. O álbum conta com Song 2, o maior êxito radiofônico da banda, inclusive no Brasil. Pelo lado melancólico o álbum conta com Beetlebum, Death of a Party e a imensuravelmente triste Strange News From Another Star.\r\n\r\n13 (1999)[editar | editar código-fonte]\r\nEm 13 a banda continua sua mudança de sonoridade, o produtor de longa data Stephen Street foi substituído por Willian Orbit neste álbum. O resultado foi adição de mais elementos experimentais e eletrônicos, se distanciando do rótulo Britpop. 13 abre com Tender, canção que virou hino em praticamente todas as apresentações da banda e, supostamente, mais uma canção dedicada a amada ex-companheira de Damon Albarn, Justine Frischmann. No entanto, 13 é um álbum com temática diversa, com canções novamente baseadas em personagens como Bugman e canções mais leves sobre a infância na cidade natal da banda, como Coffee & TV, que deu luz a um dos vídeo clipes mais famosos da banda, em que uma caixa de leite se aventura pela cidade. Neste álbum também se encontram dois grandes B-Sides do lado mais sombrios da banda Caramel e Battle. Blur teve boa receptividade por parte da crítica especializada7 .\r\n\r\nThink Tank (2003)[editar | editar código-fonte]\r\nGraham Coxon se afasta da banda para se dedicar a seus trabalhos solos. "Think Tank" é lançado em 2003. Para o lugar de Coxon, foi recrutado Simon Tong, ex-guitarrista do Verve. A única faixa que Coxon participa deste álbum é a última, chamada Battery in your Leg. "Think Tank" foi aclamado pela crítica, sendo citado em vigésimo lugar nos melhores álbuns da década, pela revista NME. Out of Time, Crazy Beat e Battery in Your Leg são os destaques desse trabalho.\r\n\r\nThe Magic Whip (2015)[editar | editar código-fonte]\r\nApós 12 anos sem criar álbuns de estúdio, já com a volta de Graham Coxon, a banda anuncia seu novo álbum, The Magic Whip, previsto para lançamento em 27 de Abril de 2015, e o lançamento do single Go Out junto com seu videoclipe, capa do álbum e o nome de todas as faixas.', 'Leisure (1991)[editar | editar código-fonte]\r\nO primeiro álbum da banda estilisticamente não se diferenciava muito do que se fazia na época na Inglaterra, explorava letras curtas, simples e diretas, por vezes sem refrões, com os vocais de Damon Albarn se fundindo com a guitarra de Graham Coxon, estes sim já se destacando, junto com a combinação do baixo de Alex James e a bateria de Rowntree. As músicas exploravam uma sonoridade inclinada ao psicodelismo advindo dos Stone Roses e outros representantes da cena musical “Madchester”, que já mostrava declínio naquele ano de 1991. A primeira faixa, e também o primeiro single da banda, She’s So High abria o álbum de forma musicalmente fantástica, com sua letra curta e vaga, o que era uma regra poucas vezes desobedecida no álbum. Aqui é explorado um dos lados mais sombrios de Blur, com a canção Sing, que pode ser considerada um dos grandes clássicos da banda e já apresentava um lado diferenciado de Blur, e talvez o seu potencial, que seria melhor explorado a partir do álbum “Blur”. Sing seria incluída, bem posteriormente, na trilha sonora do filme Trainspotting.\r\n\r\nModern Life Is Rubbish (1993)[editar | editar código-fonte]\r\nO segundo álbum da banda abandonou boa parte da psicodelia e as letras curtas de Leisure e mostrou letras que indicam uma localização e uma época. For Tomorrow abre o disco, onde são citados vários pontos de Londres. Em Blue Jeans mais um passeio por Londres, supostamente retratando o relacionamento de Damon Albarn com Justine (Elastica). Neste álbum começam a aparecer as músicas centradas em personagens, retratados de forma irônica, sendo Colin Zeal o mais famoso. Destaque neste álbum também para Chemical World e Sunday Sunday. Chemical World merece destaque por si só, é um retrato da vida moderna nas grandes cidades, trabalhos ingratos, dificuldades para pagar o aluguel, falta de perspectivas e a solidão, ironicamente em um lugar superpopuloso.\r\n\r\nParklife (1994)[editar | editar código-fonte]\r\nParklife, praticamente uma continuação de Modern Life Is Rubbish, abria com Girls & Boys, um dos maiores "hits" da banda. Os personagens que retratam a sociedade continuam, um Inglês que sonha em se mudar para os USA em Magic America e Tracy Jacks, um funcionário público. As críticas ou ironias com a sociedada inglesa também aparecem em London Loves. Porém, há também a melancolia de This is a Low, Badhead, To the End eEnd of Century. Parklife é um álbum consistente em termos musicais, embora seja uma coletânea de histórias que nem sempre se interligam.\r\n\r\nThe Great Escape (1995)[editar | editar código-fonte]\r\nThe Great Escape continua com os personagens, estereótipos satirizados em diversas faixas, não é a toa que o álbum abre com Stereotypes. O álbum, embora tenha tido relativo sucesso, já demonstrava uma queda na fórmula e indicava novos rumos em canções como He Thought of Cars e The Universal, uma das canções mais significativas da banda. The Great Escape recebeu boas avaliações, recebendo a nota 9 em 10 por parte da NME3 . Este álbum o último do que ficou conhecido como The Life Trilogy4 , complementando Modern Life Is Rubbish e Parklife.\r\n\r\nBlur (1997)[editar | editar código-fonte]\r\nBlur rompeu com a linha que a banda vinha seguindo nos três últimos álbuns, centrados em personagens da vida britânica pós-thatcherismo5 . Na sonoridade a banda buscou se aproximar do cenário independente dos Estados Unidos como o Pavement e Sonic Youth 6 , essa diferença fica clara em músicas como M.O.R., On Your Own e You''re So Great. O álbum conta com Song 2, o maior êxito radiofônico da banda, inclusive no Brasil. Pelo lado melancólico o álbum conta com Beetlebum, Death of a Party e a imensuravelmente triste Strange News From Another Star.\r\n\r\n13 (1999)[editar | editar código-fonte]\r\nEm 13 a banda continua sua mudança de sonoridade, o produtor de longa data Stephen Street foi substituído por Willian Orbit neste álbum. O resultado foi adição de mais elementos experimentais e eletrônicos, se distanciando do rótulo Britpop. 13 abre com Tender, canção que virou hino em praticamente todas as apresentações da banda e, supostamente, mais uma canção dedicada a amada ex-companheira de Damon Albarn, Justine Frischmann. No entanto, 13 é um álbum com temática diversa, com canções novamente baseadas em personagens como Bugman e canções mais leves sobre a infância na cidade natal da banda, como Coffee & TV, que deu luz a um dos vídeo clipes mais famosos da banda, em que uma caixa de leite se aventura pela cidade. Neste álbum também se encontram dois grandes B-Sides do lado mais sombrios da banda Caramel e Battle. Blur teve boa receptividade por parte da crítica especializada7 .\r\n\r\nThink Tank (2003)[editar | editar código-fonte]\r\nGraham Coxon se afasta da banda para se dedicar a seus trabalhos solos. "Think Tank" é lançado em 2003. Para o lugar de Coxon, foi recrutado Simon Tong, ex-guitarrista do Verve. A única faixa que Coxon participa deste álbum é a última, chamada Battery in your Leg. "Think Tank" foi aclamado pela crítica, sendo citado em vigésimo lugar nos melhores álbuns da década, pela revista NME. Out of Time, Crazy Beat e Battery in Your Leg são os destaques desse trabalho.\r\n\r\nThe Magic Whip (2015)[editar | editar código-fonte]\r\nApós 12 anos sem criar álbuns de estúdio, já com a volta de Graham Coxon, a banda anuncia seu novo álbum, The Magic Whip, previsto para lançamento em 27 de Abril de 2015, e o lançamento do single Go Out junto com seu videoclipe, capa do álbum e o nome de todas as faixas.', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 3, 'http://pt.wikipedia.org/wiki/Blur\r\nhttp://www.uol.com.br/\r\n', 0, NULL, NULL),
+(113, 0, 12, 0, 1, 'The Beatles', 'Quinta na Faixa', NULL, 1, 8, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 7, NULL, NULL, NULL, NULL),
+(114, 0, 4, 0, 3, 'Teste123', '', NULL, 8, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, NULL, 0, NULL, NULL),
+(115, 0, 7, 0, 2, 'Teste PHPMySQL', '', NULL, 1, 8, 'Retorna uma string com barras invertidas antes de caracteres que precisam ser escapados para serem escapados em query a banco de dados, etc. Estes caracteres são aspas simples (''), aspas duplas ("), barra invertida (\\) e NUL (o byte NULL).\r\n\r\nUm exemplo do uso de addslashes() é quando você esta entrando com dados em um banco de dados. Por exemplo, para inserir o nome O''reilly em um banco de dados, você vai precisar escapa-lo. A maior parte dos banco de dados faz isto com \\ o que nos leva a O\\''reilly. Isto é apenas para colocar os dados no banco de dados, a \\ não será inserida. Tendo a diretiva do PHP magic_quotes_sybase em on fará com que '' seja escapada com outra ''.\r\n\r\nA diretiva do PHP magic_quotes_gpc é on por padrão, e ela essencialmente executa addslashes() para todos dados de GET, POST e COOKIE. Não use addslashes() em strings que já foram escapadas com magic_quotes_gpc já que você acabara escapando duas vezes. A função get_magic_quotes_gpc() pode dar uma mão para conferir isto.', 'Retorna uma string com barras invertidas antes de caracteres que precisam ser escapados para serem escapados em query a banco de dados, etc. Estes caracteres são aspas simples (''), aspas duplas ("), barra invertida (\\) e NUL (o byte NULL).\r\n\r\nUm exemplo do uso de addslashes() é quando você esta entrando com dados em um banco de dados. Por exemplo, para inserir o nome O''reilly em um banco de dados, você vai precisar escapa-lo. A maior parte dos banco de dados faz isto com \\ o que nos leva a O\\''reilly. Isto é apenas para colocar os dados no banco de dados, a \\ não será inserida. Tendo a diretiva do PHP magic_quotes_sybase em on fará com que '' seja escapada com outra ''.\r\n\r\nA diretiva do PHP magic_quotes_gpc é on por padrão, e ela essencialmente executa addslashes() para todos dados de GET, POST e COOKIE. Não use addslashes() em strings que já foram escapadas com magic_quotes_gpc já que você acabara escapando duas vezes. A função get_magic_quotes_gpc() pode dar uma mão para conferir isto.', '1', 'Para compartilhar esse conteúdo, por favor utilize o link http://www1.folha.uol.com.br/ilustrada/2015/05/1635367-documentario-constroi-colagem-sensivel-e-divertida-da-vida-de-cauby-peixoto.shtml ou as ferramentas oferecidas na página. Textos, fotos, artes e vídeos da Folha estão protegidos pela legislação brasileira sobre direito autoral. Não reproduza o conteúdo do jornal em qualquer meio de comunicação, eletrônico ou impresso, sem autorização da Folhapress (pesquisa@folhapress.com.br). As regras têm como objetivo proteger o investimento que a Folha faz na qualidade de seu jornalismo. Se precisa copiar trecho de texto da Folha para uso privado, por favor logue-se como assinante ou cadastrado.', 'Para compartilhar esse conteúdo, por favor utilize o link http://www1.folha.uol.com.br/ilustrada/2015/05/1635367-documentario-constroi-colagem-sensivel-e-divertida-da-vida-de-cauby-peixoto.shtml ou as ferramentas oferecidas na página. Textos, fotos, artes e vídeos da Folha estão protegidos pela legislação brasileira sobre direito autoral. Não reproduza o conteúdo do jornal em qualquer meio de comunicação, eletrônico ou impresso, sem autorização da Folhapress (pesquisa@folhapress.com.br). As regras têm como objetivo proteger o investimento que a Folha faz na qualidade de seu jornalismo. Se precisa copiar trecho de texto da Folha para uso privado, por favor logue-se como assinante ou cadastrado.', 'Workshop de propostas para o desenvolvimento de políticas públicas para a Inovação Cidadã\r\n30 de julho de 2014\r\nCentro Cultural São Paulo\r\nRua Vergueiro 1000\r\nSão Paulo, Brasil\r\n\r\nRepresentantes de governos locais e nacionais, empresas, organismos internacionais, academia e coletivos sociais reúnem-se em São Paulo para debater sobre propostas para o desenvolvimento de políticas públicas para o impulso da Inovação Cidadã em Ibero-América.\r\nDos aportes feitos no workshop vão sistematizar-se as idéias para a conformação do documento que será entregue às Chefas e aos Chefes de Estado e de Governo na Cúpula de Veracruz de este ano.\r\n\r\nPrograma\r\n9:00 Bem-vinda e introdução: Políticas públicas e inovação cidadã\r\nJuca Ferreira, Secretário de Cultura da Prefeitura de São Paulo\r\n9:15 Apresentação Cidadania 2.0 / Inovação Cidadã\r\nCidadania 2.0 \r\n9:25 Objetivos e metodologia do workshop: \r\nCidadania 2.0 \r\n9:30 Inicio workshop \r\nTrabalho em subgrupos sobre propostas do documento, e novas propostas\r\n12:00 Almoço\r\n13:00 Sessão plenária \r\nDebate coletivo sobre propostas do documento e novas propostas:\r\n13:00-13:30 conexão com Madrid (Medialab-Prado): propostas documento e novas propostas\r\n13:30-15:00 debate propostas documento (SPaulo)\r\n15:00-16:30 apresentação e debate de propostas novas (SPaulo)  \r\n17:00 Orientações futuras e encerramento\r\nJuca Ferreira, Secretário de Cultura da Prefeitura de São Paulo e Cidadania 2.0 \r\n\r\n\r\n\r\nMetodología do Workshop\r\n\r\n1.	Objetivo \r\nDebater sobre propostas para o desenvolvimento de políticas públicas para o impulso da inovação cidadã, realizadas pelos participantes da Equipe de trabalho. O objetivo e criar um documento de propostas numa base consensual para entregar as Chefas e Chefes de Estado ibero-americanos durante a Cúpula de Veracruz.\r\n\r\n2.	Processo\r\nAs propostas realizadas previamente via Web no formulário http://www.ciudadania20.org/politicaspublicas/ pela Equipe de trabalho e cidadãos em geral vão ser categorizadas previamente em temáticas principais por Cidadania 2.0 e levadas ao workshop de São Paulo para trabalhar sobre elas num documento.\r\nOs participantes vão reunir-se em grupos heterogêneos (representantes de movimentos sociais, empresas, academia, organismos internacionais e governos) e vão debater sobre cada uma das propostas do documento, além de gerar novas propostas que posteriormente podam ser incluídas no documento para as Chefas e os Chefes de Estado. Dado que não todos os participantes estarão presentes em São Paulo, serão incluídos nos grupos mediante Skype através de dispositivo portátil. \r\nSimultaneamente vai reunir-se um grupo no Medialab-Prado em Madrid com o mesmo objetivo de debater e gerar novas propostas.\r\nSeguidamente, vai haver um espaço de apresentação coletiva das propostas de cada grupo mediante o seu porta-voz (incluindo o grupo de Madrid), e um debate entre todos os participantes, com o fim de gerar uma visão coletiva das propostas. \r\nFinalmente, o workshop vai finalizar com conclusões de Juca Ferreira e a equipe de Cidadania 2.0. \r\n\r\n3.	Ferramenta \r\nCommentpress vai ser a ferramenta a utilizar (a mesma utilizada durante todos os processos colaborativos de Inovação Cidadã), onde cada grupo vai funcionar como um usuário (grupo 1, grupo 2, etc.) plasmando em forma de comentário os seus aportes a cada proposta. Também os comentários sobre o debate coletivo vão ser incluídos em commentpress como um novo usuário. \r\nDe esta forma, a relatoria se irá construindo in situ de forma aberta e online. Isso permite que cidadãos não presentes no workshop também podam incluir os seus comentários em forma de propostas que vão ser incorporados ao debate.\r\n\r\n4.	Produto esperado \r\nAs propostas numa base consensual surgidas no workshop vão ser sistematizadas nos dias posteriores por Cidadania 2.0 para conformar o documento de propostas para o desenvolvimento de políticas públicas para as Chefas e os Chefes de Estado que vamos levar a Veracruz. O documento estará online até novembro.\r\n', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 7, 'http://futebol.placar.esporte.uol.com.br/futebol/brasileirao/2015/05/31/internacional-x-sao-paulo.htm', 0, NULL, NULL),
+(121, 0, 1, 0, 1, 'teste123', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 1, NULL, NULL, NULL, NULL),
+(123, 0, 12, 0, 7, 'The Beatles', 'Quinta na faixa', NULL, 1, 7, 'The Beatles', 'John, Paul, George e Ringo', '6', 'The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de "Beatlemania", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single "Love Me Do". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.', 'Durante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7', 'Em Março de 1957, empolgado com o skiffle que Lonnie Donegan popularizou com seus sons improvisados, John Lennon criou uma banda composta por colegas da escola Quarry Bank School — que incluía seu melhor amigo na época, Pete Shotton — primeiramente chamada de The Black Jacks, mas logo definida como The Quarrymen (em homenagem à escola).12 Inicialmente, além dos dois, a banda era composta por Eric Griffths (violão), Bill Smith (baixo improvisado) e Rod Davis (banjo). Em 6 de julho de 1957, Paul McCartney havia assistido uma apresentação da banda em uma festa na Igreja St. Peter, e Ivan Vaughan, amigo de John Lennon e colega de classe de Paul, apresentou-lhe a Lennon; Paul foi convidado a ingressar na banda e, no mesmo ano, mostrou a Lennon a composição "I''ve Lost My Little Girl".12 Em 6 de fevereiro de 1958, o jovem guitarrista George Harrison juntou-se à banda,13 apresentado por Paul que o teria conhecido por acaso num ônibus.14 Apesar da relutância inicial de Lennon pelo fato de Harrison ser três anos mais novo que ele (na época, com quinze anos),14 McCartney insistiu depois de uma demonstração de George e este terminou ingressando no grupo. Lennon e McCartney desempenharam a guitarra rítmica durante esse período e, após o baterista oficial do Quarrymen, Colin Hanton deixar a banda, em 1959, depois de uma discussão com os outros membros, teve uma alta rotatividade de bateristas. Stuart Sutcliffe, colega de Lennon numa escola de arte de Liverpool, aderiu ao baixo em janeiro de 1960, a pedido do amigo.12', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 7, 'http://pt.wikipedia.org/wiki/The_Beatles', NULL, NULL, NULL),
+(125, 0, 1, 0, 1, 'The Beatles', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 1, NULL, NULL, NULL, NULL),
+(126, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, NULL, NULL),
+(127, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(128, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 9, NULL, NULL, NULL, NULL, NULL),
+(129, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(130, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(131, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(132, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(133, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(134, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(135, 9, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(136, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(137, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(138, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(139, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 8, 1, NULL, NULL, NULL, NULL),
+(140, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(141, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(142, 0, 7, 0, 1, 'Hair Spray', '', NULL, 7, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 7, 1, NULL, NULL, NULL, NULL),
+(143, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(144, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(145, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 8, 1, NULL, NULL, NULL, NULL),
+(146, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 7, 1, NULL, NULL, NULL, NULL),
+(147, 0, 1, 0, 1, '', '', NULL, 1, 1, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 1, 8, 1, NULL, NULL, NULL, NULL),
+(148, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(149, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(150, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(151, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(152, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(153, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(154, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(155, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(156, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(157, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(158, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(159, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, NULL, NULL, NULL, NULL, NULL),
+(160, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(161, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(162, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(163, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, NULL, NULL, NULL, NULL, NULL),
+(164, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL),
+(165, 0, 0, 0, 0, '', NULL, NULL, 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -445,11 +508,6 @@ CREATE TABLE IF NOT EXISTS `ig_justificativa` (
   `data` datetime DEFAULT NULL,
   PRIMARY KEY (`idJustificativa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `ig_justificativa`
---
-
 
 -- --------------------------------------------------------
 
@@ -527,7 +585,7 @@ CREATE TABLE IF NOT EXISTS `ig_log` (
   `descricao` longtext NOT NULL,
   PRIMARY KEY (`idLog`),
   KEY `ig_log_FKIndex1` (`ig_usuario_idUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=407 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=423 ;
 
 --
 -- Extraindo dados da tabela `ig_log`
@@ -936,7 +994,23 @@ INSERT INTO `ig_log` (`idLog`, `ig_usuario_idUsuario`, `enderecoIP`, `dataLog`, 
 (403, 1, '201.95.29.175', '2015-07-09 13:02:08', 'Fez login.'),
 (404, 1, '201.95.29.175', '2015-07-09 13:15:55', 'Fez login.'),
 (405, 1, '177.94.61.141', '2015-07-10 01:02:33', 'Fez login.'),
-(406, 1, '177.94.61.141', '2015-07-10 01:06:42', 'Fez login.');
+(406, 1, '177.94.61.141', '2015-07-10 01:06:42', 'Fez login.'),
+(407, 1, '191.17.205.207', '2015-07-13 10:17:34', 'Fez login.'),
+(408, 1, '191.17.205.207', '2015-07-13 10:19:26', 'INSERT INTO ig_arquivo (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , ''igsis (2).sql'' , ''109'', ''1'' );'),
+(409, 1, '191.17.205.207', '2015-07-13 10:19:59', 'UPDATE ig_arquivo SET publicado = 0 WHERE idArquivo = ''7'''),
+(410, 1, '191.17.205.207', '2015-07-13 10:21:39', 'UPDATE ig_arquivo SET publicado = 0 WHERE idArquivo = ''7'''),
+(411, 1, '191.17.205.207', '2015-07-13 10:22:43', 'Fez login.'),
+(412, 1, '191.17.205.207', '2015-07-13 10:23:34', 'INSERT INTO ig_arquivo (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , ''igsis (1).sql'' , ''109'', ''1'' );'),
+(413, 1, '191.17.205.207', '2015-07-13 10:23:41', 'UPDATE ig_arquivo SET publicado = 0 WHERE idArquivo = ''8'''),
+(414, 1, '191.17.205.207', '2015-07-13 10:24:25', 'INSERT INTO ig_arquivos_pessoa (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , ''legendas_tv_20150711061045.rar'' , ''109'', ''1'' );'),
+(415, 1, '191.17.205.207', '2015-07-13 10:30:41', 'INSERT INTO igsis_arquivos_pessoa (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , ''legendas_tv_20150711061045.rar'' , ''109'', ''1'' );'),
+(416, 1, '191.17.205.207', '2015-07-13 10:31:36', 'INSERT INTO igsis_arquivos_pessoa (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , ''legendas_tv_20150711061045.rar'' , ''109'', ''1'' );'),
+(417, 1, '191.17.205.207', '2015-07-13 10:33:11', 'INSERT INTO igsis_arquivos_pessoa (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , ''legendas_tv_20150711061045.rar'' , ''109'', ''1'' );'),
+(418, 1, '191.17.205.207', '2015-07-13 10:34:23', 'INSERT INTO igsis_arquivos_pessoa (idArquivo , arquivo , ig_evento_idEvento, publicado) VALUES( NULL , ''legendas_tv_20150711061045.rar'' , ''109'', ''1'' );'),
+(419, 1, '127.0.0.1', '2015-07-14 03:39:42', 'Fez login.'),
+(420, 1, '127.0.0.1', '2015-07-17 22:38:49', 'Fez login.'),
+(421, 1, '127.0.0.1', '2015-07-19 04:22:30', 'Fez login.'),
+(422, 1, '127.0.0.1', '2015-07-19 04:24:05', 'UPDATE `ig_evento` SET \r\n	`sinopse` = ''The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de \\"Beatlemania\\", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single \\"Love Me Do\\". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper\\''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7'', \r\n	`releaseCom` = ''The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de \\"Beatlemania\\", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single \\"Love Me Do\\". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper\\''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7'', \r\n	`parecerArtistico` = ''The Beatles foi uma banda de rock britânica, formada em Liverpool em 1960. É o grupo musical mais bem-sucedido e aclamado da história da música popular.1 A partir de 1962, o grupo era formado por John Lennon (guitarra rítmica e vocal), Paul McCartney (baixo, piano e vocal), George Harrison (guitarra solo e vocal) e Ringo Starr (bateria e vocal). Enraizada do skiffle e do rock and roll da década de 1950, a banda veio mais tarde a assumir diversos gêneros que vão do folk rock ao rock psicodélico, muitas vezes incorporando elementos da música clássica e outros, em formas inovadoras e criativas. Sua crescente popularidade, que a imprensa britânica chamava de \\"Beatlemania\\", fez com que eles crescessem em sofisticação. Os Beatles vieram a ser percebidos como a encarnação de ideais progressistas e sua influência se estendeu até as revoluções sociais e culturais da década de 1960.\r\n\r\nCom a formação inicial de Lennon, McCartney, Harrison, Stuart Sutcliffe (baixo) e Pete Best (bateria), os Beatles construíram sua reputação nos pubs de Liverpool e Hamburgo durante um período de três anos a partir de 1960. Sutcliffe deixou o grupo em 61, e Best foi substituído por Starr no ano seguinte. Abastecida de equipamentos profissionais moldados por Brian Epstein, que depois se ofereceu para gerenciar a banda, e com seu potencial reforçado pela criatividade do produtor George Martin, os Beatles alcançaram um sucesso imediato no Reino Unido com seu primeiro single \\"Love Me Do\\". Ganhando popularidade internacional a partir do ano seguinte, excursionaram extensivamente até 1966, quando retiraram-se para trabalhar em estúdio até sua dissolução definitiva em 1970. Cada músico então seguiu para uma carreira independente. McCartney e Starr continuam ativos; Lennon foi assassinado em 1980, e Harrison morreu de câncer em 2001.\r\n\r\nDurante seus anos de estúdio, os Beatles produziram o que a crítica considera um dos seus melhores materiais, incluindo o álbum Sgt. Pepper\\''s Lonely Hearts Club Band (1967), amplamente visto como uma obra-prima. Quatro décadas após sua dissolução, a música do grupo continua a ser muito popular. Os Beatles tiveram mais álbuns em número 1 nas paradas britânicas do que qualquer outro grupo musical.2 De acordo com a RIAA, eles venderam mais álbuns nos Estados Unidos do que qualquer outro artista.3 Em 2008, a Billboard divulgou uma lista dos top-selling de todos os tempos dos artistas Hot 100 para celebrar o cinquentenário das paradas de singles dos Estados Unidos, e a banda permaneceu em primeiro lugar.4 Eles já foram honrados com 8 Grammy Awards,5 e 15 Ivor Novello Awards da BASCA.6 . Já venderam mais de um bilhão de discos. Os Beatles foram coletivamente incluídos na compilação da revista Time das 100 pessoas mais importantes e influentes do século XX.7'',\r\n	`justificativa` = ''teste123'', \r\n \r\n	`linksCom` = ''http://pt.wikipedia.org/wiki/The_Beatles''\r\n	WHERE `ig_evento`.`idEvento` = 109;');
 
 -- --------------------------------------------------------
 
@@ -1110,11 +1184,6 @@ CREATE TABLE IF NOT EXISTS `ig_oficinas` (
   `venda` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`idOficinas`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `ig_oficinas`
---
-
 
 -- --------------------------------------------------------
 
@@ -1495,11 +1564,6 @@ CREATE TABLE IF NOT EXISTS `ig_programa` (
   PRIMARY KEY (`idPrograma`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `ig_programa`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -1546,11 +1610,6 @@ CREATE TABLE IF NOT EXISTS `ig_protocolo` (
   PRIMARY KEY (`idProtocolo`),
   KEY `ig_protocolo_FKIndex1` (`ig_evento_idEvento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `ig_protocolo`
---
-
 
 -- --------------------------------------------------------
 
@@ -1656,11 +1715,6 @@ CREATE TABLE IF NOT EXISTS `ig_spcultura` (
   PRIMARY KEY (`idSPCultura`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `ig_spcultura`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -1673,11 +1727,6 @@ CREATE TABLE IF NOT EXISTS `ig_status` (
   `nomeStatus` varchar(12) NOT NULL,
   KEY `ig_status_FKIndex1` (`ig_evento_idEvento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
-
---
--- Extraindo dados da tabela `ig_status`
---
-
 
 -- --------------------------------------------------------
 
@@ -40698,11 +40747,6 @@ CREATE TABLE IF NOT EXISTS `sis_cargo` (
   PRIMARY KEY (`Id_Cargo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_cargo`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -40743,11 +40787,6 @@ CREATE TABLE IF NOT EXISTS `sis_categoria_equipamento` (
   `CategoriaEquipamento` varchar(100) NOT NULL,
   PRIMARY KEY (`Id_CategoriaEquipamento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_categoria_equipamento`
---
-
 
 -- --------------------------------------------------------
 
@@ -50907,11 +50946,6 @@ CREATE TABLE IF NOT EXISTS `sis_detahes_pedido_pagamento` (
   KEY `fk_detalhespedidopagamento_pedidopagamentopf_idx` (`IdPedidoPagamento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_detahes_pedido_pagamento`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -50933,11 +50967,6 @@ CREATE TABLE IF NOT EXISTS `sis_detalhes_vigencia` (
   KEY `fk_detalhesdavigencia_usuario_idx` (`IdUsuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_detalhes_vigencia`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -50950,11 +50979,6 @@ CREATE TABLE IF NOT EXISTS `sis_dotacao_orcamentaria` (
   `DotacaoOrcamentaria` char(39) NOT NULL,
   PRIMARY KEY (`Id_DotacaoOrcamentaria`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_dotacao_orcamentaria`
---
-
 
 -- --------------------------------------------------------
 
@@ -51016,11 +51040,6 @@ CREATE TABLE IF NOT EXISTS `sis_equipamento` (
   KEY `fk_equipamento_territorio_idx` (`IdTerritorio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_equipamento`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51057,11 +51076,6 @@ CREATE TABLE IF NOT EXISTS `sis_etnia` (
   PRIMARY KEY (`Id_Etnia`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_etnia`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51096,11 +51110,6 @@ CREATE TABLE IF NOT EXISTS `sis_formacao` (
   KEY `fk_formacao_projeto_idx` (`IdProjeto`),
   KEY `fk_formacao_usuario_idx` (`IdUsuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_formacao`
---
-
 
 -- --------------------------------------------------------
 
@@ -51150,11 +51159,6 @@ CREATE TABLE IF NOT EXISTS `sis_juridico_pf` (
   KEY `fk_juridicopf_assinatura_idx` (`IdAssinatura`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_juridico_pf`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51178,11 +51182,6 @@ CREATE TABLE IF NOT EXISTS `sis_juridico_pj` (
   KEY `fk_juridicopj_assinatura_idx` (`IdAssinatura`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_juridico_pj`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51195,11 +51194,6 @@ CREATE TABLE IF NOT EXISTS `sis_linguagem` (
   `Linguagem` varchar(20) NOT NULL,
   PRIMARY KEY (`Id_Linguagem`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_linguagem`
---
-
 
 -- --------------------------------------------------------
 
@@ -51215,11 +51209,6 @@ CREATE TABLE IF NOT EXISTS `sis_nivel_acesso` (
   PRIMARY KEY (`Id_NivelAcesso`),
   KEY `fk_nivelacesso_usuario_idx` (`IdUsuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_nivel_acesso`
---
-
 
 -- --------------------------------------------------------
 
@@ -51331,11 +51320,6 @@ CREATE TABLE IF NOT EXISTS `sis_pedido_pagamento_pf` (
   KEY `fk_pedidopagamentopf_contratopf_idx` (`IdContratoPF`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_pedido_pagamento_pf`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51351,11 +51335,6 @@ CREATE TABLE IF NOT EXISTS `sis_pedido_pagamento_pj` (
   KEY `fk_pedidopagamentopj_usuario_idx` (`Idusuario`),
   KEY `fk_pedidopagamentopj_contratopj_idx` (`IdContratoPJ`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_pedido_pagamento_pj`
---
-
 
 -- --------------------------------------------------------
 
@@ -51428,11 +51407,6 @@ CREATE TABLE IF NOT EXISTS `sis_pessoa_fisica_formacao` (
   KEY `fk_pessoafisicaformacao_pessoafisica` (`IdPessoaFisica`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_pessoa_fisica_formacao`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51493,11 +51467,6 @@ CREATE TABLE IF NOT EXISTS `sis_programa` (
   PRIMARY KEY (`Id_Programa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_programa`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51511,11 +51480,6 @@ CREATE TABLE IF NOT EXISTS `sis_projeto` (
   PRIMARY KEY (`Id_Projeto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_projeto`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51528,11 +51492,6 @@ CREATE TABLE IF NOT EXISTS `sis_regiao` (
   `Regiao` varchar(45) NOT NULL,
   PRIMARY KEY (`Id_Regiao`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_regiao`
---
-
 
 -- --------------------------------------------------------
 
@@ -51601,11 +51560,6 @@ CREATE TABLE IF NOT EXISTS `sis_subpreitura` (
   PRIMARY KEY (`Id_Subpreitura`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Extraindo dados da tabela `sis_subpreitura`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -51618,11 +51572,6 @@ CREATE TABLE IF NOT EXISTS `sis_territorio` (
   `Territorio` varchar(45) NOT NULL,
   PRIMARY KEY (`Id_Territorio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
---
--- Extraindo dados da tabela `sis_territorio`
---
-
 
 -- --------------------------------------------------------
 
@@ -51739,83 +51688,78 @@ CREATE TABLE IF NOT EXISTS `sis_vigencia` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Extraindo dados da tabela `sis_vigencia`
---
-
-
---
--- Restrições para as tabelas dumpadas
+-- Constraints for dumped tables
 --
 
 --
--- Restrições para a tabela `ig_alteracao`
+-- Limitadores para a tabela `ig_alteracao`
 --
 ALTER TABLE `ig_alteracao`
   ADD CONSTRAINT `fk_{F4B41A4D-A75E-4B4F-B291-3E196EE08469}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_anexos`
+-- Limitadores para a tabela `ig_anexos`
 --
 ALTER TABLE `ig_anexos`
   ADD CONSTRAINT `fk_{A0BA7468-62E8-4D1D-8857-22784B101B5D}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_{BC876EDC-82DE-47D0-89D9-A9618CA3BECC}` FOREIGN KEY (`ig_alteracao_idAlteracao`) REFERENCES `ig_alteracao` (`idAlteracao`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_log`
+-- Limitadores para a tabela `ig_log`
 --
 ALTER TABLE `ig_log`
   ADD CONSTRAINT `fk_{E062B9E4-E44A-4C2C-94D4-052FE04DB721}` FOREIGN KEY (`ig_usuario_idUsuario`) REFERENCES `ig_usuario` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_musica`
+-- Limitadores para a tabela `ig_musica`
 --
 ALTER TABLE `ig_musica`
   ADD CONSTRAINT `fk_{F67D3205-E0B0-42E3-A800-B15585C351C6}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_producao`
+-- Limitadores para a tabela `ig_producao`
 --
 ALTER TABLE `ig_producao`
   ADD CONSTRAINT `fk_{A21FE65D-9B78-489F-AC84-A970111E6351}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_protocolo`
+-- Limitadores para a tabela `ig_protocolo`
 --
 ALTER TABLE `ig_protocolo`
   ADD CONSTRAINT `fk_{4EFEDB61-453C-4F3F-B985-F15FEDD987FE}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_status`
+-- Limitadores para a tabela `ig_status`
 --
 ALTER TABLE `ig_status`
   ADD CONSTRAINT `fk_{EF836E01-763F-4D16-BE2E-61495590A941}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_teatro_danca`
+-- Limitadores para a tabela `ig_teatro_danca`
 --
 ALTER TABLE `ig_teatro_danca`
   ADD CONSTRAINT `fk_{64CC3230-DE9D-4674-A6A5-F1B87A12D87D}` FOREIGN KEY (`ig_evento_idEvento`) REFERENCES `ig_evento` (`idEvento`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `ig_usuario`
+-- Limitadores para a tabela `ig_usuario`
 --
 ALTER TABLE `ig_usuario`
   ADD CONSTRAINT `ig_usuario_ibfk_1` FOREIGN KEY (`ig_papelusuario_idPapelUsuario`) REFERENCES `ig_papelusuario` (`idPapelUsuario`);
 
 --
--- Restrições para a tabela `sis_bairro`
+-- Limitadores para a tabela `sis_bairro`
 --
 ALTER TABLE `sis_bairro`
   ADD CONSTRAINT `fk_bairro_cidade` FOREIGN KEY (`IdCidade`) REFERENCES `sis_cidade` (`Id_Cidade`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_cidade`
+-- Limitadores para a tabela `sis_cidade`
 --
 ALTER TABLE `sis_cidade`
   ADD CONSTRAINT `fk_cidade_uf` FOREIGN KEY (`IdUF`) REFERENCES `sis_uf` (`Id_UF`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_contrato_pf`
+-- Limitadores para a tabela `sis_contrato_pf`
 --
 ALTER TABLE `sis_contrato_pf`
   ADD CONSTRAINT `fk_contratopf_assinatura` FOREIGN KEY (`IdAssinatura`) REFERENCES `sis_assinatura` (`Id_Assinatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -51823,33 +51767,33 @@ ALTER TABLE `sis_contrato_pf`
   ADD CONSTRAINT `fk_contratopf_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_contrato_pj`
+-- Limitadores para a tabela `sis_contrato_pj`
 --
 ALTER TABLE `sis_contrato_pj`
   ADD CONSTRAINT `fk_contratopj_assinatura` FOREIGN KEY (`IdAssinatura`) REFERENCES `sis_assinatura` (`Id_Assinatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_contratopj_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_detahes_pedido_pagamento`
+-- Limitadores para a tabela `sis_detahes_pedido_pagamento`
 --
 ALTER TABLE `sis_detahes_pedido_pagamento`
   ADD CONSTRAINT `fk_detalhespedidopagamento_pedidopagamentopf` FOREIGN KEY (`IdPedidoPagamento`) REFERENCES `sis_pedido_pagamento_pf` (`Id_PedidoPagamentoPF`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_detalhespedidopagamento_pedidopagamentopj` FOREIGN KEY (`IdPedidoPagamento`) REFERENCES `sis_pedido_pagamento_pj` (`Id_PedidoPagamentoPJ`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_detalhes_vigencia`
+-- Limitadores para a tabela `sis_detalhes_vigencia`
 --
 ALTER TABLE `sis_detalhes_vigencia`
   ADD CONSTRAINT `fk_detalhesvigencia_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_endereco`
+-- Limitadores para a tabela `sis_endereco`
 --
 ALTER TABLE `sis_endereco`
   ADD CONSTRAINT `fk_endereco_bairro` FOREIGN KEY (`IdBairro`) REFERENCES `sis_bairro` (`Id_Bairro`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_equipamento`
+-- Limitadores para a tabela `sis_equipamento`
 --
 ALTER TABLE `sis_equipamento`
   ADD CONSTRAINT `fk_equipamento_categoriaequipamento` FOREIGN KEY (`IdCategoriaEquipamento`) REFERENCES `sis_categoria_equipamento` (`Id_CategoriaEquipamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -51860,13 +51804,13 @@ ALTER TABLE `sis_equipamento`
   ADD CONSTRAINT `fk_equipamento_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_etnia`
+-- Limitadores para a tabela `sis_etnia`
 --
 ALTER TABLE `sis_etnia`
   ADD CONSTRAINT `sis_etnia_ibfk_1` FOREIGN KEY (`Id_Etnia`) REFERENCES `sis_pessoa_fisica_formacao` (`IdEtinia`);
 
 --
--- Restrições para a tabela `sis_formacao`
+-- Limitadores para a tabela `sis_formacao`
 --
 ALTER TABLE `sis_formacao`
   ADD CONSTRAINT `fk_formacao_cargo` FOREIGN KEY (`IdCargo`) REFERENCES `sis_cargo` (`Id_Cargo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -51879,7 +51823,7 @@ ALTER TABLE `sis_formacao`
   ADD CONSTRAINT `fk_formacao_vigencia` FOREIGN KEY (`IdVigencia`) REFERENCES `sis_vigencia` (`Id_Vigencia`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_juridico_pf`
+-- Limitadores para a tabela `sis_juridico_pf`
 --
 ALTER TABLE `sis_juridico_pf`
   ADD CONSTRAINT `fk_juridicopf_assinatura` FOREIGN KEY (`IdAssinatura`) REFERENCES `sis_assinatura` (`Id_Assinatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -51888,7 +51832,7 @@ ALTER TABLE `sis_juridico_pf`
   ADD CONSTRAINT `fk_juridicopf_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_juridico_pj`
+-- Limitadores para a tabela `sis_juridico_pj`
 --
 ALTER TABLE `sis_juridico_pj`
   ADD CONSTRAINT `fk_juridicopj_assinatura` FOREIGN KEY (`IdAssinatura`) REFERENCES `sis_assinatura` (`Id_Assinatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -51897,13 +51841,13 @@ ALTER TABLE `sis_juridico_pj`
   ADD CONSTRAINT `fk_juridicopj_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_nivel_acesso`
+-- Limitadores para a tabela `sis_nivel_acesso`
 --
 ALTER TABLE `sis_nivel_acesso`
   ADD CONSTRAINT `fk_nivelacesso_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_pedido_contratacao_pf`
+-- Limitadores para a tabela `sis_pedido_contratacao_pf`
 --
 ALTER TABLE `sis_pedido_contratacao_pf`
   ADD CONSTRAINT `fk_pedidocontratacaopf_categoriacontratacao` FOREIGN KEY (`IdCategoria`) REFERENCES `sis_categoria_contratacao` (`Id_CategoriaContratacao`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -51913,7 +51857,7 @@ ALTER TABLE `sis_pedido_contratacao_pf`
   ADD CONSTRAINT `fk_pedidocontratacaopf_verba` FOREIGN KEY (`IdVerba`) REFERENCES `sis_verba` (`Id_Verba`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_pedido_contratacao_pj`
+-- Limitadores para a tabela `sis_pedido_contratacao_pj`
 --
 ALTER TABLE `sis_pedido_contratacao_pj`
   ADD CONSTRAINT `fk_pedidocontratacaopj_pessoafisica` FOREIGN KEY (`IdPessoaFisica`) REFERENCES `sis_pessoa_fisica` (`Id_PessoaFisica`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -51924,52 +51868,56 @@ ALTER TABLE `sis_pedido_contratacao_pj`
   ADD CONSTRAINT `sis_pedido_contratacao_pj_ibfk_1` FOREIGN KEY (`IdCategoria`) REFERENCES `sis_categoria_contratacao` (`Id_CategoriaContratacao`);
 
 --
--- Restrições para a tabela `sis_pedido_pagamento_pf`
+-- Limitadores para a tabela `sis_pedido_pagamento_pf`
 --
 ALTER TABLE `sis_pedido_pagamento_pf`
   ADD CONSTRAINT `fk_pedidopagamentopf_contratopf` FOREIGN KEY (`IdContratoPF`) REFERENCES `sis_contrato_pf` (`Id_ContratoPF`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_pedidopagamentopf_usuario` FOREIGN KEY (`Idusuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_pedido_pagamento_pj`
+-- Limitadores para a tabela `sis_pedido_pagamento_pj`
 --
 ALTER TABLE `sis_pedido_pagamento_pj`
   ADD CONSTRAINT `fk_pedidopagamentopj_contratopj` FOREIGN KEY (`IdContratoPJ`) REFERENCES `sis_contrato_pj` (`Id_ContratoPJ`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_pedidopagamentopj_usuario` FOREIGN KEY (`Idusuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_pessoa_fisica`
+-- Limitadores para a tabela `sis_pessoa_fisica`
 --
 ALTER TABLE `sis_pessoa_fisica`
   ADD CONSTRAINT `fk_pessoafisica_estadocivil` FOREIGN KEY (`IdEstadoCivil`) REFERENCES `sis_estado_civil` (`Id_EstadoCivil`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_pessoa_fisica_formacao`
+-- Limitadores para a tabela `sis_pessoa_fisica_formacao`
 --
 ALTER TABLE `sis_pessoa_fisica_formacao`
   ADD CONSTRAINT `sis_pessoa_fisica_formacao_ibfk_1` FOREIGN KEY (`IdGrauInstrucao`) REFERENCES `sis_grau_instrucao` (`Id_GrauInstrucao`),
   ADD CONSTRAINT `sis_pessoa_fisica_formacao_ibfk_2` FOREIGN KEY (`IdPessoaFisica`) REFERENCES `sis_pessoa_fisica` (`Id_PessoaFisica`);
 
 --
--- Restrições para a tabela `sis_regiao`
+-- Limitadores para a tabela `sis_regiao`
 --
 ALTER TABLE `sis_regiao`
   ADD CONSTRAINT `sis_regiao_ibfk_1` FOREIGN KEY (`Id_Regiao`) REFERENCES `sis_pessoa_fisica_formacao` (`IdRegiao`);
 
 --
--- Restrições para a tabela `sis_representante_legal`
+-- Limitadores para a tabela `sis_representante_legal`
 --
 ALTER TABLE `sis_representante_legal`
   ADD CONSTRAINT `fk_representantelegal_estadocivil` FOREIGN KEY (`IdEstadoCivil`) REFERENCES `sis_estado_civil` (`Id_EstadoCivil`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_usuario`
+-- Limitadores para a tabela `sis_usuario`
 --
 ALTER TABLE `sis_usuario`
   ADD CONSTRAINT `fk_usuario_setor` FOREIGN KEY (`IdSetor`) REFERENCES `sis_setor` (`Id_Setor`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Restrições para a tabela `sis_vigencia`
+-- Limitadores para a tabela `sis_vigencia`
 --
 ALTER TABLE `sis_vigencia`
   ADD CONSTRAINT `fk_vigencia_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `sis_usuario` (`Id_Usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

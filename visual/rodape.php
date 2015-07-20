@@ -4,7 +4,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<p>Logos SMC - DEC - CCSP</a></p>
+					<p><img src="images/logos.png"</p>
 				</div>
 			</div>		
 		</div>	
@@ -18,4 +18,3 @@
 	<script src="js/wow.min.js"></script>
 	<script src="js/custom.js"></script>
   	</body>
-<? if(!mysqli_close()){mysqli_close();}; //fecha qualquer conexão mysql aberta. ?>

@@ -11,8 +11,8 @@ ccsplab.org - centro cultural são paulo
 function bancoMysqli(){ // Cria conexao ao banco. Substitui o include "conecta_mysql.php" .
 	$servidor = 'localhost';
 	$usuario = 'root';
-	$senha = '';
-	$banco = 'igsis';
+	$senha = 'lic54eca';
+	$banco = 'igsisbeta';
 	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
 	mysqli_set_charset($con,"utf8");
 	return $con;
