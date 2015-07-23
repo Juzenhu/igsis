@@ -9,11 +9,14 @@ $link = "";
 		
 	  	  
 	 <!-- inicio_list -->
+	 <br />
+	 <br />
+	 <br />
 	<section id="list_items">
 		<div class="container">
-			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
+			 <h3>PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</h3>
 			<div class="table-responsive list_info">
-			<table class="table table-condensed">
+				<table class="table table-condensed">
 					<thead>
 						<tr class="list_menu">
 							<td width="10%">Codigo do Pedido</td>
@@ -30,19 +33,19 @@ for($i = 0; $i < sizeof($linha_tabela_pedido_contratacaopf); $i++){
 	$proponente = recuperaUsuario($linha_tabela_pedido_contratacaopf[$i]['Fiscal']);
 ?>
 <tr>
-<td></td>
-<td><?php echo $linha_tabela_pedido_contratacaopf[$i]['Proponente'] ?></td>
-<td><?php echo $linha_tabela_pedido_contratacaopf[$i]['Objeto'] ?></td>
-<td><?php echo $linha_tabela_pedido_contratacaopf[$i]['Local'] ?></td>
-<td><?php echo $linha_tabela_pedido_contratacaopf[$i]['Periodo'] ?></td>
-<td></td>
+<td class="list_description"></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Proponente'] ?></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Objeto'] ?></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Local'] ?></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Periodo'] ?></td>
+<td class="list_description"></td>
 
 <?php
 }
 ?>
-					
+	
 					</tbody>
-				</table> 
-			<p></p>
-</div>
-</section>
+				</table>
+			</div>
+		</div>
+	</section>

@@ -989,7 +989,7 @@ function siscontratLista($tipoPessoa,$instituicao,$registro,$limite,$ordem){
 		$local = listaLocais($pedido['idEvento']);
 		$periodo = retornaPeriodo($pedido['idEvento']);
 		$duracao = retornaDuracao($pedido['idEvento']);
-		$pessoa = recuperaPessoa($pedido['idPessoa'],1);
+		$pessoa = recuperaPessoa($pedido['idPessoa'],$tipoPessoa);
 		
 		$x[$i] = array(
 			"idSetor" => $usuario['idInstituicao'],
@@ -1094,6 +1094,39 @@ function retornaPeriodo($id){ //retorna o período
 	}
 	
 }
+//Comunicação
 
+function saudacaoCom(){
+	return "Olá amigo comunicador!";
+	
+}
+
+function listarComunicacao($order,$sentido){
+	if($order != ""){
+		$query_order = "ORDER BY ".$order." ".$sentido;
+	}else{
+		$query_order = "";
+	}
+	
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM ig_comunicacao $query_order";
+	$query = mysqli_query($con,$sql);
+	$i = 1;
+	while($com = mysqli_fetch_array($query)){
+			$nomeEvento = recuperaDados("ig_evento",$com['ig_evento_idEvento'],"idEvento");
+			$evento = $nomeEvento['nomeEvento'];
+			$enviado = $nomeEvento['idUsuario'];
+			$dataEnvio = $nomeEvento['dataEnvio'];
+			
+			$nomeUsuario = recuperaUsuario($nomeEvento['idUsuario']);
+			
+			$devolve[$i]['codigo'] = $com['idCom'];
+			$devolve[$i]['evento'] = $evento;
+			$devolve[$i]['enviadoPor'] = $nomeUsuario['nomeCompleto'];
+			$devolve[$i]['dataEnvio'] = $dataEnvio;
+			$i++;
+			}	
+	return $devolve;
+}
 
 ?>

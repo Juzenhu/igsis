@@ -1,82 +1,46 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-  </head>
-  <body>
-<?php
-require ("../conectar.php");
-$sql__tabela_pedido_contratacaopj = "SELECT
-											pedido_contratacao_pj.Id_PedidoContratacaoPJ, 
-											pessoa_juridica.RazaoSocial,
-											pedido_contratacao_pj.Objeto,
-											pedido_contratacao_pj.LocalEspetaculo,
-											pedido_contratacao_pj.Periodo,
-											pedido_contratacao_pj.Status 
-										FROM
-											pessoa_juridica 
-										INNER JOIN pedido_contratacao_pj 
-										ON 
-											(pedido_contratacao_pj.IdPessoaJuridica = 
-											 pessoa_juridica.Id_PessoaJuridica)";
-											 
-$consulta_tabela_pedido_contratacaopj= mysqli_query($conexao, $sql__tabela_pedido_contratacaopj);
-$linha_tabela_pedido_contratacaopj = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopj);
+<?php include 'includes/menu.php';
 
-$link="frm_edita_pedidocontratacaopj.php";
-
+$linha_tabela_pedido_contratacaopj = siscontratLista(2,$_SESSION['idInstituicao'],0,30,"DESC");
 ?>
-	
-<?php include 'includes/menu.php';?>
 		
 	  	  
 	 <!-- inicio_list -->
+	 <br />
+	 <br />
+	 <br />
 	<section id="list_items">
 		<div class="container">
-			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA JURÍDICA</div>
+			 <h3>PEDIDO DE CONTRATAÇÃO DE PESSOA JURÍDICA</h3>
 			<div class="table-responsive list_info">
 				<table class="table table-condensed">
 					<thead>
 						<tr class="list_menu">
-							<td>Codigo do Pedido</td>
-							<td>Proponente</td>
-							<td>Objeto</td>
-							<td>Local</td>
-							<td> Periodo</td>
-							<td>Status</td>
+							<td width="10%">Codigo do Pedido</td>
+							<td width="15%">Proponente</td>
+							<td width="20%">Objeto</td>
+							<td width="20%">Local</td>
+							<td width="10%"> Periodo</td>
+							<td width="5%">Status</td>
 						</tr>
 					</thead>
 					<tbody>
 <?php
-$data=date('Y');
- do 
- {
-	echo "<tr><td class='lista'> <a href='$link?id_ped=$linha_tabela_pedido_contratacaopj[Id_PedidoContratacaoPJ]'>$data-$linha_tabela_pedido_contratacaopj[Id_PedidoContratacaoPJ]</a></td>";
-	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopj['RazaoSocial'].					'</td> ';
-	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopj['Objeto'].						'</td> ';
-	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopj['LocalEspetaculo'].				'</td> ';
-	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopj['Periodo'].						'</td> ';
-	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopj['Status'].						'</td> </tr>';
-	}
-	while($linha_tabela_pedido_contratacaopj = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopj));
+for($i = 0; $i < sizeof($linha_tabela_pedido_contratacaopj); $i++){
+	?>
+<tr>
+<td class="list_description"></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopj[$i]['Proponente']; ?></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopj[$i]['Objeto'] ?></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopj[$i]['Local'] ?></td>
+<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopj[$i]['Periodo'] ?></td>
+<td class="list_description"></td>
+
+<?php
+}
 ?>
-					
+	
 					</tbody>
 				</table>
 			</div>
 		</div>
 	</section>
-<!--fim_list-->
-
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-  	
-</html>
