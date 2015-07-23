@@ -250,6 +250,13 @@ if($campo['ig_tipo_evento_idTipoEvento'] == 1){
 }else{
 	$_SESSION['cinema'] = 0;
 }
+if($campo['subEvento'] == 1){
+	$_SESSION['subEvento'] = 1;	
+}else{
+	$_SESSION['subEvento'] = 0;
+}
+
+
 ?>
 <?php include "../include/menuEvento.php" ?>
 <section id="inserir" class="home-section bg-white">
@@ -1858,6 +1865,15 @@ function habilitar(){
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
             <form method="POST" action="?perfil=evento&p=ocorrencias" class="form-horizontal" role="form">
+     <div class="form-group">
+           	<div class="col-md-offset-2 col-md-8">
+               		 <label>Selecione o sub-evento (é preciso criar antes de lhe atribuir uma ocorrência)</label>
+               		 <select class="form-control" name="idSubEvento" id="inputSubject" >
+               		 <option>Selecione</option>
+					<?php geraOpcaoSub($_SESSION['idEvento'],$campo['idSubEvento']); ?>
+                	</select>
+           	</div>
+            </div>
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
@@ -1956,7 +1972,114 @@ function habilitar(){
 	} 
 	?>
 
+<?php 
 
+case "subEvento":
+if(isset($_GET['action'])){
+	$action = $_GET['action'];
+}else{
+	$action = "listar";
+}
+
+include "../include/menuEvento.php";
+
+
+switch($action){
+
+case "inserir": 
+if(isset($_POST['inserir'])){
+	$ig_sub_evento_titulo = $_POST['ig_sub_evento_titulo'];
+	$ig_sub_evento_idTipo  = $_POST['ig_sub_evento_idTipo'];
+	$ig_sub_evento_descricao  = $_POST['ig_sub_evento_descricao'];
+	$idEvento = $_SESSION['idEvento'];
+	$publicado = 1;
+	$sql_inserir_sub = "INSERT INTO `ig_sub_evento` (`idSubEvento`, `idTipo`, `ig_evento_idEvento`, `titulo`, `descricao`, `publicado`) VALUES (NULL, '$ig_sub_evento_idTipo', '$idEvento', '$ig_sub_evento_titulo', '$ig_sub_evento_descricao', '$publicado')";
+	$query_inserir_sub = mysqli_query($con,$sql_inserir_sub);
+	if($query_inserir_sub){
+		$mensagem = "Sub-evento inserido com sucesso";
+		$sub = mysqli_insert_id($con);	
+	}
+}
+
+$sub = recuperaDados("ig_sub_evento",$_SESSION['idEvento'],"idSubEvento");
+$campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
+?>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+                    <h3>Inserir sub-evento</h3>
+                    <h1><?php echo $campo["nomeEvento"] ?> - <?php echo $_SESSION['idEvento'];  ?></h1>
+                    <h4><?php if(isset($mensagem)){echo $mensagem;} ?></h4>
+                </div>
+            </div>
+    </div>
+    
+    <div class="row">
+
+        <div class="col-md-offset-1 col-md-10">
+	       <form method="POST" action="?perfil=evento&p=subEvento&action=inserir" class="form-horizontal" role="form">
+
+
+
+			<h3>Sub-evento</h3>
+                            <h4><? if(isset($mensagem_s)){echo $mensagem_s;} ?></h4>
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Nome do Sub-evento</label>
+            		<input type="text" name="ig_sub_evento_titulo" class="form-control" id="inputSubject" value="<?php echo $sub['titulo'] ?>"/>
+            	</div> 
+            </div>
+            <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Tipo de Evento do Sub-evento</label>
+            		<select class="form-control" name="ig_sub_evento_idTipo" id="inputSubject" >
+						<option value="1"></option>
+						<?php echo geraOpcao("ig_tipo_evento",$sub['idTipo'],"") ?>
+                    </select>					
+            	</div>
+            </div>
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Descrição</label>
+            		<textarea name="ig_sub_evento_descricao" class="form-control" rows="10" placeholder="Descreva a atividade complementar ao evento."><?php echo $sub["descricao"] ?></textarea>
+            	</div> 
+            </div>
+
+
+
+
+            <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="inserir" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>  
+<?php
+break;
+case "listar":
+?>
+	 <section id="services" class="home-section bg-white">
+		<div class="container">
+			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h3>Sub-eventos</h3>
+<p>Listar sub-eventos</p>
+
+					</div>
+				  </div>
+			  </div>
+			  
+		</div>
+	</section>
+
+	<?php } // fim da switch do subEvento?>
 <?php break; ?>
 <?php } 
 // fim eventos ?>

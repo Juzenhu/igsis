@@ -11,15 +11,15 @@ ccsplab.org - centro cultural são paulo
 function bancoMysqli(){ // Cria conexao ao banco. Substitui o include "conecta_mysql.php" .
 	$servidor = 'localhost';
 	$usuario = 'root';
-	$senha = 'lic54eca';
-	$banco = 'igsisbeta';
+	$senha = '';
+	$banco = 'igsis';
 	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
 	mysqli_set_charset($con,"utf8");
 	return $con;
 }
 // Conecta-se ao banco de dados MySQL
 function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
-	$mysqli = new mysqli("localhost", "root", "lic54eca","igsis");
+	$mysqli = new mysqli("localhost", "root", "","igsis");
 	if (!$mysqli->query($sql_inserir)) {
     printf("Errormessage: %s\n", $mysqli->error);
 	}
@@ -290,6 +290,20 @@ function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 		}
 	}
 }
+
+function geraOpcaoSub($idEvento,$selecionado){
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM ig_sub_evento WHERE ig_evento_idEvento = '$idEvento' AND publicado = '1'";
+	$query = mysqli_query($con,$sql);
+	while($option = mysqli_fetch_array($query)){
+		if($option['idSubEvento'] == $selecionado){
+			echo "<option value='".$option['idSubEvento']."' selected >".$option['titulo']."</option>";	
+		}else{
+			echo "<option value='".$option['idSubEvento']."'>".$option['titulo']."</option>";	
+		}
+	}			
+}
+
 function recuperaModulo($pag){ 
 	$sql = "SELECT * FROM ig_modulo WHERE pag = '$pag'";
 	$con = bancoMysqli();
@@ -470,6 +484,11 @@ function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
 					<tbody>";
 	while($campo = mysqli_fetch_array($query)){
 			$tipo_de_evento = retornaTipoOcorrencia($campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
+			if($campo['idSubEvento'] != NULL){
+				$sub = recuperaDados("ig_sub_evento",$campo['idSubEvento'],"idSubEvento");
+			}else{
+				$sub['titulo'] = "";		
+			}
 			if($campo['dataFinal'] == '0000-00-00'){
 				$data = exibirDataBr($campo['dataInicio'])." - ".diasemana($campo['dataInicio']); //precisa tirar a hora para fazer a função funcionar
 					$semana = "";
@@ -506,8 +525,9 @@ function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
 			$id = $campo['idOcorrencia'];
 			
 			
-			$ocorrencia = "<div class='left'>$tipo_de_evento $dia_especial<br />
-			
+			$ocorrencia = "<div class='left'>$tipo_de_evento $dia_especial ".
+			$sub['titulo']
+			."<br />
 			Data: $data $semana <br />
 			Horário: $hora<br />
 			Local: $espaco - $instituicao<br />
@@ -956,8 +976,50 @@ function retornaDuracao($idEvento){
 	
 }
 
+function siscontratLista($tipoPessoa,$instituicao,$registro,$limite,$ordem){
+	$con = bancoMysqli();
+	$sql_lista = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND instituicao = '$instituicao' ORDER BY idPedidoContratacao $ordem LIMIT $registro,$limite ";
+	echo $sql_lista;
+	$query_lista = mysqli_query($con,$sql_lista);
+	$i = 0;
+	while($pedido = mysqli_fetch_array($query_lista)){
+		$evento = recuperaDados("ig_evento",$pedido['idEvento'],"idEvento"); //$tabela,$idEvento,$campo
+		$usuario = recuperaDados("ig_usuario",$evento['idUsuario'],"idUsuario");
+		$instituicao = recuperaDados("ig_instituicao",$usuario['idInstituicao'],"idInstituicao");
+		$local = listaLocais($pedido['idEvento']);
+		$periodo = retornaPeriodo($pedido['idEvento']);
+		$duracao = retornaDuracao($pedido['idEvento']);
+		$pessoa = recuperaPessoa($pedido['idPessoa'],1);
+		
+		$x[$i] = array(
+			"idSetor" => $usuario['idInstituicao'],
+			"Setor" => $instituicao['instituicao']  ,
+			"CategoriaContratacao" => $evento['ig_modalidade_IdModalidade'] , //precisa ver se retorna o id
+			"Objeto" => retornaTipo($evento['ig_tipo_evento_idTipoEvento'])." - ".$evento['nomeEvento'] ,
+			"Local" => substr($local,1) , //retira a virgula no começo da string
+			"ValorGlobal" => $pedido['valor'],
+			"ValorIndividual" => $pedido['valorIndividual'],
+			"FormaPagamento" => $pedido['formaPagamento'],
+			"Periodo" => $periodo, 
+			"Duracao" => $duracao, 
+			//"CargaHoraria" => $carga , //fazer a funcao
+			"Proponente" => $pessoa['nome'],
+			"Verba" => $pedido['idVerba'] ,
+			"Justificativa" => $evento['justificativa'] ,
+			"ParecerTecnico" => $evento['parecerArtistico'],
+			"DataCadastro" => $evento['dataEnvio'],
+			"Fiscal" => $evento['idResponsavel'] ,
+			"Suplente" => $evento['suplente'],
+			"Observacao"=> $pedido['observacao'] //verificar
+		);
+		
+		$i++;
+	}
+	return $x;
+}
 
-function siscontrat($idPedido,$tipoPessoa,$instituicao){ 
+
+function siscontrat($idPedido){ 
 	$con = bancoMysqli();
 	if($instituicao != ""){
 		$filtroInstituicao = " AND instituicao = '$instituicao' ";
@@ -1001,9 +1063,6 @@ function siscontrat($idPedido,$tipoPessoa,$instituicao){
 		return "Erro";
 	}
 
-	if($tipoPessoa != ""){ //retorna 1 arrey duas dimensões [$i]['nomedocampo']
-		
-	}
 }
 
 function retornaPeriodo($id){ //retorna o período
@@ -1035,5 +1094,6 @@ function retornaPeriodo($id){ //retorna o período
 	}
 	
 }
+
 
 ?>

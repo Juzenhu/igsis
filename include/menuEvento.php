@@ -18,10 +18,20 @@
 							</li>
 					
                             <li><a href="?perfil=evento&p=area">Espeficidades</a></li>
-                            <li><a href="?perfil=evento&p=arquivos">Anexar arquivos</a></li>
+
+                            <?php if($_SESSION['subEvento'] == 1){ ?>
+                            <li><a href="#">Sub-eventos</a>	
+								<ul class="dl-submenu">
+									<li><a href="?perfil=evento&p=subEvento&action=listar">Listar sub-eventos</a></li>
+									<li><a href="?perfil=evento&p=subEvento&action=inserir">Inserir sub-evento</a> 
+									</ul>
+							</li>
+                              
+    						<?php } ?>
                             <?php if($_SESSION['cinema'] == 1){ ?>
                                 <li><a href="#enviar">Módulo Cinema</a> 
     						<?php } ?>
+                            <li><a href="?perfil=evento&p=arquivos">Anexar arquivos</a></li>
                             <li><a href="?perfil=contratados">Contratados</a></li>
                             <li><a href="#">Ocorrências</a>
                              		<ul class="dl-submenu">
