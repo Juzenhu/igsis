@@ -2113,7 +2113,28 @@ if(isset($_POST['apagar'])){
 	}
 	
 }
+
+
+
 ?>
+	<section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Sub-Eventos</h2>
+					<h4>Selecione o evento para carregar.</h4>
+                    <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
+                 </div>
+				  </div>
+			  </div>  
+			
+			<div class="table-responsive list_info">
+                         <?php listaSubEventos($_SESSION['idEvento']); ?>
+			</div>
+		</div>
+	</section>
+
 
 	<?php } // fim da switch do subEvento?>
 <?php break; ?>

@@ -2,20 +2,21 @@
 //Imprime erros com o banco
 @ini_set('display_errors', '1');
 error_reporting(E_ALL);
-require "../funcoes/funcoesGerais.php"; //carrega as funcoes gerais
 
+//carrega as funcoes gerais
+require "../funcoes/funcoesGerais.php"; 
 
- ?>
+//carrega o cabeçalho
+require "cabecalho.php"; 
 
-<?php include "cabecalho.php" ?>
+// carrega o perfil
+if(isset($_GET['perfil'])){ 
+	include "../perfil/".$_GET['perfil'].".php";	
+}else{
+	include "../perfil/inicio.php";
+}
 
-<?php 
-//include "../perfil/".$_SESSION['include'];
-if(isset($_GET['perfil'])){
-include "../perfil/".$_GET['perfil'].".php";	
-	}else{
-include "../perfil/inicio.php";
-	}
+ //carrega o rodapé
+include "rodape.php"; 
+
 ?>
-
-<?php include "rodape.php" ?>
