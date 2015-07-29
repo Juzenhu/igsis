@@ -30,7 +30,7 @@
 	$(document).ready(function(){	$("#CNPJ").mask("99.999.999/9999-99");});
 </script>
 
-    <script type="text/javascript">
+<script type="text/javascript">
 	$(document).ready( function() {
    /* Executa a requisição quando o campo CEP perder o foco */
    $('#CEP').blur(function(){

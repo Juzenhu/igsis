@@ -884,18 +884,21 @@ function cadastroPessoa($idEvento,$doc,$tipo){ //cria um cadastro de pessoa zera
 	switch($tipo){	
 	case 1:	
 		$sql = "INSERT INTO sis_pessoa_fisica (CPF,publicado,idEvento) VALUES ('$doc','0','idEvento')";
+		$tabela = "sis_pessoa_fisica";
 		break;
 	
 	case 2:	
 		$sql = "INSERT INTO sis_pessoa_juridica (CNPJ,publicado,idEvento) VALUES ('$doc','0','idEvento')";
+		$tabela = "sis_pessoa_juridica";
 		break;
 	
 	case 3:
 		$sql = "INSERT INTO sis_representante_legal (CPF,publicado,idEvento) VALUES ('$doc','0','idEvento')";
+		$tabela = "sis_representante_legal";
 		break;
 	}
 	$query = mysqli_query($con,$sql); 
-	$ultimo = mysqli_insert_id($query);
+	$ultimo = recuperaUltimo($tabela);
 	return $ultimo;
 
 }

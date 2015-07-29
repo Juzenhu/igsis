@@ -1,17 +1,18 @@
 ﻿<?php
 	$servidor = 'localhost';
 	$usuario = 'root';
-	$senha = 'lic54eca';
+	$senha = '';
 	$banco = 'cep';
 	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
 	mysqli_set_charset($con,"utf8");
 
-if(isset($_GET['cep'])){
-	$cep = $_GET['cep'];	
+if(isset($_GET['CEP'])){
+	$cep = $_GET['CEP'];	
 }else{
 $cep = $_POST['CEP'];
 }
 $cep_index = substr($cep, 0, 5);
+$dados['sucesso'] = 0;
 
 $sql01 = "SELECT * FROM cep_log_index WHERE cep5 = '$cep_index' LIMIT 0,1";
 $query01 = mysqli_query($con,$sql01);

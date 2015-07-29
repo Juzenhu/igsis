@@ -105,17 +105,17 @@ if(isset($_POST['cadastrarFisica'])){ //cadastra e insere pessoa física
 		$Pis = 0;
 		$data = date('Y-m-d');
 		$idUsuario = $_SESSION['idUsuario'];
-		$sql_insert_pf = "INSERT INTO `sis_pessoa_fisica` (`Id_PessoaFisica`, `Foto`, `Nome`, `NomeArtistico`, `RG`, `CPF`, `CCM`, `IdEstadoCivil`, `DataNascimento`, `LocalNascimento`, `Nacionalidade`, `CEP`, `Numero`, `Complemento`, `Telefone1`, `Telefone2`, `Telefone3`, `Email`, `DRT`, `Funcao`, `InscricaoINSS`, `Pis`, `OMB`, `DataAtualizacao`, `Observacao`, `IdUsuario`) VALUES (NULL, NULL, '$Nome', '$nomeArtistico', '$RG', '$CPF', '$CCM', '$IdEstadoCivil', '$DataNascimento', NULL, '$Nacionalidade', '$CEP', '$Numero', '$Complemente', '$Telefone1', '$Telefone2', '$Telefone3', '$Email', '$DRT', '$Funcao', '$InscricaoINSS', '$Pis', '$OMB', '$data', '$Observacao', '$idUsuario');";
-		$query_insert_pf = mysql_query($sql_insert_pf);
+		$sql_insert_pf = "INSERT INTO `sis_pessoa_fisica` (`Id_PessoaFisica`, `Foto`, `Nome`, `NomeArtistico`, `RG`, `CPF`, `CCM`, `IdEstadoCivil`, `DataNascimento`, `LocalNascimento`, `Nacionalidade`, `CEP`, `Numero`, `Complemento`, `Telefone1`, `Telefone2`, `Telefone3`, `Email`, `DRT`, `Funcao`, `InscricaoINSS`, `Pis`, `OMB`, `DataAtualizacao`, `Observacao`, `IdUsuario`) VALUES (NULL, NULL, '$Nome', '$nomeArtistico', '$RG', '$CPF', '$CCM', '$IdEstadoCivil', '$DataNascimento', NULL, '$Nacionalidade', '$CEP', '$Numero', '$Complemento', '$Telefone1', '$Telefone2', '$Telefone3', '$Email', '$DRT', '$Funcao', '$InscricaoINSS', '$Pis', '$OMB', '$data', '$Observacao', '$idUsuario');";
+		$query_insert_pf = mysqli_query($con,$sql_insert_pf);
 		if($query_insert_pf){
 			gravarLog($sql_insert_pf);
 			$sql_ultimo = "SELECT * FROM sis_pessoa_fisica ORDER BY Id_PessoaFisica DESC LIMIT 0,1"; //recupera ultimo id
-			$id_evento = mysql_query($sql_ultimo);
-			$id = mysql_fetch_array($id_evento);
+			$id_evento = mysqli_query($con,$sql_ultimo);
+			$id = mysqli_fetch_array($id_evento);
 			$idFisica = $id['Id_PessoaFisica'];
 			$idEvento = $_SESSION['idEvento'];	
 			$sql_insert_pedido = "INSERT INTO `igsis_pedido_contratacao` (`idPedidoContratacao`, `idEvento`, `tipoPessoa`, `idPessoaJuridica`, `idPessoaFisica`, `valor`, `valorPorExtenso`, `formaPagamento`, `idVerba`, `anexo`, `observacao`, `publicado`) VALUES (NULL, '$idEvento', '1', NULL, '$idFisica', NULL, NULL, NULL, NULL, NULL, NULL, '1')";
-			$query_insert_pedido = mysql_query($sql_insert_pedido);
+			$query_insert_pedido = mysqli_query($con,$sql_insert_pedido);
 			
 			if($query_insert_pedido){
 				gravarLog($sql_insert_pedido);
@@ -1079,12 +1079,382 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContrataca
 <?php 
 break;
 case "apagarPedido":
+
 ?>
 
 <?php 
 break;
 case "edicaoPessoa":
+	$idPedidoContratacao = $_POST['idPedidoContratacao'];
+	$pedido = recuperaDados("igsis_pedido_contratacao",$idPedidoContratacao,"idPedidoContratacao");
+
+	switch($pedido['tipoPessoa']){
+	
+	case 1:
+	$fisica = recuperaDados("sis_pessoa_fisica",$pedido['idPessoa'],"Id_PessoaFisica");
+	 ?>
+	  <section id="contact" class="home-section bg-white">
+	  	<div class="container">
+			  <div class="form-group">
+					<h3>CADASTRO DE PESSOA FÍSICA</h3>
+                    </div>
+
+	  		<div class="row">
+	  			<div class="col-md-offset-1 col-md-10">
+
+				<form class="form-horizontal" role="form" action="?perfil=contratados&p=edicaoPessoa" method="post">
+				  
+			 
+                  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Nome *:</strong><br/>
+					  <input type="text" class="form-control" id="Nome" name="Nome" placeholder="Nome" value="<?php echo $fisica['Nome']; ?>" >
+					</div>
+				  </div>
+
+                  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Nome Artístico:</strong><br/>
+					  <input type="text" class="form-control" id="NomeArtistico" name="NomeArtistico" placeholder="Nome Artístico" value="<?php echo $fisica['NomeArtistico']; ?>">
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Tipo de documento *:</strong><br/>
+					  <select class="form-control" id="tipoDocumento" name="tipoDocumento" >
+					   <?php
+						geraOpcao("igsis_tipo_documento",$fisica['tipoDocumento'],"");
+						?>  
+					  </select>
+
+					</div>				  
+					<div class=" col-md-6"><strong>Documento *:</strong><br/>
+                      <input type="text" class="form-control" id="RG" name="RG" placeholder="Documento" value="<?php echo $fisica['RG']; ?>">
+					</div>
+				  </div>
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>CPF *:</strong><br/>
+					  <input type="text" class="form-control" id="cpf" name="CPF" placeholder="CPF" value="<?php echo $fisica['CPF']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>CCM *:</strong><br/>
+					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" value="<?php echo $fisica['CCM']; ?>" >
+					</div>
+				  </div>
+
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Estado civil:</strong><br/>
+					  <select class="form-control" id="IdEstadoCivil" name="IdEstadoCivil" >
+					   <?php
+						geraOpcao("sis_estado_civil","","");
+						?>  
+					  </select>
+					</div>				  
+					<div class=" col-md-6"><strong>Data de nascimento:</strong><br/>
+ <input type="text" class="form-control" id="datepicker01" name="DataNascimento" placeholder="Data de Nascimento" value="<?php echo $fisica['DataNascimento']; ?>">
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Nacionalidade:</strong><br/>
+					   <input type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Nacionalidade" value="<?php echo $fisica['Nacionalidade']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>CEP:</strong><br/>
+					 					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="CEP" value="<?php echo $fisica['CEP']; ?>">
+					</div>
+				  </div>
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Endereço *:</strong><br/>
+					  <input type="text" class="form-control" id="Endereco" name="Endereco" placeholder="Endereço">
+					</div>
+				  </div>
+                  				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Número *:</strong><br/>
+					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero" value="<?php echo $fisica['Numero']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>Bairro:</strong><br/>
+					  <input type="text" class="form-control" id="Bairro" name="Bairro" placeholder="Bairro">
+					</div>
+				  </div>
+                  	 <div class="form-group">
+                     
+					<div class="col-md-offset-2 col-md-8"><strong>Complemento *:</strong><br/>
+					    <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento" value="<?php echo $fisica['Complemento']; ?>">
+					</div>
+				  </div>		
+                  				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Cidade *:</strong><br/>
+										  <input type="text" class="form-control" id="Cidade" name="Cidade" placeholder="Cidade">
+
+					</div>				  
+					<div class=" col-md-6"><strong>Estado *:</strong><br/>
+					  <input type="text" class="form-control" id="Estado" name="Estado" placeholder="Estado">
+					</div>
+				  </div>		  
+				  <div class="form-group">
+                  					<div class="col-md-offset-2 col-md-6"><strong>E-mail *:</strong><br/>
+					<input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail" value="<?php echo $fisica['Email']; ?>" >
+					</div>				  
+
+
+					<div class=" col-md-6"><strong>Telefone #1 *:</strong><br/>
+
+					  <input type="text" class="form-control" id="Telefone1" name="Telefone1" placeholder="Telefone" value="<?php echo $fisica['Telefone1']; ?>">
+					</div>
+
+				  </div>
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Telefone #2:</strong><br/>
+					  <input type="text" class="form-control" id="Telefone1" name="Telefone2" placeholder="Telefone" value="<?php echo $fisica['Telefone2']; ?>">
+					</div>				  
+					<div class="col-md-6"><strong>Telefone #3:</strong><br/>
+					  <input type="text" class="form-control" id="Telefone2" name="Telefone3" placeholder="Telefone"value="<?php echo $fisica['Telefone3']; ?>" >
+					</div>
+				  </div>
+
+							  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>DRT:</strong><br/>
+					  <input type="text" class="form-control" id="DRT" name="DRT" placeholder="DRT" value="<?php echo $fisica['DRT']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>Função:</strong><br/>
+					  <input type="text" class="form-control" id="Funcao" name="Funcao" placeholder="Função" value="<?php echo $fisica['Funcao']; ?>">
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Inscrição do INSS ou PIS/PASEP:</strong><br/>
+					  <input type="text" class="form-control" id="InscricaoINSS" name="InscricaoINSS" placeholder="Inscrição no INSS ou PIS/PASEP" value="<?php echo $fisica['InscricaoINSS']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>OMB:</strong><br/>
+					  <input type="text" class="form-control" id="OMB" name="OMB" placeholder="OMB" value="<?php echo $fisica['OMB']; ?>">
+					</div>
+				  </div>
+				  
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Observação:</strong><br/>
+					 <textarea name="Observacao" class="form-control" rows="10" placeholder=""></textarea>
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                    <input type="hidden" name="cadastrarFisica" value="1" />
+                    <input type="hidden" name="Sucesso" id="Sucesso" />
+					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					</div>
+				  </div>
+				</form>
+	
+    
+	  			</div>
+			
+				
+	  		</div>
+			
+
+	  	</div>
+	  </section>  
+
+	<?php
+	break;
+	case 2: ?>
+	  <section id="contact" class="home-section bg-white">
+	  	<div class="container">
+			  <div class="form-group">
+					<div class="sub-title">CADASTRO DE PESSOA JURÍDICA</div>
+			  </div>
+
+	  		<div class="row">
+	  			<div class="col-md-offset-1 col-md-10">
+
+				<form class="form-horizontal" role="form" action="?perfil=contratados&p=edicaoPessoa" method="post">
+				  
+			  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Razão Social:</strong><br/>
+					  <input type="text" class="form-control" id="RazaoSocial" name="RazaoSocial" placeholder="RazaoSocial" >
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>CNPJ:</strong><br/>
+					  <input type="text" class="form-control" id="CNPJ" name="CNPJ" placeholder="CNPJ" >
+					</div>
+					<div class="col-md-6"><strong>CCM:</strong><br/>
+					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" >
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+                  					<div class="col-md-offset-2 col-md-6"><strong>CEP *:</strong><br/>
+					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="CEP">
+					</div>				  
+					<div class=" col-md-6"><strong>Estado *:</strong><br/>
+					  <input type="text" class="form-control" id="Estado" name="Estado" placeholder="Estado">
+					</div>
+
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Endereço *:</strong><br/>
+					  <input type="text" class="form-control" id="Endereco" name="Endereco" placeholder="Endereço">
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Número *:</strong><br/>
+					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero">
+					</div>				  
+					<div class=" col-md-6"><strong>Complemento:</strong><br/>
+					  <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento">
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Bairro *:</strong><br/>
+					  <input type="text" class="form-control" id="Bairro" name="Bairro" placeholder="Bairro">
+					</div>				  
+					<div class=" col-md-6"><strong>Cidade *:</strong><br/>
+					  <input type="text" class="form-control" id="Cidade" name="Cidade" placeholder="Cidade">
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Telefone:</strong><br/>
+					  <input type="text" class="form-control" id="Telefone1" name="Telefone1" placeholder="Telefone">
+					</div>				  
+					<div class=" col-md-6"><strong>Telefone:</strong><br/>
+					  <input type="text" class="form-control" id="Telefone2" name="Telefone2" placeholder="Telefone" >
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Telefone:</strong><br/>
+					  <input type="text" class="form-control" id="Telefone3" name="Telefone3" placeholder="Telefone">
+					</div>				  
+					<div class=" col-md-6"><strong>E-mail:</strong><br/>
+					  <input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail">
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Representante Legal #1:</strong><br/>
+					  <select class="form-control" id="IdRepresentanteLegal1" name="IdRepresentanteLegal1" >
+					<?php geraOpcaoLegal($_SESSION['idEvento']); ?>
+					  </select>
+					</div>
+				  </div>
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Representante Legal #2:</strong><br/>
+					  <select class="form-control" id="IdRepresentanteLegal2" name="IdRepresentanteLegal2">
+					<?php geraOpcaoLegal($_SESSION['idEvento']); ?>
+					  </select>
+					</div>
+				  </div>
+		  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Observações:</strong><br/>
+					 <textarea name="Observacao" class="form-control" rows="10" placeholder=""></textarea>
+					</div>
+				  </div>
+				  
+				  
+				<!-- Botão Gravar -->	
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                     <input type="hidden" name="cadastrarJuridica" value="1" />
+					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					</div>
+				  </div>
+				</form>
+	
+	  			</div>
+			
+				
+	  		</div>
+			
+
+	  	</div>
+	  </section>  
+
+	<?php
+	break;
+	case 3: ?>
+	  <section id="contact" class="home-section bg-white">
+	  	<div class="container">
+			  <div class="form-group">
+            
+					<h3>CADASTRO DE REPRESENTANTE LEGAL</h3>
+			  </div>
+
+	  		<div class="row">
+	  			<div class="col-md-offset-1 col-md-10">
+
+				<form class="form-horizontal" role="form" action="?perfil=contratados&p=edicaoPessoa" method="post">
+				  
+                  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					  <input type="text" class="form-control" id="RepresentanteLegal" name="RepresentanteLegal" placeholder="Representante Legal">
+					</div>
+				  </div>
+                  
+                  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6">
+					  <input type="text" class="form-control" id="RG" name="RG" placeholder="RG">
+					</div>
+					<div class="col-md-6">
+					  <input type="text" class="form-control" id="cpf" name="CPF" placeholder="CPF">
+					</div>
+				  </div>
+                  
+                  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6">
+					  <input type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Nacionalidade">
+					</div>
+					<div class="col-md-6">
+					  <select class="form-control" name="IdEstadoCivil" id="IdEstadoCivil"><option>Estado Civil</option>
+                      <?php
+					  $consulta_tabela_estado_civil = mysql_query("SELECT * FROM sis_estado_civil");
+						$linha_tabela_estado_civil= mysql_fetch_assoc($consulta_tabela_estado_civil);
+					  do
+					  {
+					  echo "<option value='$linha_tabela_estado_civil[Id_EstadoCivil]'>$linha_tabela_estado_civil[EstadoCivil]</option>";
+					  }
+					  while ($linha_tabela_estado_civil = mysql_fetch_assoc($consulta_tabela_estado_civil))
+					  ?>  
+                      </select>
+					</div>
+				  </div>
+                  
+                  <!-- Botão Gravar -->	
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                    <input type="hidden" name="cadastrarRepresentante" value="1" />
+					 <input type="image" name="enviar" alt="CADASTRAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					</div>
+                    
+				  </div>
+				</form>
+	
+	  			</div>
+			
+				
+	  		</div>
+			
+
+	  	</div>
+	  </section>  
+
+    
+    
+    <?php
+	break;
+	}
+
 ?>
+
+
+
 
 <?php
 break;
@@ -1259,4 +1629,5 @@ NULL ,  '$tipoPessoa',  '$idPessoa',  '$arquivo_base',  '$data',  '1'
 
 <?php
 break;
+
 } //fim da switch ?>
