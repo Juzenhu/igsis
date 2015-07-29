@@ -337,7 +337,7 @@ if($campo['subEvento'] == 1){
             </div>
                         <div class="form-group">
 	            <div class="col-md-offset-2 col-md-8">
-    		          <input type="checkbox" name="subEvento" id="subEvento" <?php checar($campo['subEvento']) ?>/><label style="padding:0 10px 0 5px;"> Haverá um evento complementar (sub-evento)?</label>
+    		          <input type="checkbox" name="subEvento" id="subEvento" <?php checar($campo['subEvento']) ?>/><label style="padding:0 10px 0 5px;"> Haverá evento(s) complementar(es) (sub-evento)?</label>
         		  </div>
             </div>
 
@@ -1268,8 +1268,9 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 		$tipoOcorrencia = 4; // Tipo de Ocorrência por temporada
 	}
 	
-	if(isset($_POST['subEvento'])){ //Tipo de Ocorrência de Sub-evento
-		$tipoOcorrencia = 6;	
+	if(isset($_POST['idSubEvento'])){ //Tipo de Ocorrência de Sub-evento
+		$tipoOcorrencia = 6;
+		$idSubEvento = $_POST['idSubEvento'];	
 	}
 	
 	$ig_comunicao_idCom = 0;
@@ -1368,7 +1369,7 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 }
 
 if(isset($_POST['inserir'])){
-	$sql_inserir = "INSERT INTO `ig_ocorrencia` (`idOcorrencia`, `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`) VALUES (NULL, '$tipoOcorrencia', NULL, '$local', '$idEvento', '$segunda', '$terca', '$quarta', '$quinta', '$sexta', '$sabado', '$domingo', '$dataInicio', '$dataFinal', '$horaInicio', '$horaFinal', '$timezone', '$diaInteiro', '$diaEspecial', '$libras', '$audiodescricao', '$valorIngresso', '$retiradaIngresso', '$localOutros', '$lotacao', '$reservados', '$duracao', '$precoPopular', '$frequencia', '$publicado');";
+	$sql_inserir = "INSERT INTO `ig_ocorrencia` (`idOcorrencia`, `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`,`idSubEvento`) VALUES (NULL, '$tipoOcorrencia', NULL, '$local', '$idEvento', '$segunda', '$terca', '$quarta', '$quinta', '$sexta', '$sabado', '$domingo', '$dataInicio', '$dataFinal', '$horaInicio', '$horaFinal', '$timezone', '$diaInteiro', '$diaEspecial', '$libras', '$audiodescricao', '$valorIngresso', '$retiradaIngresso', '$localOutros', '$lotacao', '$reservados', '$duracao', '$precoPopular', '$frequencia', '$publicado', '$idSubEvento');";
 
 	if(mysqli_query($con,$sql_inserir)){
 		$mensagem = "Ocorrência inserida com sucesso!";	
@@ -1403,8 +1404,8 @@ if(isset($_POST['atualizar'])){
 					    `lotacao` = '$lotacao',
 						 `reservados` = '$reservados',
 						  `duracao` = '$duracao',
-						   `precoPopular` = '$precoPopular'
-
+						   `precoPopular` = '$precoPopular',
+							`idSubEvento` = '$idSubEvento'
 							 WHERE 	`idOcorrencia` = '$idOc'";
 	
 	if(mysqli_query($con,$sql_atualizar_ocorrencia)){
@@ -1420,7 +1421,7 @@ if(isset($_POST['atualizar'])){
 
 if(isset($_POST['duplicar'])){
 	$idOc = $_POST['duplicar'];
-	$sql_duplicar_ocorrencia = "INSERT INTO ig_ocorrencia (`idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`) SELECT `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado` FROM ig_ocorrencia WHERE `idOcorrencia` = '$idOc'";
+	$sql_duplicar_ocorrencia = "INSERT INTO ig_ocorrencia (`idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`, `idSubEvento`) SELECT `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`, `idSubEvento`  FROM ig_ocorrencia WHERE `idOcorrencia` = '$idOc'";
 
 
 	if(mysqli_query($con,$sql_duplicar_ocorrencia)){
@@ -1534,10 +1535,13 @@ function habilitar(){
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
             <form method="POST" action="?perfil=evento&p=ocorrencias&action=listar" class="form-horizontal" role="form">
-           
+
                             <div class="form-group">  
-                                          	<div class="col-md-offset-2 col-md-6">
-  <input type="checkbox" name="subEvento" id="subEvento" /><label style="padding:0 10px 0 5px;"> Ocorrência para sub-evento?</label>
+                          <div class="col-md-offset-2 col-md-8">
+ 						            <select class="form-control" name="idSubEvento" id="inputSubject" >
+               		 <option>Selecione</option>
+					<?php geraOpcaoSub($_SESSION['idEvento'],""); ?>
+                	</select>
                 	</div>
                 </div>
            
@@ -1743,11 +1747,15 @@ function habilitar(){
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
             <form method="POST" action="?perfil=evento&p=ocorrencias&action=listar" class="form-horizontal" role="form">
-             	<div class="form-group">  
-                	<div class="col-md-offset-2 col-md-6">
-  <input type="checkbox" name="subEvento" id="subEvento" <?php if($ocor['idTipoOcorrencia'] == 6){ echo "checked"; } ?>/><label style="padding:0 10px 0 5px;"> Ocorrência para sub-evento?</label>
+                                        <div class="form-group">  
+                          <div class="col-md-offset-2 col-md-8">
+ 						            <select class="form-control" name="idSubEvento" id="inputSubject" >
+               		 <option>Selecione</option>
+					<?php geraOpcaoSub($_SESSION['idEvento'],""); ?>
+                	</select>
                 	</div>
                 </div>
+
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
@@ -1986,8 +1994,12 @@ include "../include/menuEvento.php";
 
 switch($action){
 
+
 case "inserir": 
-if(isset($_POST['inserir'])){
+
+$novo = 1;
+
+if(isset($_POST['inserir'])){ //insere
 	$ig_sub_evento_titulo = $_POST['ig_sub_evento_titulo'];
 	$ig_sub_evento_idTipo  = $_POST['ig_sub_evento_idTipo'];
 	$ig_sub_evento_descricao  = $_POST['ig_sub_evento_descricao'];
@@ -1997,11 +2009,33 @@ if(isset($_POST['inserir'])){
 	$query_inserir_sub = mysqli_query($con,$sql_inserir_sub);
 	if($query_inserir_sub){
 		$mensagem = "Sub-evento inserido com sucesso";
-		$sub = mysqli_insert_id($con);	
+		$ultimo = recuperaUltimo("ig_sub_evento");	
 	}
+	$novo = 0;
 }
 
-$sub = recuperaDados("ig_sub_evento",$_SESSION['idEvento'],"idSubEvento");
+if(isset($_POST['atualizar'])){
+	$idSubEvento = $_POST['atualizar'];
+	$ig_sub_evento_titulo = $_POST['ig_sub_evento_titulo'];
+	$ig_sub_evento_idTipo  = $_POST['ig_sub_evento_idTipo'];
+	$ig_sub_evento_descricao  = $_POST['ig_sub_evento_descricao'];
+	$sql_atualizar_sub = "UPDATE `ig_sub_evento` SET `idTipo` = '$ig_sub_evento_idTipo', `titulo` = '$ig_sub_evento_titulo', `descricao` = '$ig_sub_evento_descricao' WHERE `idSubEvento` = '$idSubEvento'";
+	$query_atualizar_sub = mysqli_query($con,$sql_atualizar_sub);	
+	if($query_atualizar_sub){
+		$mensagem = "Sub-evento atualizado com sucesso";
+	}else{
+		$mensagem = "Erro ao atualizar. Tente novamente.";
+		}
+	$novo = 0;
+	$ultimo = $idSubEvento;
+}
+
+if(isset($_POST['editar'])){
+	$novo = 0;
+	$ultimo = $_POST['editar'];	
+}
+
+$sub = recuperaDados("ig_sub_evento",$ultimo,"idSubEvento");
 $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
 ?>
 
@@ -2052,32 +2086,34 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
 
             <div class="form-group">
 	            <div class="col-md-offset-2 col-md-8">
+					<?php if($novo == 1){ ?>         
                 	<input type="hidden" name="inserir" value="1" />
-    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir">
+                    <?php }else { ?>
+    		        <input type="hidden" name="atualizar" value="<?php echo $sub['idSubEvento']; ?>" />
+                    <?php } ?>
+                    <input type="submit" class="btn btn-theme btn-lg btn-block" value="<?php if($novo == 1){echo "Inserir";}else{echo "Atualizar";}?>">
             	</div>
             </div>
             </form>
-        </div>
+            </div>
+            </div>
     </div>
 </section>  
 <?php
 break;
 case "listar":
+if(isset($_POST['apagar'])){
+	$idSubEvento = $_POST['apagar'];
+	$sql_apagar_sub = "UPDATE ig_sub_evento SET publicado = '0' WHERE idSubEvento = '$idSubEvento'";
+	$query_apagar_sub = mysqli_query($con,$sql_apagar_sub);
+	if($query_apagar_sub){
+		$mensagem = "Sub-evento apagado!";	
+	}else{
+		$mensagem = "Erro ao apagar o sub-evento";	
+	}
+	
+}
 ?>
-	 <section id="services" class="home-section bg-white">
-		<div class="container">
-			  <div class="row">
-				  <div class="col-md-offset-2 col-md-8">
-					<div class="section-heading">
-					 <h3>Sub-eventos</h3>
-<p>Listar sub-eventos</p>
-
-					</div>
-				  </div>
-			  </div>
-			  
-		</div>
-	</section>
 
 	<?php } // fim da switch do subEvento?>
 <?php break; ?>

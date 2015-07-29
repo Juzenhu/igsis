@@ -1129,4 +1129,68 @@ function listarComunicacao($order,$sentido){
 	return $devolve;
 }
 
+function analisaArray($array){ //imprime o conteúdo de uma array
+	echo "<pre>";
+   print_r($array);
+	echo "</pre>";
+}
+
+function listaSubEventos($idEvento){ //lista ocorrencias de determinado evento
+	$sql = "SELECT * FROM ig_sub_evento WHERE ig_evento_idEvento = '$idEvento' AND publicado = '1' ORDER BY idSubEvento DESC";
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>Sub-evento</td>
+							<td width='10%'></td>
+
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysqli_fetch_array($query)){	
+		$descricao = "<strong>".$campo['titulo']."</strong> (".retornaTipo($campo['idTipo']).")<br />";
+		$id = $campo['idSubEvento'];
+				
+					
+			echo "<tr>";
+			echo "<td class='list_description'>".$descricao."</td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=subEvento&action=inserir'>
+			<input type='hidden' name='editar' value='$id' />
+			<input type ='submit' class='btn btn-theme btn-block' value='Editar'></td></form>"	;
+
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=subEvento&action=listar'>
+			<input type='hidden' name='apagar' value='$id' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='Apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+	echo "</tbody></table>";
+}
+
+function recuperaUltimo($tabela){
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM $tabela ORDER BY 1 DESC LIMIT 0,1";
+	$query =  mysqli_query($con,$sql);
+	$campo = mysqli_fetch_array($query);
+	return $campo[0];	
+}
+
+/*function geraOpcaoSub($idEvento,$select){
+	$con =  bancoMysqli();
+	$sql = "SELECT * FROM ig_sub_evento WHERE ig_evento_idEvento = '$idEvento'";
+	$query = mysqli_query($con,$sql);
+	while($campo = mysqli_fetch_array($query)){
+		if($select == $campo['idSubEvento']){
+			echo "<option value=".$campo['idSubEvento']." selected >".$campo['titulo']."</option>";
+		}else{
+			echo "<option value=".$campo['idSubEvento'].">".$campo['titulo']."</option>";
+			
+		}
+	}		
+}*/
 ?>

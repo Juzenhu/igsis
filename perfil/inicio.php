@@ -48,7 +48,7 @@ case "inicio":
 <p>&nbsp;</p>
 <p>Equipe IGSIS / DEC / CCSPLab / Julho de 2015</p>
 <p>igccsp2015@gmail.com</p>
-<p><?php print_r($_SESSION); ?>
+
 
 					</div>
 				  </div>

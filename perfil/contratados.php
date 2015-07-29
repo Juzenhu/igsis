@@ -131,7 +131,6 @@ if(isset($_POST['cadastrarFisica'])){ //cadastra e insere pessoa física
 	
 
 if(isset($_POST['insereFisica'])){ //insere pessoa física
-	print_r($_POST);
 	$idPessoa = $_POST['Id_PessoaFisica'];
 	$idEvento = $_SESSION['idEvento'];
 	$sql_verifica_cpf = "SELECT * FROM igsis_pedido_contratacao WHERE idPessoa = '$idPessoa' AND tipoPessoa = '1' AND publicado = '1' AND idEvento = '$idEvento' ";
@@ -197,7 +196,6 @@ if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
 }
 
 if(isset($_POST['apagarPedido'])){	
-	print_r($_POST);
 	$idPedidoContratacao = $_POST['idPedidoContratacao'];
 	$sql_apagar_pedido = "UPDATE igsis_pedido_contratacao SET publicado = '0' WHERE idPedidoContratacao = '$idPedidoContratacao'";
 	$query_apagar_pedido = mysqli_query($con,$sql_apagar_pedido);
@@ -217,7 +215,7 @@ if(isset($_POST['apagarPedido'])){
                      <p>Você está inserindo pessoas físicas ou jurídicas para serem contratadas para o evento <strong><?php  echo $nomeEvento['nomeEvento']; ?></strong></p>
                      <p>Para inserir pessoas jurídicas, é necessário antes inserir seus <a href="?perfil=contratados&p=representante">representantes</a>.</p>
                      <p><?php if(isset($mensagem)){ echo $mensagem; } ?></p>
-<p><?php print_r($_SESSION); ?></p>
+<p></p>
 
 					</div>
 				  </div>
@@ -311,7 +309,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					 <h2>Contratados - Pesso Jurídica</h2>
                                           <p>Você está inserindo pessoas jurídicas para serem contratadas para o evento <strong><?php echo $nomeEvento['nomeEvento']; ?></strong></p>
 
-<p><?php print_r($_SESSION); ?></p>
+<p>></p>
 
 					</div>
 				  </div>
@@ -483,7 +481,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					 <h2>Contratados - Pessoa Jurídica</h2>
                     <p>Você está inserindo pessoas físicas para serem contratadas para o evento <strong><?php  echo $nomeEvento['nomeEvento']; ?></strong></p>
 
-<p><?php print_r($_SESSION); ?></p>
+<p></p>
 
 					</div>
 				  </div>
@@ -530,7 +528,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					<div class="section-heading">
 					 <h2>Contratados - Pessoa Física</h2>
                                           
-<p><?php print_r($_SESSION); ?></p>
+<p></p>
 
 					</div>
 				  </div>
@@ -760,7 +758,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					 <h2>Contratados - Pessoa Física</h2>
                     <p>Você está inserindo pessoas físicas para serem contratadas para o evento <strong><?php  echo $nomeEvento['nomeEvento']; ?></strong></p>
 
-<p><?php print_r($_SESSION); ?></p>
+<p></p>
 
 					</div>
 				  </div>
@@ -807,7 +805,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					 <h3>Contratados - Pesso Jurídica - Representantes Legais</h3>
                     <p>Você está inserindo representantes legais de pessoas jurídicas para serem contratadas para o evento <strong><?php echo $nomeEvento['nomeEvento']; ?></strong></p>
 
-<p><?php print_r($_SESSION); ?></p>
+<p></p>
 
 					</div>
 				  </div>
@@ -931,7 +929,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					 <h2>Contratados - Pessoa Jurídica - Representantes</h2>
                     <p>Você está inserindo representantes de pessoas jurídicas para serem contratadas para o evento <strong><?php  echo $nomeEvento['nomeEvento']; ?></strong></p>
 
-<p><?php print_r($_SESSION); ?></p>
+<p</p>
 
 					</div>
 				  </div>

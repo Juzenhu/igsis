@@ -1,5 +1,4 @@
-﻿<p><?php print_r($_SESSION); ?>
-	<div class="menu-area">
+﻿	<div class="menu-area">
 			<div id="dl-menu" class="dl-menuwrapper">
 						<button class="dl-trigger">Open Menu</button>
 						<ul class="dl-menu">
