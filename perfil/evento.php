@@ -1174,9 +1174,11 @@ if( isset( $_POST['enviar'] ) ) {
 
         // Verificar se o campo do arquivo foi preenchido
         if( $file['name'] != '' ) {
+			$dataUnique = date('YmdHis');
             $arquivoTmp = $file['tmp_name'];
-            $arquivo = $pathToSave.$file['name'];
-			$arquivo_base = $file['name'];
+            $arquivo = $pathToSave.$dataUnique."_".semAcento($file['name']);
+
+			$arquivo_base = $dataUnique."_".semAcento($file['name']);
 			if(file_exists($arquivo)){
 				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
 			}else{
@@ -2137,6 +2139,30 @@ if(isset($_POST['apagar'])){
 
 
 	<?php } // fim da switch do subEvento?>
+    
+<?php 
+break; 
+case "enviar":
+?>
+<?php include "../include/menuEvento.php" ?>
+ 	<section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Enviar</h2>
+					<h4></h4>
+                    <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
+                 </div>
+				  </div>
+			  </div>  
+			
+			<div class="table-responsive list_info">
+                        
+			</div>
+		</div>
+	</section>   
+    
 <?php break; ?>
 <?php } 
 // fim eventos ?>

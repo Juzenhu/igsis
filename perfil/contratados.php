@@ -192,7 +192,23 @@ if(isset($_POST['cadastrarJuridica'])){ //cadastra e insere pessoa jurídica
 	}
 }
 if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
-	
+	$idPessoa = $_POST['Id_PessoaJuridica'];
+	$idEvento = $_SESSION['idEvento'];
+	$sql_verifica_cnpj = "SELECT * FROM igsis_pedido_contratacao WHERE idPessoa = '$idPessoa' AND tipoPessoa = '2' AND publicado = '1' AND idEvento = '$idEvento' ";
+	$query_verifica_cnpj = mysqli_query($con,$sql_verifica_cpf);
+	$num_rows = mysqli_num_rows($query_verifica_cnpj);
+	if($num_rows > 0){
+		$mensagem = "A pessoa jurídica já está na lista de pedido de contratação.";	
+	}else{
+		$sql_insere_cnpj = "INSERT INTO igsis_pedido_contratacao (idPessoa, tipoPessoa, publicado,idEvento) VALUES ('$idPessoa','2','1','$idEvento')";
+		$query_insere_cnpj = mysqli_query($con,$sql_insere_cnpj);
+		if($query_insere_cnpj){
+			$mensagem = "Pedido inserido com sucesso!";
+		}else{
+			$mensagem = "Erro ao criar pedido. Tente novamente.";
+	}
+		 	
+	}
 }
 
 if(isset($_POST['apagarPedido'])){	
@@ -322,19 +338,27 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 						<tr class="list_menu">
 							<td>Razão Social</td>
 							<td>CNPJ</td>
-							<td width="20%"></td>
+							<td width="15%"></td>
+                            <td width="15%"></td>
 						</tr>
 					</thead>
 					<tbody>
                     <?php
-				while($descricao = mysql_fetch_array($query_busca)){			
+				while($descricao = mysqli_fetch_array($query_busca)){			
 			echo "<tr>";
 			echo "<td class='list_description'><b>".$descricao['RazaoSocial']."</b></td>";
 			echo "<td class='list_description'>".$descricao['CNPJ']."</td>";
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=$k'>
-			<input type ='submit' class='btn btn-theme btn-lg btn-block' value='carregar'></td></form>"	;
+			<form method='POST' action='?perfil=contratados&p=lista'>
+			<input type='hidden' name='insereJuridica' value='1'>
+			<input type='hidden' name='Id_PessoaJuridica' value='".$descricao['Id_PessoaJuridica']."'>
+			<input type ='submit' class='btn btn-theme btn-md btn-block' value='inserir'></td></form>"	;
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=contratados&p=lista'>
+			<input type='hidden' name='detalhe' value='".$descricao['Id_PessoaJuridica']."'>
+			<input type ='submit' class='btn btn-theme btn-md btn-block' value='detalhe'></td></form>"	;
 			echo "</tr>";
 				}
 ?>
@@ -492,8 +516,9 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
             	<div class="col-md-offset-2 col-md-8">
             
                         <form method="POST" action="?perfil=contratados&p=juridica" class="form-horizontal" role="form">
-            		<label>Insira o CNPJ ou a Razão social</label>
-            		<input type="text" name="busca" class="form-control" id="" >
+            		<label>Insira o CNPJ</label>
+            		<input type="text" name="busca" class="form-control" id="CNPJ" placeholder="" ><br />
+
             	</div>
              </div>
 				<br />             
@@ -1461,17 +1486,38 @@ break;
 case "arquivos":
 if(isset($_POST['apagar'])){
 	$idArquivo = $_POST['apagar'];
-	$sql_apagar_arquivo = "UPDATE ig_arquivos_pessoa SET publicado = 0 WHERE idArquivosPessoa = '$idArquivo'";
+	$sql_apagar_arquivo = "UPDATE igsis_arquivos_pessoa SET publicado = 0 WHERE idArquivosPessoa = '$idArquivo'";
 	if(mysqli_query($con,$sql_apagar_arquivo)){
-		$arq = recuperaDados("ig_arquivo",$idArquivo,"idArquivo");
+		$arq = recuperaDados("igsis_arquivos_pessoa",$idArquivo,"idArquivosPessoa");
 		$mensagem =	"Arquivo ".$arq['arquivo']."apagado com sucesso!";
 		gravarLog($sql_apagar_arquivo);
 	}else{
 		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
 	}
 }
-$campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']); //carrega os dados do evento em questão
+$campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']); 
 ?>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("input[name='status[]']").click(function(){
+			var $this = $( this );//guardando o ponteiro em uma variavel, por performance
+ 
+ 
+			var status = $this.attr('checked') ? 1 : 0;
+			var id = $this.next('input').val();
+ 
+ 
+			$.ajax({
+				url: 'atualiza3x4.php',
+				type: 'GET',
+				data: 'status='+status+'&id='+id,
+				success: function( data ){
+					alert( data );
+				}
+			});
+		});
+	});
+	</script>
     
     	 <section id="enviar" class="home-section bg-white">
 		<div class="container">
@@ -1482,6 +1528,7 @@ $campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']); //carrega os d
                                         <p><?php echo $campo["tipo"] ?></p>
 
 					 <h3>Envio de Arquivos</h3>
+                     <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
 <p>Nesta página, você envia documentos digitalizados. O tamanho máximo do arquivo deve ser 60MB.</p>
 
 
@@ -1529,7 +1576,7 @@ if( isset( $_POST['enviar'] ) ) {
         // Verificar se o campo do arquivo foi preenchido
         if( $file['name'] != '' ) {
             $arquivoTmp = $file['tmp_name'];
-			$data = date('Y-m-i');
+			$data = date('Y-m-d');
             $arquivo = $pathToSave.$data."_".$file['name'];
 			$arquivo_base = $data."_".$file['name'];
 			$idPessoa = $_POST['idPessoa'];

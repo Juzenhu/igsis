@@ -59,6 +59,11 @@ function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia u
 	}	
 }
 
+function semAcento($string){
+	$newstring = preg_replace("/[^a-zA-Z0-9_.]/", "", strtr($string, "áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ ", "aaaaeeiooouucAAAAEEIOOOUUC_"));
+	return $newstring;
+}
+
 function exibirDataBr($data){ //retorna data d/m/y de mysql/date(a-m-d)
 	$timestamp = strtotime($data); 
 	return date('d/m/Y', $timestamp);	
@@ -929,6 +934,7 @@ function listaArquivosPessoa($idPessoa,$tipo){
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
+							<td width='10%'>Foto 3x4</td>
 							<td>Nome do arquivo</td>
 							<td width='10%'></td>
 						</tr>
@@ -936,10 +942,13 @@ function listaArquivosPessoa($idPessoa,$tipo){
 					<tbody>";
 	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
+			echo "<td class='list_description'><input type='checkbox' name='status[]' value='1' /><input type='hidden' name='id' value='".$campo['idArquivosPessoa']."' /></td>";
 			echo "<td class='list_description'><a href='../uploadsdocs/".$campo['arquivo']."' target='_blank'>".$campo['arquivo']."</a></td>";
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=contratados&p=arquivos'>
+			<input type='hidden' name='idPessoa' value='".$idPessoa."' />
+			<input type='hidden' name='tipoPessoa' value='".$tipo."' />
 			<input type='hidden' name='apagar' value='".$campo['idArquivosPessoa']."' />
 			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
 			echo "</tr>";		
