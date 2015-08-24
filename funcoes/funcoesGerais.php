@@ -253,17 +253,26 @@ function enviarEmailSimples($conteudo_email, $subject, $toEmail, $toUsuario, $fr
 
 }
 
+
+function verificaOpcao($opcao){
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM igsis_opcoes WHERE opcao = '$opcao' LIMIT 0,1";
+	$query = mysqli_query($con,$sql);
+	$valor = mysqli_fetch_array($query);
+	return $valor['valor'];	
+}
+
 function gravarLog($log){ //grava na tabela ig_log os inserts e updates
-	$logTratado = addslashes($log);
-	$idUsuario = $_SESSION['idUsuario'];
-	$ip = $_SERVER["REMOTE_ADDR"];
-	$data = date('Y-m-d H:i:s');
-	$sql = "INSERT INTO `ig_log` (`idLog`, `ig_usuario_idUsuario`, `enderecoIP`, `dataLog`, `descricao`) VALUES (NULL, '$idUsuario', '$ip', '$data', '$logTratado')";
+	$valor = verificaOpcao("log"); //verifica se a opção de gravação de log está habilitada
+	if($valor == 1){
+		$logTratado = addslashes($log);
+		$idUsuario = $_SESSION['idUsuario'];
+		$ip = $_SERVER["REMOTE_ADDR"];
+		$data = date('Y-m-d H:i:s');
+		$sql = "INSERT INTO `ig_log` (`idLog`, `ig_usuario_idUsuario`, `enderecoIP`, `dataLog`, `descricao`) VALUES (NULL, '$idUsuario', '$ip', '$data', '$logTratado')";
 		$mysqli = bancoMysqli();
-	$mysqli->query($sql);
-
-
-	
+		$mysqli->query($sql);
+	}
 }
 
 function saudacao(){ //saudacao inicial
