@@ -666,7 +666,44 @@ $producao = recuperaDados("ig_producao",$campo['idEvento'],"ig_evento_idEvento")
             		<label>Infraestrutura</label>
             		<textarea name="ig_producao_infraestrutura" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $producao["infraestrutura"] ?></textarea>
             	</div> 
-            </div>            
+            </div>            					<h5>Comunicação</h5>
+			                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+                    	<label>Criação de Identidade Visual</label>
+                    	                		 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                        
+                        </select>
+                	</div>
+
+               		<div class=" col-md-6">
+                    	<label>Confecção de painéis</label>
+                		 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                        
+                        </select>
+                	</div>
+                </div>
+				                <div class="form-group">
+                	<div class="col-md-offset-2 col-md-6">
+                    	<label>Confecção de legendas</label>
+                    	 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                        
+                        </select>
+                	</div>
+               		<div class=" col-md-6">
+                    	<label>Suporte extra (exposição)</label>
+                		 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                        
+                        </select>
+                	</div>
+                </div>
                 <div class="form-group">
                     
            			<h5>Pedido de documentação</h5>
@@ -772,7 +809,8 @@ $artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
             		<input type="text" name="ig_artesvisuais_valorTotal" class="form-control" id="valor" value="<?php if(isset($artes)){echo dinheiroParaBr($artes['valorTotal']);} ?>"/>
             	</div> 
             </div>
-                        <div class="form-group">
+
+				                        <div class="form-group">
 	            <div class="col-md-offset-2 col-md-8">
                 	<input type="hidden" name="atualizar" value="1" />
     		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
