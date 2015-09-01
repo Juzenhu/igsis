@@ -14,7 +14,7 @@
 <?php
 require("../conectar.php");
 
-$last_id=$_GET['id'];
+$id_ped=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
 ?>	
@@ -31,11 +31,11 @@ $idContrato=$_GET['idContrato'];
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
 
-				<form class="form-horizontal" role="form" <?php echo "action='insercao_processopf.php?idContrato=$idContrato'"; ?> method="post">
+				<form class="form-horizontal" role="form" <?php echo "action='insercao_processopf.php?idContrato=$idContrato&id=$id_ped'"; ?> method="post">
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					  <input type="text" class="form-control" id="Id_PedidoContratacao"  name="Id_PedidoContratacao" <?php echo " value='$last_id' ";?>>
+					  <input type="text" class="form-control" id="Id_PedidoContratacao"  name="Id_PedidoContratacao" <?php echo " value='$id_ped' ";?>>
 					</div>
 				  </div>
 				 
@@ -47,7 +47,7 @@ $idContrato=$_GET['idContrato'];
 					
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
 					</div>
 				  </div>
 				</form>

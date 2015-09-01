@@ -14,17 +14,18 @@
 <?php
 require("../conectar.php");
 
-$consulta_tabela_representante_legal = mysqli_query ($conexao,"SELECT * FROM representante_legal");
-$linha_tabela_representante_legal= mysqli_fetch_assoc($consulta_tabela_representante_legal);
-
-
 $id_pj=$_GET['id_pj'];
 
-$sql_query_tabelas_pj ="SELECT * FROM pessoa_juridica WHERE Id_PessoaJuridica = $id_pj";
+$sql_query_tabelas_pj ="SELECT * FROM sis_pessoa_juridica 
+							
+							WHERE Id_PessoaJuridica = $id_pj";
 
 $consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas_pj);
 $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 
+
+$consulta_tabela_representante_legal = mysqli_query ($conexao,"SELECT * FROM sis_representante_legal");
+$linha_tabela_representante_legal= mysqli_fetch_assoc($consulta_tabela_representante_legal);
 
 ?>	
     	<?php include 'includes/menu.php';?>
@@ -104,14 +105,8 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Representante Legal:</strong><br/>
-					  <select class="form-control" id="IdRepresentanteLegal1" name="IdRepresentanteLegal1" <?php echo "value='$linha_tabelas[IdRepresentanteLegal1]'";?> ><option>Selecione</option>
-					  <?php
-					  do
-					  {
-					  echo "<option value='$linha_tabela_representante_legal[Id_RepresentanteLegal]'>$linha_tabela_representante_legal[RepresentanteLegal]</option>";
-					  }
-					  while ($linha_tabela_representante_legal = mysqli_fetch_assoc($consulta_tabela_representante_legal))
-					  ?> 
+					  <select class="form-control" id="IdRepresentanteLegal1" name="IdRepresentanteLegal1" > <option>Selecione</option>
+					 <!-- Código do combobox aqui -->
 					  </select>
 					</div>
 				  </div>
@@ -119,13 +114,7 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Representante Legal:</strong><br/>
 					  <select class="form-control" id="IdRepresentanteLegal2" name="IdRepresentanteLegal2" ><option>Selecione</option>
-					  <?php
-					  do
-					  {
-					  echo "<option value='$linha_tabela_representante_legal[Id_RepresentanteLegal]'>$linha_tabela_representante_legal[RepresentanteLegal]</option>";
-					  }
-					  while ($linha_tabela_representante_legal = mysqli_fetch_assoc($consulta_tabela_representante_legal))
-					  ?> 
+					  <!-- Código do combobox aqui -->
 					  </select>
 					</div>
 				  </div>
@@ -146,7 +135,7 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 				<!-- Botão Gravar -->	
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" value="GRAVAR" class="btn btn-theme btn-lg btn-block">
 					</div>
 				  </div>
 				</form>

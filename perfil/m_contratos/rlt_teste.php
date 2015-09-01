@@ -64,37 +64,34 @@ function PrintChapter($file)
 $id_ped=$_GET['id'];
 
 $sql_query_tabelas ="
-						SELECT 	sis_pedido_contratacao_pf.Id_PedidoContratacaoPF,
-								sis_pedido_contratacao_pf.Objeto,
-								sis_pedido_contratacao_pf.LocalEspetaculo,
-								sis_pedido_contratacao_pf.Valor,
-								sis_pedido_contratacao_pf.ValorPorExtenso,
-								sis_pedido_contratacao_pf.FormaPagamento,
-								sis_pedido_contratacao_pf.Periodo,
-								sis_pedido_contratacao_pf.Duracao,
-								sis_pedido_contratacao_pf.CargaHoraria,
-								sis_pedido_contratacao_pf.Justificativa,
-								sis_pedido_contratacao_pf.Fiscal,
-								sis_pedido_contratacao_pf.Suplente,
-								sis_pedido_contratacao_pf.ParecerTecnico,
-								sis_pedido_contratacao_pf.Observacao,
-								sis_setor.Setor,
-								sis_categoria_contratacao.CategoriaContratacao,
-								sis_verba.*,
-								sis_pessoa_fisica.*
-						FROM sis_pedido_contratacao_pf
+						SELECT 	pedido_contratacao_pf.Id_PedidoContratacaoPF,
+								pedido_contratacao_pf.Objeto,
+								pedido_contratacao_pf.LocalEspetaculo,
+								pedido_contratacao_pf.Valor,
+								pedido_contratacao_pf.ValorPorExtenso,
+								pedido_contratacao_pf.FormaPagamento,
+								pedido_contratacao_pf.Periodo,
+								pedido_contratacao_pf.Duracao,
+								pedido_contratacao_pf.CargaHoraria,
+								pedido_contratacao_pf.Justificativa,
+								pedido_contratacao_pf.Fiscal,
+								pedido_contratacao_pf.Suplente,
+								pedido_contratacao_pf.ParecerTecnico,
+								pedido_contratacao_pf.Observacao,
+								setor.Setor,
+								categoria_contratacao.CategoriaContratacao,
+								verba.*,
+								pessoa_fisica.*
+						FROM pedido_contratacao_pf
 						
-						INNER JOIN sis_setor
-							ON sis_pedido_contratacao_pf.IdSetor = sis_setor.Id_Setor
-						INNER JOIN sis_categoria_contratacao
-							ON sis_pedido_contratacao_pf.IdCategoria = sis_categoria_contratacao.Id_CategoriaContratacao
-						INNER JOIN sis_verba 
-							ON sis_pedido_contratacao_pf.IdVerba = sis_verba.Id_Verba
-						INNER JOIN sis_pessoa_fisica
-							ON sis_pedido_contratacao_pf.IdPessoaFisica = sis_pessoa_fisica.Id_PessoaFisica
-						
-						INNER JOIN sis_estado_civil
-							ON sis_pessoa_fisica.IdEstadoCivil = sis_estado_civil.Id_EstadoCivil
+						INNER JOIN setor
+							ON pedido_contratacao_pf.IdSetor = setor.Id_Setor
+						INNER JOIN categoria_contratacao
+							ON pedido_contratacao_pf.IdCategoria = categoria_contratacao.Id_CategoriaContratacao
+						INNER JOIN verba 
+							ON pedido_contratacao_pf.IdVerba = verba.Id_Verba
+						INNER JOIN pessoa_fisica
+							ON pedido_contratacao_pf.IdPessoaFisica = pessoa_fisica.Id_PessoaFisica
 						
 						WHERE Id_PedidoContratacaoPF = $id_ped
 					";
@@ -103,9 +100,6 @@ $sql_query_tabelas ="
 $consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas);
 $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 
-
-$consulta_tabela_estado_civil = mysqli_query ($conexao,"SELECT * FROM sis_estado_civil");
-$linha_tabela_estado_civil= mysqli_fetch_assoc($consulta_tabela_estado_civil);
 
 $codPed = $linha_tabelas["Id_PedidoContratacaoPF"];
 $objeto = $linha_tabelas["Objeto"];
@@ -124,7 +118,7 @@ $observacao = $linha_tabelas["Observacao"];
 
 $nome = $linha_tabelas["Nome"];
 $nomeArtistico = $linha_tabelas["NomeArtistico"];
-$estadoCivil = $linha_tabelas["IdEstadoCivil"];
+$estadoCivil = $linha_tabelas["EstadoCivil"];
 $nacionalidade = $linha_tabelas["Nacionalidade"];
 $rg = $linha_tabelas["RG"];
 $cpf = $linha_tabelas["CPF"];
@@ -134,14 +128,12 @@ $drt = $linha_tabelas["DRT"];
 $funcao = $linha_tabelas["Funcao"];
 $numero = $linha_tabelas["Numero"];
 $complemento = $linha_tabelas["Complemento"];
-//$cep = $linha_tabelas["CEP"];
+$cep = $linha_tabelas["CEP"];
 $telefone1 = $linha_tabelas["Telefone1"];
 $telefone2 = $linha_tabelas["Telefone2"];
 $telefone3 = $linha_tabelas["Telefone3"];
 $email = $linha_tabelas["Email"];
 $inss = $linha_tabelas["InscricaoINSS"];
-
-
 
 $ano=date('Y');
 
@@ -185,7 +177,7 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(25,$l,utf8_decode('Estado Civil:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(65,$l,utf8_decode($estadoCivil),0,0,'L');
+   $pdf->Cell(65,$l,utf8_decode($nacionalidade),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(28,$l,utf8_decode('Nacionalidade:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
@@ -221,29 +213,29 @@ $l=7; //DEFINE A ALTURA DA LINHA
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(20,$l,utf8_decode('Endereço:'),0,0,'L');
+   $pdf->Cell(30,$l,utf8_decode('Endereço:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(160,$l,utf8_decode("Variável Endereço, "."$numero"." - "."$complemento"));
+   $pdf->MultiCell(150,$l,utf8_decode($nomeArtistico));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,utf8_decode('Bairro:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(50,$l,utf8_decode("variável bairro"),0,0,'L');
+   $pdf->Cell(50,$l,utf8_decode($omb),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,utf8_decode('Cidade:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(50,$l,utf8_decode("variável cidade"),0,0,'L');
+   $pdf->Cell(50,$l,utf8_decode($drt),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,utf8_decode('Estado:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(15,$l,utf8_decode("variável estado"),0,1,'L');
+   $pdf->Cell(15,$l,utf8_decode($funcao),0,1,'L');
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(10,$l,utf8_decode('CEP:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(20,$l,utf8_decode("Var. CEP"),0,0,'L');
+   $pdf->Cell(20,$l,utf8_decode($cep),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(17,$l,utf8_decode('Telefone:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);

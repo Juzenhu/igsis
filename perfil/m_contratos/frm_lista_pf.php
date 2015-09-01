@@ -15,7 +15,7 @@
 <?php
 require ("../conectar.php");
 
-$consulta_tabela_pf = mysqli_query ($conexao,"SELECT * FROM pessoa_fisica ORDER BY Nome");
+$consulta_tabela_pf = mysqli_query ($conexao,"SELECT * FROM sis_pessoa_fisica ORDER BY Nome");
 $linha_tabela_pf= mysqli_fetch_assoc($consulta_tabela_pf);
 
 $link="frm_edita_pf.php";
@@ -30,7 +30,7 @@ $link="frm_edita_pf.php";
 		<div class="container">
 			 <div class="sub-title">PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
 					<thead>
 						<tr class="list_menu">
 							<td>Proponente</td>

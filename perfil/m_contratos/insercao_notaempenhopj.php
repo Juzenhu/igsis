@@ -9,9 +9,11 @@ $link3="#";
 $numeroNE=$_POST['NumeroNotaEmpenho'];
 $emissaoNE=$_POST['DataEmissaoNotaEmpenho'];
 $entregaNE=$_POST['DataEntregaNotaEmpenho'];
+
+$id_ped=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
-$update1 = "UPDATE contrato_pjSET 
+$update1 = "UPDATE contrato_pj SET 
 			NumeroNotaEmpenho = '$numeroNE',
 			DataEmissaoNotaEmpenho = '$emissaoNE',
 			DataEntregaNotaEmpenho = '$entregaNE'

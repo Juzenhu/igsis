@@ -15,8 +15,8 @@
 <?php
 require ("../conectar.php");
 $sql__tabela_pedido_contratacaopj = "SELECT
-											igsis_pedido_contratacao.IdPedidoContratacao, 
-											sis_pessoa_juridica.RazaoSocial,
+											pedido_contratacao_pj.Id_PedidoContratacaoPJ, 
+											pessoa_juridica.RazaoSocial,
 											pedido_contratacao_pj.Objeto,
 											pedido_contratacao_pj.Status,
 											pedido_contratacao_pj.Periodo,
@@ -47,7 +47,7 @@ $link="frm_cadastra_juridicogeral_pj.php";
 ?>
 
 	
-<?php include 'includes/menu.php';?>
+<?php include 'includes/menu.html';?>
 		
 	  	  
 <!-- inicio_list -->
@@ -90,3 +90,8 @@ $link="frm_cadastra_juridicogeral_pj.php";
 <!--fim_list-->
 
 
+<!--footer -->
+<?php include 'includes/footer.html';?>
+	
+  	
+</html>

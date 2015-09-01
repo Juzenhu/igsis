@@ -18,10 +18,12 @@ require("../conectar.php");
 $last_id=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
-$sql_query_tabelas_contrato_pf ="SELECT * FROM contrato_pf WHERE Id_ContratoPF = $idContrato";
+$sql_query_tabelas_contrato_pf ="SELECT * FROM sis_contrato_pf WHERE Id_ContratoPF = $idContrato";
 
 $consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas_contrato_pf);
 $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
+
+$ano=date('Y');
 
 ?>	
     	<?php include 'includes/menu.php';?>
@@ -43,7 +45,7 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 					  <input type="text" class="form-control" id="Id_ContratoPF" name="Id_ContratoPF" <?php echo "value='$idContrato'"; ?>>
 					</div>
 					<div class="col-md-6"><strong>Código do Pedido de Contratação:</strong><br/>
-					  <input type="text" class="form-control" id="IdPedidoContratacaoPF" name="IdPedidoContratacaoPF" <?php echo "value='$linha_tabelas[IdPedidoContratacaoPF]'";?>>
+					  <input type="text" class="form-control" id="IdPedidoContratacaoPF" name="IdPedidoContratacaoPF" <?php echo "value='$ano-$linha_tabelas[IdPedidoContratacaoPF]'";?>>
 					</div>
 				  </div>
 				  

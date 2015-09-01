@@ -49,7 +49,7 @@ $link="rlt_pagamentointegral_pf.php";
 ?>
 
 	
-<?php include 'includes/menu.php';?>
+<?php include 'includes/menu.html';?>
 		
 	  	  
 <!-- inicio_list -->

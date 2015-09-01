@@ -14,41 +14,40 @@
 
 <?php 
 require("../conectar.php");
-$consulta_tabela_assinatura = mysqli_query ($conexao,"SELECT * FROM assinatura");
+$consulta_tabela_assinatura = mysqli_query ($conexao,"SELECT * FROM sis_assinatura");
 $linha_tabela_assinatura= mysqli_fetch_assoc($consulta_tabela_assinatura);
 
 
 $id_ped=$_GET['id'];
 
 $sql_query_tabelas_pj ="
-						SELECT 	pedido_contratacao_pj.Id_PedidoContratacaoPJ,
-								pedido_contratacao_pj.Objeto,
-								pedido_contratacao_pj.LocalEspetaculo,
-								pedido_contratacao_pj.Valor,
-								pedido_contratacao_pj.ValorPorExtenso,
-								pedido_contratacao_pj.FormaPagamento,
-								pedido_contratacao_pj.Periodo,
-								pedido_contratacao_pj.Duracao,
-								pedido_contratacao_pj.CargaHoraria,
-								pedido_contratacao_pj.Justificativa,
-								pedido_contratacao_pj.Fiscal,
-								pedido_contratacao_pj.Suplente,
-								pedido_contratacao_pj.ParecerTecnico,
-								pedido_contratacao_pj.Observacao,
-								setor.Setor,
-								categoria_contratacao.CategoriaContratacao,
-								verba.*,
-								pessoa_juridica.RazaoSocial
-						FROM pedido_contratacao_pj
+						SELECT 	sis_pedido_contratacao_pj.Id_PedidoContratacaoPJ,
+								sis_pedido_contratacao_pj.Objeto,
+								sis_pedido_contratacao_pj.LocalEspetaculo,
+								sis_pedido_contratacao_pj.Valor,
+								sis_pedido_contratacao_pj.FormaPagamento,
+								sis_pedido_contratacao_pj.Periodo,
+								sis_pedido_contratacao_pj.Duracao,
+								sis_pedido_contratacao_pj.CargaHoraria,
+								sis_pedido_contratacao_pj.Justificativa,
+								sis_pedido_contratacao_pj.Fiscal,
+								sis_pedido_contratacao_pj.Suplente,
+								sis_pedido_contratacao_pj.ParecerTecnico,
+								sis_pedido_contratacao_pj.Observacao,
+								sis_setor.Setor,
+								sis_categoria_contratacao.CategoriaContratacao,
+								sis_verba.*,
+								sis_pessoa_juridica.RazaoSocial
+						FROM sis_pedido_contratacao_pj
 						
-						INNER JOIN setor
-							ON pedido_contratacao_pj.IdSetor = setor.Id_Setor
-						INNER JOIN categoria_contratacao
-							ON pedido_contratacao_pj.IdCategoria = categoria_contratacao.Id_CategoriaContratacao
-						INNER JOIN verba 
-							ON pedido_contratacao_pj.IdVerba = verba.Id_Verba
-						INNER JOIN pessoa_juridica
-							ON pedido_contratacao_pj.IdPessoaJuridica = pessoa_juridica.Id_PessoaJuridica
+						INNER JOIN sis_setor
+							ON sis_pedido_contratacao_pj.IdSetor = sis_setor.Id_Setor
+						INNER JOIN sis_categoria_contratacao
+							ON sis_pedido_contratacao_pj.IdCategoria = sis_categoria_contratacao.Id_CategoriaContratacao
+						INNER JOIN sis_verba 
+							ON sis_pedido_contratacao_pj.IdVerba = sis_verba.Id_Verba
+						INNER JOIN sis_pessoa_juridica
+							ON sis_pedido_contratacao_pj.IdPessoaJuridica = sis_pessoa_juridica.Id_PessoaJuridica
 						
 						WHERE Id_PedidoContratacaoPJ = $id_ped
 					";
@@ -103,7 +102,7 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Valor:</strong><br/>
-					  <input type='text' class='form-control' readonly <?php echo "value='R$ $linha_tabelas[Valor] ($linha_tabelas[ValorPorExtenso])'";?>>
+					  <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Valor]'";?>>
 					</div>
 				  </div>
                   <div class="form-group">
@@ -168,7 +167,7 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
                   
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" value="GRAVAR" class="btn btn-theme btn-lg btn-block">
 					</div>
                     
 				  </div>

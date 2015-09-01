@@ -40,7 +40,7 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 ?>
 
 <!-- MENU -->	
-<?php include 'includes/menu.php';?>
+<?php include 'includes/menu.html';?>
 		
 	  
 	 <!-- Contact -->

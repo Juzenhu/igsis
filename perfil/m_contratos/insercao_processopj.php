@@ -7,6 +7,8 @@ $link3="#";
 
 
 $processo=$_POST['NumeroProcesso'];
+
+$id_ped=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
 $incluir = "UPDATE contrato_pj 

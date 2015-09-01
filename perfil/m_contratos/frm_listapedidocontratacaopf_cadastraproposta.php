@@ -15,17 +15,17 @@
 <?php
 require ("../conectar.php");
 $sql_tabela_pedido_contratacaopf = "SELECT
-											pedido_contratacao_pf.Id_PedidoContratacaoPF, 
-											pessoa_fisica.Nome,
-											pedido_contratacao_pf.Objeto,
-											pedido_contratacao_pf.LocalEspetaculo,
-											pedido_contratacao_pf.Periodo
+											sis_pedido_contratacao_pf.Id_PedidoContratacaoPF, 
+											sis_pessoa_fisica.Nome,
+											sis_pedido_contratacao_pf.Objeto,
+											sis_pedido_contratacao_pf.LocalEspetaculo,
+											sis_pedido_contratacao_pf.Periodo
 										FROM
-											pessoa_fisica 
-										INNER JOIN pedido_contratacao_pf 
+											sis_pessoa_fisica 
+										INNER JOIN sis_pedido_contratacao_pf 
 										ON 
-											(pedido_contratacao_pf.IdPessoaFisica = 
-											 pessoa_fisica.Id_PessoaFisica)";
+											(sis_pedido_contratacao_pf.IdPessoaFisica = 
+											 sis_pessoa_fisica.Id_PessoaFisica)";
 											 
 $consulta_tabela_pedido_contratacaopf= mysqli_query($conexao, $sql_tabela_pedido_contratacaopf);
 $linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf);
@@ -42,7 +42,7 @@ $link="frm_cadastra_propostapf.php";
 		<div class="container">
 			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
 					<thead>
 						<tr class="list_menu">
 							<td>Codigo do Pedido</td>

@@ -1,15 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IGSIS</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- css -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../css/style.css" rel="stylesheet" media="screen">
+	<link href="../color/default.css" rel="stylesheet" media="screen">
+	<script src="../js/modernizr.custom.js"></script>
+      </head>
+  <body>
+
 <?php
 require("../conectar.php");
+include 'includes/menu.php';
 
-$link1="#";
-$link2="#";
-$link3="#";
+$link1="rlt_reserva_padrao_pf.php";
+$link2="rlt_reserva_fepac_pf.php";
+$link3="rlt_reserva_cooperativa_pf.php";
 
 
 $processo=$_POST['NumeroProcesso'];
+
+$id_ped=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
-$incluir = "UPDATE contrato_pf 
+$incluir = "UPDATE sis_contrato_pf 
 			SET NumeroProcesso = '$processo' 
 			WHERE Id_contratoPF = '$idContrato' ";
 
@@ -19,12 +36,14 @@ $stmt = mysqli_prepare($conexao,$incluir);
 //EXECUTANDO A VARIAVEL DO UPDATE
 if( mysqli_stmt_execute($stmt))
 {
-	echo"<center>Dados Inseridos com sucesso";
+	echo"<p>&nbsp;</p><h4><center>Dados Inseridos com sucesso!</h4><br>";
 	 $last_id = mysqli_insert_id($conexao);
-	 echo "<br><br>Qual modelo de documento deseja imprimir?<br>
-	 <a href='$link1?id=$last_id'><button>Artistico</button></a><br />
-	 <a href='$link2?id=$last_id'><button>Padrao</button></a><br />
-	 <a href='$link3?id=$last_id'><button>Vocacional</button></a><br />
+	 echo "<br><br><h6>Qual modelo de Pedido de Reserva deseja imprimir?</h6><br>
+	 <div class='form-group'>
+            <div class='col-md-offset-2 col-md-8'>
+	 <a href='$link1?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Padrão</a>
+	 <a href='$link2?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>FEPAC</a>
+	 <a href='$link3?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Cooperativa</a>
 	 <br /></center>";
 };
 ?>

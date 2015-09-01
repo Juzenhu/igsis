@@ -55,7 +55,7 @@ $link="frm_edita_propostapj.php";
 		<div class="container">
 			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
 					<thead>
 						<tr class="list_menu">
 							<td>Codigo do Pedido</td>

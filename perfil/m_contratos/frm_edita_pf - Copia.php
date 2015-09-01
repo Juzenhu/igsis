@@ -17,20 +17,10 @@ require("../conectar.php");
 
 $id_pf=$_GET['id_pf'];
 
-$sql_query_tabelas_pf ="SELECT * FROM sis_pessoa_fisica 
-						
-						INNER JOIN sis_estado_civil
-							ON sis_pessoa_fisica.IdEstadoCivil = sis_estado_civil.Id_EstadoCivil
-							
-							WHERE Id_PessoaFisica = $id_pf
-							";
+$sql_query_tabelas_pf ="SELECT * FROM sis_pessoa_fisica WHERE Id_PessoaFisica = $id_pf";
 
 $consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas_pf);
 $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
-
-$consulta_tabela_estado_civil = mysqli_query ($conexao,"SELECT * FROM sis_estado_civil");
-$linha_tabela_estado_civil= mysqli_fetch_assoc($consulta_tabela_estado_civil);
-
 
 //var_dump($atualiza_tabela_pf)
 
@@ -90,19 +80,15 @@ $linha_tabela_estado_civil= mysqli_fetch_assoc($consulta_tabela_estado_civil);
 					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" <?php echo "value='$linha_tabelas[CCM]'";?>>
 					</div>				  
 					<div class=" col-md-6"><strong>Estado Civil:</strong><br/>
-					  
-					  <select class="form-control" name="IdEstadoCivil" id="IdEstadoCivil"><option value=<?php echo "$linha_tabelas[Id_EstadoCivil]" ?> ><?php echo "$linha_tabelas[EstadoCivil]";?></option>
-                      <?php 
-					  do
-					  {
-						  if($linha_tabela_estado_civil[Id_EstadoCivil] <> $linha_tabelas[Id_EstadoCivil]){
-					  		echo "<option value='$linha_tabela_estado_civil[Id_EstadoCivil]'>$linha_tabela_estado_civil[EstadoCivil]</option>";
-						  }
-					  }
-					  while ($linha_tabela_estado_civil = mysqli_fetch_assoc($consulta_tabela_estado_civil))
-					  ?>  
-                      </select>
-					  
+					  <select class="form-control" id="IdEstadoCivil" name="IdEstadoCivil" <?php echo "value='$linha_tabelas[IdEstadoCivil]'";?> ><option>Estado Civil</option>
+					   <?php
+						do
+						{
+						echo "<option value='$linha_tabela_estado_civil[Id_EstadoCivil]'>$linha_tabela_estado_civil[EstadoCivil]</option>";
+						}
+						while ($linha_tabela_estado_civil = mysqli_fetch_assoc($consulta_tabela_estado_civil))
+						?>  
+					  </select>
 					</div>
 				  </div>
 				  

@@ -1,9 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IGSIS</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- css -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../css/style.css" rel="stylesheet" media="screen">
+	<link href="../color/default.css" rel="stylesheet" media="screen">
+	<script src="../js/modernizr.custom.js"></script>
+      </head>
+  <body>
+
 <?php
 require("../conectar.php");
+include 'includes/menu.php';
 
-$link1="#";
-$link2="#";
-$link3="#";
+$link1="frm_lista_propostapf.php";
+$link2="index.php";
 
 
 $nome=$_POST['Nome'];
@@ -30,14 +44,14 @@ $id_pf=$_GET['id_pf'];
 
 
 
-$atualiza_tabela_pf = "UPDATE pessoa_fisica SET
+$atualiza_tabela_pf = "UPDATE sis_pessoa_fisica SET
 		
 		Nome = '$nome',
 		NomeArtistico = '$nomeArtistico',
 		RG = '$rg',
 		CPF = '$cpf',
 		CCM = '$ccm',
-		
+		IdEstadoCivil = '$idEstadoCivil',
 		DataNascimento = '$dataNascimento',
 		Nacionalidade = '$nacionalidade',
 		Numero = '$numero',
@@ -56,8 +70,17 @@ $atualiza_tabela_pf = "UPDATE pessoa_fisica SET
 		";
 	
 $stmt = mysqli_prepare($conexao,$atualiza_tabela_pf);		
-if (mysqli_stmt_execute($stmt)) { echo "Dados inseridos com sucesso";};
- 
+ if(mysqli_stmt_execute($stmt))
+{
+	echo"<p>&nbsp;</p><h4><center>Dados Inseridos com sucesso!</h4><br>";
+	 $last_id = mysqli_insert_id($conexao);
+	 echo "<br><br><h6>O que deseja fazer?</h6><br>
+	 <div class='form-group'>
+            <div class='col-md-offset-2 col-md-8'>
+	 <a href='$link1' class='btn btn-theme btn-lg btn-block'>Alterar Proposta de Pessoa Física</a>
+	 <a href='$link2' class='btn btn-theme btn-lg btn-block'>Voltar ao Início</a>
+	 <br /></center>";
+}
 
 
 ?>

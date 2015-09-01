@@ -14,46 +14,52 @@
 
 <?php 
 require("../conectar.php");
-$consulta_tabela_assinatura = mysqli_query ($conexao,"SELECT * FROM assinatura");
-$linha_tabela_assinatura= mysqli_fetch_assoc($consulta_tabela_assinatura);
 
+$consulta_tabela_categoriacontratacao = mysqli_query ($conexao,"SELECT * FROM sis_categoria_contratacao");
+$linha_tabela_categoriacontratacao= mysqli_fetch_assoc($consulta_tabela_categoriacontratacao);
+
+$consulta_tabela_verba = mysqli_query ($conexao,"SELECT * FROM sis_verba");
+$linha_tabela_verba= mysqli_fetch_assoc($consulta_tabela_verba);
+
+$ano=date('Y');
 
 $id_ped=$_GET['id_ped'];
 
-$sql_query_tabelas_pj ="
-						SELECT 	pedido_contratacao_pj.Id_PedidoContratacaoPJ,
-								pedido_contratacao_pj.Objeto,
-								pedido_contratacao_pj.LocalEspetaculo,
-								pedido_contratacao_pj.Valor,
-								pedido_contratacao_pj.ValorPorExtenso,
-								pedido_contratacao_pj.FormaPagamento,
-								pedido_contratacao_pj.Periodo,
-								pedido_contratacao_pj.Duracao,
-								pedido_contratacao_pj.CargaHoraria,
-								pedido_contratacao_pj.Justificativa,
-								pedido_contratacao_pj.Fiscal,
-								pedido_contratacao_pj.Suplente,
-								pedido_contratacao_pj.ParecerTecnico,
-								pedido_contratacao_pj.Observacao,
-								setor.Setor,
-								categoria_contratacao.CategoriaContratacao,
-								verba.*,
-								pessoa_juridica.RazaoSocial
-						FROM pedido_contratacao_pj
+$sql_query_tabelas_pedido_contratacao_pj ="
+						SELECT 	sis_pedido_contratacao_pj.Id_PedidoContratacaoPJ,
+								sis_pedido_contratacao_pj.Objeto,
+								sis_pedido_contratacao_pj.LocalEspetaculo,
+								sis_pedido_contratacao_pj.Valor,
+								sis_pedido_contratacao_pj.FormaPagamento,
+								sis_pedido_contratacao_pj.Periodo,
+								sis_pedido_contratacao_pj.Duracao,
+								sis_pedido_contratacao_pj.CargaHoraria,
+								sis_pedido_contratacao_pj.Justificativa,
+								sis_pedido_contratacao_pj.Fiscal,
+								sis_pedido_contratacao_pj.Suplente,
+								sis_pedido_contratacao_pj.ParecerTecnico,
+								sis_pedido_contratacao_pj.Observacao,
+								sis_pedido_contratacao_pj.DataAtual,
+								sis_pedido_contratacao_pj.IdCategoria,
+								sis_setor.Setor,
+								sis_categoria_contratacao.CategoriaContratacao,
+								sis_verba.*,
+								sis_pessoa_juridica.RazaoSocial
+						FROM sis_pedido_contratacao_pj
 						
-						INNER JOIN setor
-							ON pedido_contratacao_pj.IdSetor = setor.Id_Setor
-						INNER JOIN categoria_contratacao
-							ON pedido_contratacao_pj.IdCategoria = categoria_contratacao.Id_CategoriaContratacao
-						INNER JOIN verba 
-							ON pedido_contratacao_pj.IdVerba = verba.Id_Verba
-						INNER JOIN pessoa_juridica
-							ON pedido_contratacao_pj.IdPessoaJuridica = pessoa_juridica.Id_PessoaJuridica
+						INNER JOIN sis_setor
+							ON sis_pedido_contratacao_pj.IdSetor = sis_setor.Id_Setor
+						INNER JOIN sis_categoria_contratacao
+							ON sis_pedido_contratacao_pj.IdCategoria = sis_categoria_contratacao.Id_CategoriaContratacao
+						INNER JOIN sis_verba 
+							ON sis_pedido_contratacao_pj.IdVerba = sis_verba.Id_Verba
+						INNER JOIN sis_pessoa_juridica
+							ON sis_pedido_contratacao_pj.IdPessoaJuridica = sis_pessoa_juridica.Id_PessoaJuridica
 						
 						WHERE Id_PedidoContratacaoPJ = $id_ped
 					";
 					
-$consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas_pj);
+$consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas_pedido_contratacao_pj);
 $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 
 ?>
@@ -75,20 +81,31 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 				<form class="form-horizontal" role="form" <?php echo "action='update_pedidocontratacaopj.php?id_ped=$id_ped'"; ?> method="post">
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Código do Pedido de Contratação:</strong><br/>
-					  <input  name="Id_PedidoContratacaoPJ" type="text" class="form-control" id="Id_PedidoContratacaoPJ" <?php echo "value='$id_ped'"; ?> >
+					  <input  name="Id_PedidoContratacaoPJ" readonly type="text" class="form-control" id="Id_PedidoContratacaoPJ" <?php echo "value='$ano-$id_ped'"; ?> >
 					</div>
                   </div>
 				  <div class="form-group">                    
                     <div class=" col-md-offset-2 col-md-6"><strong>Setor:</strong> 
-					  <input type="text" class="form-control" <?php echo "value='$linha_tabelas[Setor]'";?>>
+					  <input type="text" readonly class="form-control" <?php echo "value='$linha_tabelas[Setor]'";?>>
                     </div>
                     <div class="col-md-6"><strong>Categoria da Contratação:</strong> 
-					  <input type="text" class="form-control" <?php echo "value='$linha_tabelas[CategoriaContratacao]'";?>>
+                      <select class="form-control" name="Categoria" id="Categoria"><option value=<?php echo "$linha_tabelas[IdCategoria]" ?> ><?php echo "$linha_tabelas[CategoriaContratacao]";?></option>
+                      <?php 
+					  do
+					  {
+						  if($linha_tabela_categoriacontratacao[Id_CategoriaContratacao] <> $linha_tabelas[IdCategoria]){
+					  		echo "<option value='$linha_tabela_categoriacontratacao[Id_CategoriaContratacao]'>$linha_tabela_categoriacontratacao[CategoriaContratacao]</option>";
+						  }
+					  }
+					  while ($linha_tabela_categoriacontratacao = mysqli_fetch_assoc($consulta_tabela_categoriacontratacao))
+					  ?>  
+                      </select>
+                      
                     </div>
                   </div>
                   <div class="form-group"> 
 					<div class="col-md-offset-2 col-md-8"><strong>Proponente:</strong><br/>
-					  <?php echo "<input type='text' class='form-control' name='razaosocial' id='razaosocial' value='$linha_tabelas[RazaoSocial]'>";?>                    	
+					  <?php echo "<input type='text' readonly class='form-control' name='RazaoSocial' id='RazaoSocial' value='$linha_tabelas[RazaoSocial]'>";?>                    	
                     </div>
                   </div>  
                   <div class="form-group">
@@ -102,11 +119,8 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 					</div>
 				  </div>
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Valor:</strong><br/>
-					  <input type='text' name="Valor" class='form-control' <?php echo "value='R$ $linha_tabelas[Valor]'";?>>
-					</div>
-					<div class="col-md-6"><strong>Valor por Extenso:</strong><br/>
-					  <input type='text' name="ValorPorExtenso" class='form-control' <?php echo "value='$linha_tabelas[ValorPorExtenso]'";?>>
+					<div class="col-md-offset-2 col-md-8"><strong>Valor:</strong><br/>
+					  <input type='text' name="Valor" class='form-control' <?php echo "value='$linha_tabelas[Valor]'";?>>
 					</div>
 				  </div>
                   <div class="form-group">
@@ -129,7 +143,17 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Verba:</strong><br/>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Verba]'";?>>
+					   <select class="form-control" name="Verba" id="Verba"><option value=<?php echo "$linha_tabelas[Id_Verba]" ?> ><?php echo "$linha_tabelas[Verba]";?></option>
+                      <?php 
+					  do
+					  {
+						  if($linha_tabela_verba[Id_Verba] <> $linha_tabelas[Id_Verba]){
+					  		echo "<option value='$linha_tabela_verba[Id_Verba]'>$linha_tabela_verba[Verba]</option>";
+						  }
+					  }
+					  while ($linha_tabela_verba = mysqli_fetch_assoc($consulta_tabela_verba))
+					  ?>  
+                      </select>
 					</div>
 				  </div>
                   <div class="form-group">
@@ -155,10 +179,15 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 					   <input type='text' name="Observacao" class='form-control' <?php echo "value='$linha_tabelas[Observacao]'";?>>
 					</div>
 				  </div>
+                  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Data do Cadastro:</strong><br/>
+					   <input type='text' name="DataAtual" class='form-control' <?php echo "value='$linha_tabelas[DataAtual]'";?>>
+					</div>
+				  </div>
                   
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					 <input type="image" alt="GRAVAR" name="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
 					</div>
                     
 				  </div>
@@ -171,7 +200,7 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 			
 
 	  	</div>
-	  </section>  
+	  </section>    
 
 
 <!--footer -->

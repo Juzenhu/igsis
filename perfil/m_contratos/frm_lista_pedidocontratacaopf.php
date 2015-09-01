@@ -1,7 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IGSIS</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- css -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../css/style.css" rel="stylesheet" media="screen">
+	<link href="../color/default.css" rel="stylesheet" media="screen">
+	<script src="../js/modernizr.custom.js"></script>
+  </head>
+  <body>
 <?php
+require ("../conectar.php");
+$sql__tabela_pedido_contratacaopf = "SELECT
+											sis_pedido_contratacao_pf.Id_PedidoContratacaoPF, 
+											sis_pessoa_fisica.Nome,
+											sis_pedido_contratacao_pf.Objeto,
+											sis_pedido_contratacao_pf.LocalEspetaculo,
+											sis_pedido_contratacao_pf.Periodo,
+											sis_pedido_contratacao_pf.Status 
+										FROM
+											sis_pessoa_fisica 
+										INNER JOIN sis_pedido_contratacao_pf 
+										ON 
+											(sis_pedido_contratacao_pf.IdPessoaFisica = 
+											 sis_pessoa_fisica.Id_PessoaFisica)";
+											 
+$consulta_tabela_pedido_contratacaopf= mysqli_query($conexao, $sql__tabela_pedido_contratacaopf);
+$linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf);
 
-$linha_tabela_pedido_contratacaopf = siscontratLista("1",$_SESSION['idInstituicao'],0,30,"DESC");
-$link = "";
+$link="frm_edita_pedidocontratacaopf.php";
+
 ?>
 
 	
@@ -9,43 +39,46 @@ $link = "";
 		
 	  	  
 	 <!-- inicio_list -->
-	 <br />
-	 <br />
-	 <br />
 	<section id="list_items">
 		<div class="container">
-			 <h3>PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</h3>
+			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
 					<thead>
 						<tr class="list_menu">
-							<td width="10%">Codigo do Pedido</td>
-							<td width="15%">Proponente</td>
-							<td width="20%">Objeto</td>
-							<td width="20%">Local</td>
-							<td width="10%"> Periodo</td>
-							<td width="5%">Status</td>
+							<td>Codigo do Pedido</td>
+							<td>Proponente</td>
+							<td>Objeto</td>
+							<td>Local</td>
+							<td> Periodo</td>
+							<td>Status</td>
 						</tr>
 					</thead>
 					<tbody>
 <?php
-for($i = 0; $i < sizeof($linha_tabela_pedido_contratacaopf); $i++){
-	$proponente = recuperaUsuario($linha_tabela_pedido_contratacaopf[$i]['Fiscal']);
-?>
-<tr>
-<td class="list_description"></td>
-<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Proponente'] ?></td>
-<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Objeto'] ?></td>
-<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Local'] ?></td>
-<td class="list_description"><?php echo $linha_tabela_pedido_contratacaopf[$i]['Periodo'] ?></td>
-<td class="list_description"></td>
+	$data=date('Y');
+ do 
+ {
+	echo "<tr><td class='lista'> <a href='$link?id_ped=$linha_tabela_pedido_contratacaopf[Id_PedidoContratacaoPF]'>$data-$linha_tabela_pedido_contratacaopf[Id_PedidoContratacaoPF]</a></td>";
 
-<?php
-}
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['Nome'].									'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['Objeto'].									'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['LocalEspetaculo'].						'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['Periodo'].								'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['Status'].									'</td> </tr>';
+	}
+	while($linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf));
 ?>
-	
+					
 					</tbody>
 				</table>
 			</div>
 		</div>
 	</section>
+<!--fim_list-->
+
+
+<!--footer -->
+<?php include 'includes/footer.html';?>
+  	
+</html>

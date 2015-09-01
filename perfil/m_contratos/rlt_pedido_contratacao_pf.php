@@ -68,7 +68,6 @@ $sql_query_tabelas ="
 								sis_pedido_contratacao_pf.Objeto,
 								sis_pedido_contratacao_pf.LocalEspetaculo,
 								sis_pedido_contratacao_pf.Valor,
-								sis_pedido_contratacao_pf.ValorPorExtenso,
 								sis_pedido_contratacao_pf.FormaPagamento,
 								sis_pedido_contratacao_pf.Periodo,
 								sis_pedido_contratacao_pf.Duracao,
@@ -78,6 +77,7 @@ $sql_query_tabelas ="
 								sis_pedido_contratacao_pf.Suplente,
 								sis_pedido_contratacao_pf.ParecerTecnico,
 								sis_pedido_contratacao_pf.Observacao,
+								sis_pedido_contratacao_pf.DataAtual,
 								sis_setor.Setor,
 								sis_categoria_contratacao.CategoriaContratacao,
 								sis_verba.*,
@@ -93,9 +93,6 @@ $sql_query_tabelas ="
 						INNER JOIN sis_pessoa_fisica
 							ON sis_pedido_contratacao_pf.IdPessoaFisica = sis_pessoa_fisica.Id_PessoaFisica
 						
-						INNER JOIN sis_estado_civil
-							ON sis_pessoa_fisica.IdEstadoCivil = sis_estado_civil.Id_EstadoCivil
-						
 						WHERE Id_PedidoContratacaoPF = $id_ped
 					";
 					
@@ -103,15 +100,10 @@ $sql_query_tabelas ="
 $consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas);
 $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 
-
-$consulta_tabela_estado_civil = mysqli_query ($conexao,"SELECT * FROM sis_estado_civil");
-$linha_tabela_estado_civil= mysqli_fetch_assoc($consulta_tabela_estado_civil);
-
 $codPed = $linha_tabelas["Id_PedidoContratacaoPF"];
 $objeto = $linha_tabelas["Objeto"];
 $local = $linha_tabelas["LocalEspetaculo"];
 $valor = $linha_tabelas["Valor"];
-$valorExtenso = $linha_tabelas["ValorPorExtenso"];
 $formaPagamento = $linha_tabelas["FormaPagamento"];
 $periodo = $linha_tabelas["Periodo"];
 $duracao = $linha_tabelas["Duracao"];
@@ -121,29 +113,20 @@ $fiscal = $linha_tabelas["Fiscal"];
 $suplente = $linha_tabelas["Suplente"];
 $parecer = $linha_tabelas["ParecerTecnico"];
 $observacao = $linha_tabelas["Observacao"];
+$dataAtual = $linha_tabelas["DataAtual"];
+
 
 $nome = $linha_tabelas["Nome"];
-$nomeArtistico = $linha_tabelas["NomeArtistico"];
-$estadoCivil = $linha_tabelas["IdEstadoCivil"];
-$nacionalidade = $linha_tabelas["Nacionalidade"];
-$rg = $linha_tabelas["RG"];
 $cpf = $linha_tabelas["CPF"];
-$ccm = $linha_tabelas["CCM"];
-$omb = $linha_tabelas["OMB"];
-$drt = $linha_tabelas["DRT"];
-$funcao = $linha_tabelas["Funcao"];
-$numero = $linha_tabelas["Numero"];
-$complemento = $linha_tabelas["Complemento"];
-//$cep = $linha_tabelas["CEP"];
 $telefone1 = $linha_tabelas["Telefone1"];
 $telefone2 = $linha_tabelas["Telefone2"];
 $telefone3 = $linha_tabelas["Telefone3"];
 $email = $linha_tabelas["Email"];
-$inss = $linha_tabelas["InscricaoINSS"];
 
-
+$setor = $linha_tabelas["Setor"];
 
 $ano=date('Y');
+
 
 
 // GERANDO O PDF:
@@ -155,95 +138,50 @@ $pdf->AddPage();
 $x=20;
 $l=7; //DEFINE A ALTURA DA LINHA   
    
+   
    $pdf->SetXY( $x , 40 );// SetXY - DEFINE O X (largura) E O Y (altura) NA PÁGINA
 
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(10,5,'(A)',0,0,'L');
-   $pdf->SetFont('Arial','B', 12);
-   $pdf->Cell(170,5,'CONTRATADO',0,1,'C');
    
    $pdf->SetX($x);
-   $pdf->SetFont('Arial','I', 10);
-   $pdf->Cell(10,10,utf8_decode('(Quando se tratar de grupo, o líder do grupo)'),0,0,'L');
+   $pdf->SetFont('Arial','B', 12);
+   $pdf->Cell(180,5,utf8_decode('PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA'),0,1,'C');
+   
+   $pdf->Ln();
+   $pdf->Ln();
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(100,$l,"","R",0,'R');
+   $pdf->Cell(70,5,utf8_decode("Código do Pedido de Contratação"),"T",0,'C');
+   $pdf->Cell(10,$l,"","L",1,'R');
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 12);
+   $pdf->Cell(100,$l,"","R",0,'R');
+   $pdf->Cell(70,7,utf8_decode("$ano-$id_ped"),"B",0,'C');
+   $pdf->Cell(10,$l,"","L",0,'R');
    
    $pdf->Ln();
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(15,$l,'Nome:',0,0,'L');
+   $pdf->Cell(30,$l,'Setor solicitante:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(165,$l,utf8_decode($nome));
+   $pdf->MultiCell(150,$l,utf8_decode($setor));
+   
+   $pdf->Ln();
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(30,$l,utf8_decode('Nome Artístico:'),0,0,'L');
+   $pdf->Cell(12,$l,'Nome:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(150,$l,utf8_decode($nomeArtistico));
+   $pdf->MultiCell(168,$l,utf8_decode($nome));
    
    $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(25,$l,utf8_decode('Estado Civil:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(65,$l,utf8_decode($estadoCivil),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(28,$l,utf8_decode('Nacionalidade:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(15,$l,utf8_decode($nacionalidade),0,1,'L');
-   
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(10,$l,utf8_decode('RG:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(50,$l,utf8_decode($rg),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(10,$l,utf8_decode('CPF:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
    $pdf->Cell(50,$l,utf8_decode($cpf),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(10,$l,utf8_decode('CCM:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(45,$l,utf8_decode($ccm),0,1,'L');
-   
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(12,$l,utf8_decode('OMB:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(45,$l,utf8_decode($omb),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(10,$l,utf8_decode('DRT:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(45,$l,utf8_decode($drt),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(15,$l,utf8_decode('Função:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(45,$l,utf8_decode($funcao),0,1,'L');
-   
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(20,$l,utf8_decode('Endereço:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(160,$l,utf8_decode("Variável Endereço, "."$numero"." - "."$complemento"));
-   
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(15,$l,utf8_decode('Bairro:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(50,$l,utf8_decode("variável bairro"),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(15,$l,utf8_decode('Cidade:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(50,$l,utf8_decode("variável cidade"),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(15,$l,utf8_decode('Estado:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(15,$l,utf8_decode("variável estado"),0,1,'L');
-   
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(10,$l,utf8_decode('CEP:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(20,$l,utf8_decode("Var. CEP"),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(17,$l,utf8_decode('Telefone:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
@@ -253,28 +191,9 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(13,$l,utf8_decode('E-mail:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(60,$l,utf8_decode($email),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(64,$l,utf8_decode('Inscrição no INSS ou nº PIS / PASEP:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(45,$l,utf8_decode($inss),0,1,'L');
-   
-  
-   
-   $pdf->SetX($x);
-   $pdf->Cell(180,5,'','B',1,'C');
+   $pdf->Cell(60,$l,utf8_decode($email),0,1,'L');
    
    $pdf->Ln();
-    
-   
-   
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(10,10,'(B)',0,0,'L');
-   $pdf->SetFont('Arial','B', 12);
-   $pdf->Cell(160,10,'PROPOSTA',0,0,'C');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(10,10,$ano."-".$codPed,0,1,'R');
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
@@ -323,79 +242,23 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->Cell(25,$l,'Justificativa:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
    $pdf->MultiCell(155,$l,utf8_decode($justificativa));
-
-
-//RODAPÉ PERSONALIZADO
-   $pdf->SetXY($x,265);
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(50,$l,'Rubrica do Contratato','T',0,'C');
-   $pdf->Cell(10,$l,'',0,0,'C');
-   $pdf->Cell(50,$l,'Fiscal','T',0,'C');
-   $pdf->Cell(10,$l,'',0,0,'C');
-   $pdf->Cell(50,$l,'Suplente','T',0,'C');
-   
-
-//	QUEBRA DE PÁGINA
-$pdf->AddPage('','');
-
-$pdf->SetXY( $x , 40 );// SetXY - DEFINE O X (largura) E O Y (altura) NA PÁGINA
-
-$pdf->SetX($x);
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(10,5,'(C)',0,0,'L');
-   $pdf->SetFont('Arial','B', 12);
-   $pdf->Cell(170,5,'PENALIDADES',0,1,'C');
    
    $pdf->Ln();
-
-$pdf->SetX($x);
-$pdf->PrintChapter('penalidades.txt');
-
-   
-   $pdf->SetX($x);
-   $pdf->Cell(180,5,'','B',1,'C');
-   
+   $pdf->Ln();
+   $pdf->Ln();
    $pdf->Ln();
     
+//RODAPÉ PERSONALIZADO
    
-   	$pdf->SetX($x);
-   	$pdf->MultiCell( 180, 6,
-      utf8_decode(
-      "DECLARO ESTAR CIENTE DA PENALIDADE PREVISTA NO CAMPO (C).  \n".
-      "TODAS AS INFORMAÇÕES PRECEDENTES SÃO FIRMADAS SOB AS PENAS DA LEI.")
-   );
-
-   $pdf->Ln();
-   $pdf->Ln();
-   $pdf->Ln();
-
-
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(180,$l,'Data: _________ / _________ / _________  ',0,0,'L');
-   
-   $pdf->Ln();
-   $pdf->Ln();
-   $pdf->Ln();
-   $pdf->Ln();
-   $pdf->Ln();
-   $pdf->Ln();
-
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(90,$l,'ASSINATURA','T',0,'L');
-
-   $pdf->Ln();
-   
-   //RODAPÉ PERSONALIZADO
    $pdf->SetXY($x,265);
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(80,$l,'Carimbo e Assinatura do(a) Fiscal do Contrato','T',0,'C');
+   $pdf->SetFont('Arial','', 12);
+   $pdf->Cell(80,$l,"Data: "."$dataAtual",0,0,'C');
    $pdf->Cell(10,$l,'',0,0,'C');
-   $pdf->Cell(80,$l,'Carimbo e Assinatura do(a) Suplente do Fiscal','T',0,'C');
-
-//for($i=1;$i<=20;$i++)
-   // $pdf->Cell(0,10,'Printing line number '.$i,0,1);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(80,$l,'ASSINATURA','T',0,'C');
+     
+   
+   
 $pdf->Output();
 
 

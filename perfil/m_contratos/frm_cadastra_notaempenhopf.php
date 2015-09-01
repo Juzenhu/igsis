@@ -1,9 +1,21 @@
-
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IGSIS</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- css -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../css/style.css" rel="stylesheet" media="screen">
+	<link href="../color/default.css" rel="stylesheet" media="screen">
+	<script src="../js/modernizr.custom.js"></script>
+      </head>
+  <body>
 
 <?php
 require("../conectar.php");
 
-$last_id=$_GET['id'];
+$id_ped=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
 ?>	
@@ -20,11 +32,11 @@ $idContrato=$_GET['idContrato'];
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
 
-				<form class="form-horizontal" role="form" <?php echo "action='insercao_notaempenhopf.php?idContrato=$idContrato'";?> method="post">
+				<form class="form-horizontal" role="form" <?php echo "action='insercao_notaempenhopf.php?idContrato=$idContrato&id=$id_ped'";?> method="post">
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					  <input type="text" class="form-control" id="Id_PedidoContratacao"  name="Id_PedidoContratacao" <?php echo " value='$last_id' ";?>>
+					  <input type="text" class="form-control" id="Id_PedidoContratacao"  name="Id_PedidoContratacao" <?php echo " value='$id_ped' ";?>>
 					</div>
 				  </div>
 				 
@@ -64,4 +76,8 @@ $idContrato=$_GET['idContrato'];
 	  </section>  
 
 
+<!--footer -->
+<?php include 'includes/footer.html';?>
 
+  	
+</html>

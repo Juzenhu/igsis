@@ -2181,6 +2181,7 @@ if(isset($_POST['apagar'])){
 <?php 
 break; 
 case "enviar":
+$evento = recuperaEvento($_SESSION['idEvento']);
 ?>
 <?php include "../include/menuEvento.php" ?>
  	<section id="list_items" class="home-section bg-white">
@@ -2188,15 +2189,22 @@ case "enviar":
       			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h2>Enviar</h2>
+					 <h2>Finalizar / enviar</h2>
 					<h4></h4>
                     <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
                  </div>
 				  </div>
 			  </div>  
-			
-			<div class="table-responsive list_info">
-                        
+			<h5>Dados do evento | Pedidos de contratação</h5>
+			<div class="table-responsive list_info" >
+            <h4><?php echo $evento['nomeEvento'] ?></h4>
+            <p align="left">
+              <?php descricaoEvento($_SESSION['idEvento']); ?>
+                  </p>      
+            <h5>Ocorrências</h5>
+            <?php echo resumoOcorrencias($_SESSION['idEvento']); ?><br /><br />
+            <?php listaOcorrenciasTexto($_SESSION['idEvento']); ?>
+            <?php print_r($_SESSION); ?>      
 			</div>
 		</div>
 	</section>   

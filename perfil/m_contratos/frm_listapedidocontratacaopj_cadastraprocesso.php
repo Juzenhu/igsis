@@ -15,22 +15,22 @@
 <?php
 require ("../conectar.php");
 $sql__tabela_pedido_contratacaopj = "SELECT
-											pedido_contratacao_pj.Id_PedidoContratacaoPJ, 
-											pessoa_juridica.RazaoSocial,
-											pedido_contratacao_pj.Objeto,
-											pedido_contratacao_pj.LocalEspetaculo,
-											pedido_contratacao_pj.Periodo,
-											contrato_pj.Id_ContratoPJ
+											sis_pedido_contratacao_pj.Id_PedidoContratacaoPJ, 
+											sis_pessoa_juridica.RazaoSocial,
+											sis_pedido_contratacao_pj.Objeto,
+											sis_pedido_contratacao_pj.LocalEspetaculo,
+											sis_pedido_contratacao_pj.Periodo,
+											sis_contrato_pj.Id_ContratoPJ
 										FROM
-											pessoa_juridica 
-										INNER JOIN pedido_contratacao_pj 
+											sis_pessoa_juridica 
+										INNER JOIN sis_pedido_contratacao_pj 
 										ON 
-											(pedido_contratacao_pj.IdPessoaJuridica = 
-											 pessoa_juridica.Id_PessoaJuridica)
-                                        INNER JOIN contrato_pj
+											(sis_pedido_contratacao_pj.IdPessoaJuridica = 
+											 sis_pessoa_juridica.Id_PessoaJuridica)
+                                        INNER JOIN sis_contrato_pj
 										ON 
-                                        (pedido_contratacao_pj.Id_PedidoContratacaoPJ =
-											contrato_pj.IdPedidoContratacaoPJ)";
+                                        (sis_pedido_contratacao_pj.Id_PedidoContratacaoPJ =
+											sis_contrato_pj.IdPedidoContratacaoPJ)";
 											 
 $consulta_tabela_pedido_contratacaopj= mysqli_query($conexao, $sql__tabela_pedido_contratacaopj);
 $linha_tabela_pedido_contratacaopj = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopj);
@@ -47,7 +47,7 @@ $link="frm_cadastra_processopj.php";
 		<div class="container">
 			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
 					<thead>
 						<tr class="list_menu">
 							<td>Codigo do Pedido</td>

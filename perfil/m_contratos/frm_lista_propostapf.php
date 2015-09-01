@@ -15,28 +15,28 @@
 <?php
 require ("../conectar.php");
 $sql__tabela_pedido_contratacaopf = "SELECT
-											pedido_contratacao_pf.Id_PedidoContratacaoPF, 
-											pessoa_fisica.Nome,
-											pedido_contratacao_pf.Objeto,
-											pedido_contratacao_pf.LocalEspetaculo,
-											pedido_contratacao_pf.Periodo,
-											contrato_pf.NumeroProcesso,
-											contrato_pf.Id_ContratoPF,
-											setor.Setor
+											sis_pedido_contratacao_pf.Id_PedidoContratacaoPF, 
+											sis_pessoa_fisica.Nome,
+											sis_pedido_contratacao_pf.Objeto,
+											sis_pedido_contratacao_pf.LocalEspetaculo,
+											sis_pedido_contratacao_pf.Periodo,
+											sis_contrato_pf.NumeroProcesso,
+											sis_contrato_pf.Id_ContratoPF,
+											sis_setor.Setor
 										FROM
-											pessoa_fisica 
-										INNER JOIN pedido_contratacao_pf 
+											sis_pessoa_fisica 
+										INNER JOIN sis_pedido_contratacao_pf 
 										ON 
-											(pedido_contratacao_pf.IdPessoaFisica = 
-											 pessoa_fisica.Id_PessoaFisica)
-                                        INNER JOIN contrato_pf
+											(sis_pedido_contratacao_pf.IdPessoaFisica = 
+											 sis_pessoa_fisica.Id_PessoaFisica)
+                                        INNER JOIN sis_contrato_pf
 										ON 
-                                        (pedido_contratacao_pf.Id_PedidoContratacaoPF =
-											contrato_pf.IdPedidoContratacaoPF)
-										INNER JOIN setor
+                                        (sis_pedido_contratacao_pf.Id_PedidoContratacaoPF =
+											sis_contrato_pf.IdPedidoContratacaoPF)
+										INNER JOIN sis_setor
 										ON
-											(pedido_contratacao_pf.IdSetor =
-											setor.Id_Setor)
+											(sis_pedido_contratacao_pf.IdSetor =
+											sis_setor.Id_Setor)
 											";
 											 
 $consulta_tabela_pedido_contratacaopf= mysqli_query($conexao, $sql__tabela_pedido_contratacaopf);
@@ -55,7 +55,7 @@ $link="frm_edita_propostapf.php";
 		<div class="container">
 			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
 					<thead>
 						<tr class="list_menu">
 							<td>Codigo do Pedido</td>

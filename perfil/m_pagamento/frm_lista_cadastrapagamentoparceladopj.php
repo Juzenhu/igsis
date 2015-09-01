@@ -49,7 +49,7 @@ $link="frm_cadastra_pagamentoparceladopj.php";
 ?>
 
 	
-<?php include 'includes/menu.php';?>
+<?php include 'includes/menu.html';?>
 		
 	  	  
 <!-- inicio_list -->
