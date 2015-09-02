@@ -71,7 +71,7 @@ Nota de Empenho
 */
 
 
-function siscontratLista($tipoPessoa,$instituicao,$registro,$limite,$ordem){
+function siscontratLista($tipoPessoa,$instituicao,$registro,$pagina,$ordem){
 	$con = bancoMysqli();
 	$sql_lista = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND instituicao = '$instituicao' ORDER BY idPedidoContratacao $ordem LIMIT $registro,$limite ";
 	echo $sql_lista;
@@ -151,7 +151,7 @@ function siscontrat($idPedido){
 			"Observacao"=> $pedido['observacao'], //verificar
 			"DataCadastro"=> $evento['dataEnvio'],
 			"Proponente"=> $proponente['nome']
-			//CargaHoraria
+			//Horario SPCultura
 			//DataCadastro
 			
 		);

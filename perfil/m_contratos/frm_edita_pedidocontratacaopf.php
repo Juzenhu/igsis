@@ -101,7 +101,7 @@ $linha_tabelas = siscontrat($id_ped);
 				<form class="form-horizontal" role="form" <?php echo "action='update_pedidocontratacaopf.php?id_ped=$id_ped'"; ?> method="post">
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Código do Pedido de Contratação:</strong><br/>
-					  <input  name="Id_PedidoContratacaoPF" readonly type="text" class="form-control" id="Id_PedidoContratacaoPF" <?php echo "value='$ano-$id_ped'"; ?> >
+					  <input  name="Id_PedidoContratacaoPF" readonly type="text" class="form-control" id="Id_PedidoContratacaoPF" value="<?php echo $ano."-".$id_ped; ?>" >
 					</div>
                   </div>
 				  <div class="form-group">                    
