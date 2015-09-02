@@ -129,6 +129,8 @@ function siscontrat($idPedido){
 		$proponente = recuperaPessoa($pedido['idPessoa'],$pedido['tipoPessoa']);
 		$fiscal = recuperaUsuario($evento['idResponsavel']);
 		$suplente = recuperaUsuario($evento['suplente']);
+		
+		
 		$x = array(
 			"idSetor" => $usuario['idInstituicao'],
 			"Setor" => $instituicao['instituicao']  ,
@@ -150,11 +152,20 @@ function siscontrat($idPedido){
 			"Suplente" => $suplente['nomeCompleto'],
 			"Observacao"=> $pedido['observacao'], //verificar
 			"DataCadastro"=> $evento['dataEnvio'],
-			"Proponente"=> $proponente['nome']
+			"Proponente"=> $proponente['nome'],
 			//Horario SPCultura
 			//DataCadastro
-			
+			"ProponenteTipoPessoa" =>  $proponente['tipo'],
+			"ProponenteCNPJ_CPF" =>  $proponente['numero'],
+			"ProponenteCCM" => $proponente['ccm'],
+			"ProponenteEndereco" =>  $proponente['cep'],
+			"ProponenteTelefones" =>  $proponente['telefones'],
+			"ProponenteRepresentante01" => $proponente['represenante01'], //puxar da tabela pedido
+			"ProponenteRepresentante02" => $proponente['represenante02'] //puxar da tabela pedido
+				
 		);
+		
+		
 		
 	return $x;	
 	}else{

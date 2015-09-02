@@ -794,6 +794,10 @@ function recuperaPessoa($id,$tipo){ //recupera os dados de uma pessoa
 			$y['nome'] = $x['Nome']; 
 			$y['tipo'] = "Pessoa física";
 			$y['numero'] = $x['CPF'];
+			$y['cep'] = $x['CEP'];
+			$y['ccm'] = $x['CCM'];
+			$y['telefones'] = $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'];
+			 
 			return $y;
 
 		break;
@@ -803,7 +807,11 @@ function recuperaPessoa($id,$tipo){ //recupera os dados de uma pessoa
 			$x = mysqli_fetch_array($query);
 			$y['nome'] = $x['RazaoSocial']; 
 			$y['tipo'] = "Pessoa jurídica";
-			$y['numero'] = $x['CNPJ'];	
+			$y['numero'] = $x['CNPJ'];
+			$y['cep'] = $x['CEP'];
+			$y['ccm'] = $x['CCM'];
+			$y['telefones'] = $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'];
+				
 						return $y;	
 		break;
 		case '3':
