@@ -11,7 +11,8 @@ require "cabecalho.php";
 
 // carrega o perfil
 if(isset($_GET['perfil'])){ 
-	include "../perfil/".$_GET['perfil'].".php";	
+	include "../perfil/".$_GET['perfil'].".php";
+
 }else{
 	include "../perfil/inicio.php";
 }

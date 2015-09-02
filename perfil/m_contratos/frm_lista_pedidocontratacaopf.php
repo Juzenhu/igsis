@@ -1,36 +1,9 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-  </head>
-  <body>
-<?php
-require ("../conectar.php");
-$sql__tabela_pedido_contratacaopf = "SELECT
-											sis_pedido_contratacao_pf.Id_PedidoContratacaoPF, 
-											sis_pessoa_fisica.Nome,
-											sis_pedido_contratacao_pf.Objeto,
-											sis_pedido_contratacao_pf.LocalEspetaculo,
-											sis_pedido_contratacao_pf.Periodo,
-											sis_pedido_contratacao_pf.Status 
-										FROM
-											sis_pessoa_fisica 
-										INNER JOIN sis_pedido_contratacao_pf 
-										ON 
-											(sis_pedido_contratacao_pf.IdPessoaFisica = 
-											 sis_pessoa_fisica.Id_PessoaFisica)";
-											 
-$consulta_tabela_pedido_contratacaopf= mysqli_query($conexao, $sql__tabela_pedido_contratacaopf);
-$linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf);
 
-$link="frm_edita_pedidocontratacaopf.php";
+<?php
+
+$$linha_tabela_pedido_contratacaopf = siscontratLista($tipoPessoa,$instituicao,$registro,$limite,$ordem);
+
+$link="index.php?perfil=contratos&p=frm_edita_pedidocontratacaopf&";
 
 ?>
 
@@ -78,7 +51,3 @@ $link="frm_edita_pedidocontratacaopf.php";
 <!--fim_list-->
 
 
-<!--footer -->
-<?php include 'includes/footer.html';?>
-  	
-</html>

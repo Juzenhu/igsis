@@ -1,4 +1,23 @@
-<?php include "../include/menuEvento.php" ?>
+	<div class="menu-area">
+			<div id="dl-menu" class="dl-menuwrapper">
+						<button class="dl-trigger">Open Menu</button>
+						<ul class="dl-menu">
+							<li>
+								<a href="?secao=inicio">Início</a>
+							</li>
+							<li><a href="?secao=perfil">Perfil de acesso</a></li>
+							<li><a href="?secao=ajuda">Ajuda</a></li>
+                            <li><a href="../include/logoff.php">Sair</a></li>
+							<!--<li>
+								<a href="#">Sub Menu</a>
+								<ul class="dl-submenu">
+									<li><a href="#">Sub menu</a></li>
+									<li><a href="#">Sub menu</a></li>
+								</ul>
+							</li>-->
+						</ul>
+					</div><!-- /dl-menuwrapper -->
+	</div>	
 
 <section id="inserir" class="home-section bg-white">
     <div class="container">
@@ -51,16 +70,7 @@
                         </select>
                 	</div>
                 </div>
-                <div class="form-group">
-                    
-           			<h5>Pedido de documentação</h5>
-	            	<div class="col-md-offset-2 col-md-8">
-
-    		            <input type="checkbox" name="ig_comunicacao_registroFotografia" id="especial01" <?php checar($producao['registroFotografia']) ?> /><label  style="padding:0 10px 0 5px;">Fotografia</label>
-           			    <input type="checkbox" name="ig_comunicacao_registroAudio" id="especial02" <?php checar($producao['registroAudio']) ?>/><label  style="padding:0 10px 0 5px;">Áudio</label>
-            		    <input type="checkbox" name="ig_comunicacao_registroVideo" id="especial03" <?php checar($producao['registroVideo']) ?>/><label  style="padding:0 10px 0 5px;">Vídeo</label>
-                	</div>                     
-                </div>
+               
             <div class="form-group">
 	            <div class="col-md-offset-2 col-md-8">
                 	<input type="hidden" name="atualizar" value="1" />
