@@ -3,71 +3,6 @@
 
 siscontrat 
 
-Pedido de Contratação de PF e PJ
-·         Data no formato dd/mm/aaaa
-
-·         Formatar campo valor (tela de edição e relatório)
-
-·         Nos relatórios adicionar valor por extenso
-
- 
-Edição PF
-·         Campo foto (criar)
-
-·         Campo CEP, Endereço e afins
-
-·         Colocar máscara no campo telefone
-
-·         Data no formato dd/mm/aaaa
-
- 
-Edição PJ
-·         Campo CEP, Endereço e afins
-
-·         Colocar máscara no campo telefone
-
-·         Fazer combobox para os representantes legal
-
-·         Data no formato dd/mm/aaaa
-
-·         Update com erro (descobrir)
-
- 
-Representante Legal
-·         Corrigir nome das tabelas para “sis_” e verificar funcionamento
-
- 
-Proposta PF e PJ
-·         Fazer relatórios faltantes
-
-·         Fazer o campo Assinatura de acordo com o Departamento
-
- 
-Processo PF
-·         Máscara para processo
-
-·         Relatório de reserva com defeito
-
- 
-Processo PJ
-·         Máscara para processo
-
-·         Update com defeito
-
-·         Relatório de reserva (fazer)
-
- 
-Nota de Empenho
-·         Fazer o campo de data em javascript
-
-·         Ver erro no update do PJ
-
-·         Corrigir relatório do recibo
-
- 
-
-
-
 */
 
 
@@ -162,6 +97,7 @@ function siscontrat($idPedido){
 			"ProponenteTelefones" =>  $proponente['telefones'],
 			"ProponenteRepresentante01" => $proponente['represenante01'], //puxar da tabela pedido
 			"ProponenteRepresentante02" => $proponente['represenante02'] //puxar da tabela pedido
+			
 				
 		);
 		
@@ -171,7 +107,47 @@ function siscontrat($idPedido){
 	}else{
 		return "Erro";
 	}
+}
+
+function siscontratDeclaracao($idPessoa,$tipo){
+	
+/*
+Indices da array
+
+"Nome"
+"RG"
+"CPF"
+"CCM"
+"Endereco"
+"Telefones"
+"Nascimento"
+"INSS"
+"Email"
+
+
+
+*/
 
 }
 
+function siscontratRecibo($idProcesso){
+
+/*
+Indices da array
+
+"NotaEmpenho"
+"RG"
+"CPF"
+"CCM"
+"Endereco"
+"Telefones"
+"Nascimento"
+"INSS"
+"Email"
+
+
+
+*/	
+	
+}
 ?>
