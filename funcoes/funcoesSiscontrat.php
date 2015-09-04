@@ -33,7 +33,7 @@ function siscontratLista($tipoPessoa,$instituicao,$registro,$pagina,$ordem){
 			"FormaPagamento" => $pedido['formaPagamento'],
 			"Periodo" => $periodo, 
 			"Duracao" => $duracao, 
-			//"CargaHoraria" => $carga , //fazer a funcao
+			"CargaHoraria" => $carga , //fazer a funcao
 			"Proponente" => $pessoa['nome'],
 			"Verba" => $pedido['idVerba'] ,
 			"Justificativa" => $evento['justificativa'] ,
@@ -69,7 +69,7 @@ function siscontrat($idPedido){
 		$x = array(
 			"idSetor" => $usuario['idInstituicao'],
 			"Setor" => $instituicao['instituicao']  ,
-
+			"TipoPessoa" => $pedido['tipoPessoa'],
 			"CategoriaContratacao" => $evento['ig_modalidade_IdModalidade'] , //precisa ver se retorna o id
 			"Objeto" => retornaTipo($evento['ig_tipo_evento_idTipoEvento'])." - ".$evento['nomeEvento'] ,
 			"Local" => substr($local,1) , //retira a virgula no começo da string
@@ -78,7 +78,6 @@ function siscontrat($idPedido){
 			"FormaPagamento" => $pedido['formaPagamento'],
 			"Periodo" => $periodo, 
 			"Duracao" => $duracao, 
-			//"CargaHoraria" => $carga , //fazer a funcao
 			"Verba" => $pedido['idVerba'] ,
 			"Justificativa" => $evento['justificativa'] ,
 			"ParecerTecnico" => $evento['parecerArtistico'],
@@ -108,6 +107,7 @@ function siscontratDocs($idPessoa,$tipo){
 		"Nome" => "",
 		"NomeArtistico" => "",
 		"EstadoCivil" => "",
+		"DataNascimento" => "",
 		"LocalNascimento" => "",
 		"Naturalidade" => "",
 		"DRT" => "",
@@ -117,9 +117,9 @@ function siscontratDocs($idPessoa,$tipo){
 		"CPF" => "",
 		"CNPJ" => "",
 		"CCM" => "",
+		"OMB" => "",
 		"Endereco" => "",
 		"Telefones" => "",
-		"Nascimento" => "",
 		"INSS" => "",
 		"Email" => "",
 		"Representante01" => "",
