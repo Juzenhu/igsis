@@ -3,20 +3,18 @@
 /*
 igSmc v0.1 - 2015
 ccsplab.org - centro cultural são paulo
+
+Esta é a página para as funções gerais do sistema.
+
+> Testes e verificações
+> Conexão de Banco MySQLi
+> Framework
+> Formatação de datas, valores
+> Outras bibliotecas: email, pdf, etc
 */
 
+// Testes e verificações
 
-
-// Esta é a página para as funções gerais do sistema.
-function bancoMysqli(){ // Cria conexao ao banco. Substitui o include "conecta_mysql.php" .
-	$servidor = 'localhost';
-	$usuario = 'root';
-	$senha = '';
-	$banco = 'igsis';
-	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
-	mysqli_set_charset($con,"utf8");
-	return $con;
-}
 // Conecta-se ao banco de dados MySQL
 function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
 	$mysqli = new mysqli("localhost", "root", "","igsis");
@@ -26,7 +24,35 @@ function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
 }
 
 
-function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia uma session
+
+// Conexão de Banco MySQLi
+
+// Cria conexao ao banco. Substitui o include "conecta_mysql.php" .
+function bancoMysqli(){ 
+	$servidor = 'localhost';
+	$usuario = 'root';
+	$senha = '';
+	$banco = 'igsis';
+	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
+	mysqli_set_charset($con,"utf8");
+	return $con;
+}
+
+// Cria conexao ao banco de CEPs.
+function bancoMysqliCep(){ 
+	$servidor = 'localhost';
+	$usuario = 'root';
+	$senha = '';
+	$banco = 'cep';
+	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
+	mysqli_set_charset($con,"utf8");
+	return $con;
+}
+
+// Framework
+
+//autentica usuario e cria inicia uma session
+function autenticaUsuario($usuario, $senha){ 
 	$sql = "SELECT * FROM ig_usuario, ig_instituicao, ig_papelusuario WHERE ig_usuario.nomeUsuario = '$usuario' AND ig_instituicao.idInstituicao = ig_usuario.idInstituicao AND ig_papelusuario.idPapelUsuario = ig_usuario.ig_papelusuario_idPapelUsuario LIMIT 0,1";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -59,57 +85,80 @@ function autenticaUsuario($usuario, $senha){ //autentica usuario e cria inicia u
 	}	
 }
 
+//saudacao inicial
+function saudacao(){ 
+	$hora = date('H');
+	if(($hora > 12) AND ($hora <= 18)){
+		return "Boa tarde";	
+	}else if(($hora > 18) AND ($hora <= 23)){
+		return "Boa noite";	
+	}else if(($hora >= 0) AND ($hora <= 4)){
+		return "Boa noite";	
+	}else if(($hora > 4) AND ($hora <=12)){
+		return "Bom dia";
+	}
+}
+
+// Formatação de datas, valores
+
+// Retira acentos das strings
 function semAcento($string){
 	$newstring = preg_replace("/[^a-zA-Z0-9_.]/", "", strtr($string, "áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ ", "aaaaeeiooouucAAAAEEIOOOUUC_"));
 	return $newstring;
 }
 
-function exibirDataBr($data){ //retorna data d/m/y de mysql/date(a-m-d)
+//retorna data d/m/y de mysql/date(a-m-d)
+function exibirDataBr($data){ 
 	$timestamp = strtotime($data); 
 	return date('d/m/Y', $timestamp);	
 }
 
+// retorna datatime sem hora
 function retornaDataSemHora($data){
 	$semhora = substr($data, 0, 10);
 	return $semhora;
-	
 }
 	
-function exibirDataHoraBr($data){ //retorna data d/m/y de mysql/datetime(a-m-d H:i:s)
+//retorna data d/m/y de mysql/datetime(a-m-d H:i:s)	
+function exibirDataHoraBr($data){ 
 	$timestamp = strtotime($data); 
 	return date('d/m/y - H:i:s', $timestamp);	
 }
 
+//retorna hora H:i de um datetime
 function exibirHora($data){
 	$timestamp = strtotime($data); 
 	return date('H:i', $timestamp);	
-	
 }
 
-function exibirDataMysql($data){ //retorna data mysql/date (a-m-d) de data/br (d/m/a)
+//retorna data mysql/date (a-m-d) de data/br (d/m/a)
+function exibirDataMysql($data){ 
 	list ($dia, $mes, $ano) = explode ('/', $data);
 	$data_mysql = $ano.'-'.$mes.'-'.$dia;
 	return $data_mysql;
 }
 
-function urlAtual(){ //retorna o endereço da página atual
+//retorna o endereço da página atual
+function urlAtual(){ 
 	$dominio= $_SERVER['HTTP_HOST'];
 	$url = "http://" . $dominio. $_SERVER['REQUEST_URI'];
 	return $url;
 }
 
-function dinheiroDeBr($valor) { //retorna valor xxx,xx para xxx.xx
+//retorna valor xxx,xx para xxx.xx
+function dinheiroDeBr($valor) { 
 	$valor = str_ireplace(".","",$valor);
     $valor = str_ireplace(",",".",$valor);
     return $valor;
 }
 
-function dinheiroParaBr($valor) { //retorna valor xxx.xx para xxx,xx
+//retorna valor xxx.xx para xxx,xx
+function dinheiroParaBr($valor) { 
     	$valor = number_format($valor, 2, ',', '.');
     	return $valor;
 }
-
-function _utf8_decode($string){ //use em problemas de codificacao utf-8
+//use em problemas de codificacao utf-8
+function _utf8_decode($string){ 
 	$tmp = $string;
 	$count = 0;
 	while (mb_detect_encoding($tmp)=="UTF-8"){
@@ -122,7 +171,8 @@ function _utf8_decode($string){ //use em problemas de codificacao utf-8
 	return $string;
 }
 
-function diasemana($data) { //retorna o dia da semana segundo um date(a-m-d)
+//retorna o dia da semana segundo um date(a-m-d)
+function diasemana($data) { 
 	$ano =  substr("$data", 0, 4);
 	$mes =  substr("$data", 5, -3);
 	$dia =  substr("$data", 8, 9);
@@ -138,17 +188,19 @@ function diasemana($data) { //retorna o dia da semana segundo um date(a-m-d)
 		case"5": $diasemana = "Sexta-Feira";   break;
 		case"6": $diasemana = "Sábado";        break;
 	}
-
 	return "$diasemana";
 }
 
-function somarDatas($data,$dias){ //soma(+) ou substrai(-) dias de um date(a-m-d)
+//soma(+) ou substrai(-) dias de um date(a-m-d)
+function somarDatas($data,$dias){ 
 	$data_final = date('Y-m-d', strtotime("$dias days",strtotime($data)));	
 	return $data_final;
-	
 }
 
-function enviarEmail($conteudo_email, $instituicao, $subject, $email, $usuario ){ //envia um email pela conta igccsp2015@gmail.com é preciso que a classe phpmailer esteja instalada - vale dar uma revisada geral
+//Outras bibliotecas
+
+//envia um email pela conta igccsp2015@gmail.com é preciso que a classe phpmailer esteja instalada - vale dar uma revisada geral
+function enviarEmail($conteudo_email, $instituicao, $subject, $email, $usuario ){ 
 
 
 	require_once('../include/phpmailer/class.phpmailer.php');
@@ -275,18 +327,7 @@ function gravarLog($log){ //grava na tabela ig_log os inserts e updates
 	}
 }
 
-function saudacao(){ //saudacao inicial
-	$hora = date('H');
-	if(($hora > 12) AND ($hora <= 18)){
-		return "Boa tarde";	
-	}else if(($hora > 18) AND ($hora <= 23)){
-		return "Boa noite";	
-	}else if(($hora >= 0) AND ($hora <= 4)){
-		return "Boa noite";	
-	}else if(($hora > 4) AND ($hora <=12)){
-		return "Bom dia";
-	}
-}
+
 
 function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 	if($instituicao != ""){
@@ -828,7 +869,35 @@ function recuperaPessoa($id,$tipo){ //recupera os dados de uma pessoa
 	
 }
 
+function recuperaEstadoCivil($id){
+	$estadoCivil = recuperaDados("sis_estado_civil",$id,"Id_EstadoCivil");
+	$x['IdEstadoCivil'] = $estadoCivil['Id_EstadoCivil'];
+	$x['EstadoCivil'] = $estadoCivil['EstadoCivil'];
+	return $x;		
+}
 
+function retornaEndereco($cep,$numero,$complemento){
+	$con = bancoMysqliCEP();
+
+	$cep_index = substr($cep, 0, 5);
+	$sql01 = "SELECT * FROM igsis_cep_cep_log_index WHERE cep5 = '$cep_index' LIMIT 0,1";
+	$query01 = mysqli_query($con,$sql01);
+	$num = mysqli_num_rows($query01);
+	if($num > 0){
+		$campo01 = mysqli_fetch_array($query01);
+		$uf = "igsis_cep_".$campo01['uf'];
+	
+		$sql02 = "SELECT * FROM $uf WHERE cep = '$cep'";
+		$query02 = mysqli_query($con,$sql02);
+		$campo02 = mysqli_fetch_array($query02);
+		$endereco =  $campo02['tp_logradouro']." ".$campo02['logradouro'].", ".$numero." / ".$complemento."<br />".
+		$campo02['bairro']." - ".$campo02['cidade']." / ".strtoupper($campo01['uf']);
+		return $endereco;
+	}else{
+		
+	}
+	
+}
 
 function geraOpcaoLegal($idEvento){ //gera options de representantes legais
 	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND tipoPessoa = '3'";

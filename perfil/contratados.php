@@ -37,7 +37,7 @@ $nomeEvento = recuperaEvento($_SESSION['idEvento']);
 	</div>	
 
 <?php switch($p){
-case 'lista':
+case 'lista': 
 	
 if(isset($_POST['cadastrarRepresentante'])){ //cadastra e insere represenante
 	$RepresentanteLegal = $_POST['RepresentanteLegal'];
@@ -85,7 +85,7 @@ if(isset($_POST['cadastrarFisica'])){ //cadastra e insere pessoa física
 		$CPF = $_POST['CPF'];
 		$CCM = $_POST['CCM'];
 		$IdEstadoCivil = $_POST['IdEstadoCivil'];
-		$DataNascimento = $_POST['DataNascimento'];
+		$DataNascimento = exibirDataMysql($_POST['DataNascimento']);
 		$Nacionalidade = $_POST['Nacionalidade'];
 		$CEP = $_POST['CEP'];
 		$Endereco = $_POST['Endereco'];
@@ -114,7 +114,7 @@ if(isset($_POST['cadastrarFisica'])){ //cadastra e insere pessoa física
 			$id = mysqli_fetch_array($id_evento);
 			$idFisica = $id['Id_PessoaFisica'];
 			$idEvento = $_SESSION['idEvento'];	
-			$sql_insert_pedido = "INSERT INTO `igsis_pedido_contratacao` (`idPedidoContratacao`, `idEvento`, `tipoPessoa`, `idPessoaJuridica`, `idPessoaFisica`, `valor`, `valorPorExtenso`, `formaPagamento`, `idVerba`, `anexo`, `observacao`, `publicado`) VALUES (NULL, '$idEvento', '1', NULL, '$idFisica', NULL, NULL, NULL, NULL, NULL, NULL, '1')";
+			$sql_insert_pedido = "INSERT INTO `igsis_pedido_contratacao` (`idPedidoContratacao`, `idEvento`, `tipoPessoa`, `idPessoa`,  `valor`, `valorPorExtenso`, `formaPagamento`, `idVerba`, `anexo`, `observacao`, `publicado`) VALUES (NULL, '$idEvento', '1', '$idFisica', NULL, NULL, NULL, NULL, NULL, NULL, '1')";
 			$query_insert_pedido = mysqli_query($con,$sql_insert_pedido);
 			
 			if($query_insert_pedido){
@@ -1110,6 +1110,102 @@ case "apagarPedido":
 <?php 
 break;
 case "edicaoPessoa":
+
+	if(isset($_POST['cadastrarFisica'])){
+		$idPessoaFisica = $_POST['cadastrarFisica'];
+		$Nome = $_POST['Nome'];
+		$NomeArtistico = $_POST['NomeArtistico'];
+		$RG = $_POST['RG'];
+		$CPF = $_POST['CPF'];
+		$CCM = $_POST['CCM'];
+		$IdEstadoCivil = $_POST['IdEstadoCivil'];
+		$DataNascimento = exibirDataMysql($_POST['DataNascimento']);
+		$Nacionalidade = $_POST['Nacionalidade'];
+		$CEP = $_POST['CEP'];
+		//$Endereco = $_POST['Endereco'];
+		$Numero = $_POST['Numero'];
+		$Complemento = $_POST['Complemento'];
+		$Bairro = $_POST['Bairro'];
+		$Cidade = $_POST['Cidade'];
+		$Telefone1 = $_POST['Telefone1'];
+		$Telefone2 = $_POST['Telefone2'];
+		$Telefone3 = $_POST['Telefone3'];
+		$Email = $_POST['Email'];
+		$DRT = $_POST['DRT'];
+		$Funcao = $_POST['Funcao'];
+		$InscricaoINSS = $_POST['InscricaoINSS'];
+		$OMB = $_POST['OMB'];
+		$Observacao = $_POST['Observacao'];
+		$tipoDocumento = $_POST['tipoDocumento'];
+		$Pis = 0;
+		$data = date('Y-m-d');
+		$idUsuario = $_SESSION['idUsuario'];
+		
+		$sql_atualizar_pessoa = "UPDATE sis_pessoa_fisica SET
+		`Nome` = '$Nome',
+		`NomeArtistico` = '$NomeArtistico',
+		`RG` = '$RG', 
+		`CPF` = '$CPF', 
+		`CCM` = '$CCM', 
+		`IdEstadoCivil` = '$IdEstadoCivil' , 
+		`DataNascimento` = '$DataNascimento', 
+		`Nacionalidade` = '$Nacionalidade', 
+		`CEP` = '$CEP', 
+		`Numero` = '$Numero', 
+		`Complemento` = '$Complemento', 
+		`Telefone1` = '$Telefone1', 
+		`Telefone2` = '$Telefone2',  
+		`Telefone3` = '$Telefone3', 
+		`Email` = '$Email', 
+		`DRT` = '$DRT', 
+		`Funcao` = '$Funcao', 
+		`InscricaoINSS` = '$InscricaoINSS', 
+		`Pis` = '$Pis', 
+		`OMB` = '$OMB', 
+		`DataAtualizacao` = '$data', 
+		`Observacao` = '$Observacao', 
+		`IdUsuario` = '$idUsuario', 
+		`tipoDocumento` = '$tipoDocumento' 
+		WHERE `Id_PessoaFisica` = '$idPessoaFisica'";	
+		
+		if(mysqli_query($con,$sql_atualizar_pessoa)){
+			$mensagem = "Atualizado com sucesso!";	
+		}else{
+			$mensagem = "Erro ao atualizar! Tente novamente.";
+		}
+		
+	}
+
+		if(isset($_POST['editaJuridica'])){
+		$idJuridica = $_POST['editaJuridica'];
+		$RazaoSocial = $_POST['RazaoSocial'];
+		$CNPJ = $_POST['CNPJ'];
+		$CCM = $_POST['CCM'];
+		$CEP = $_POST['CEP'];
+		$Numero = $_POST['Numero'];
+		$Complemento = $_POST['Complemento'];
+		$Telefone1 = $_POST['Telefone1'];
+		$Telefone2 = $_POST['Telefone2'];
+		$Telefone3 = $_POST['Telefone3'];
+		$Email = $_POST['Email'];
+		$IdRepresentanteLegal1 = $_POST['IdRepresentanteLegal1'];
+		$IdRepresentanteLegal2 = $_POST['IdRepresentanteLegal2'];
+		$Observacao = $_POST['Observacao'];
+		$data = date("Y-m-d");
+		$idUsuario = $_SESSION['idUsuario'];
+		
+		$sql_atualizar_juridica = "UPDATE `sis_pessoa_juridica` SET `RazaoSocial` = '$RazaoSocial', `CNPJ` = '$CNPJ', `CCM` = '$CCM', `CEP` = '$CEP', `Numero` = '$Numero', `Complemento` = '$Complemento', `Telefone1` = '$Telefone1', `Telefone2` = '$Telefone2', `Telefone3` = '$Telefone3', `Email` = '$Email', `IdRepresentanteLegal1` = '$IdRepresentanteLegal1', `IdRepresentanteLegal2` = '$IdRepresentanteLegal2', `DataAtualizacao` = '$data', `Observacao` = '$Observacao' WHERE `sis_pessoa_juridica`.`Id_PessoaJuridica` = '$idJuridica';";
+				if(mysqli_query($con,$sql_atualizar_juridica)){
+			$mensagem = "Atualizado com sucesso!";	
+		}else{
+			$mensagem = "Erro ao atualizar! Tente novamente.";
+		}
+		
+		
+		
+		}
+
+
 	$idPedidoContratacao = $_POST['idPedidoContratacao'];
 	$pedido = recuperaDados("igsis_pedido_contratacao",$idPedidoContratacao,"idPedidoContratacao");
 
@@ -1122,7 +1218,8 @@ case "edicaoPessoa":
 	  	<div class="container">
 			  <div class="form-group">
 					<h3>CADASTRO DE PESSOA FÍSICA</h3>
-                    </div>
+                    <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
+                                        </div>
 
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
@@ -1174,7 +1271,7 @@ case "edicaoPessoa":
 					  </select>
 					</div>				  
 					<div class=" col-md-6"><strong>Data de nascimento:</strong><br/>
- <input type="text" class="form-control" id="datepicker01" name="DataNascimento" placeholder="Data de Nascimento" value="<?php echo $fisica['DataNascimento']; ?>">
+ <input type="text" class="form-control" id="datepicker01" name="DataNascimento" placeholder="Data de Nascimento" value="<?php echo exibirDataBr($fisica['DataNascimento']); ?>">
 					</div>
 				  </div>
 				  
@@ -1263,7 +1360,8 @@ case "edicaoPessoa":
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-                    <input type="hidden" name="cadastrarFisica" value="1" />
+                    <input type="hidden" name="cadastrarFisica" value="<?php echo $fisica['Id_PessoaFisica'] ?>" />
+                   <input type="hidden" name="idPedidoContratacao" value="<?php echo $_POST['idPedidoContratacao'] ?>" />
                     <input type="hidden" name="Sucesso" id="Sucesso" />
 					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
 					</div>
@@ -1282,11 +1380,16 @@ case "edicaoPessoa":
 
 	<?php
 	break;
-	case 2: ?>
+	case 2: 
+
+
+	$juridica = recuperaDados("sis_pessoa_juridica",$pedido['idPessoa'],"Id_PessoaJuridica");
+	?>
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
 					<div class="sub-title">CADASTRO DE PESSOA JURÍDICA</div>
+                                        <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
 			  </div>
 
 	  		<div class="row">
@@ -1297,22 +1400,22 @@ case "edicaoPessoa":
 			  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Razão Social:</strong><br/>
-					  <input type="text" class="form-control" id="RazaoSocial" name="RazaoSocial" placeholder="RazaoSocial" >
+					  <input type="text" class="form-control" id="RazaoSocial" name="RazaoSocial" placeholder="RazaoSocial" value="<?php echo $juridica['RazaoSocial']; ?>">
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>CNPJ:</strong><br/>
-					  <input type="text" class="form-control" id="CNPJ" name="CNPJ" placeholder="CNPJ" >
+					  <input type="text" class="form-control" id="CNPJ" name="CNPJ" placeholder="CNPJ" value="<?php echo $juridica['CNPJ']; ?>" >
 					</div>
 					<div class="col-md-6"><strong>CCM:</strong><br/>
-					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" >
+					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" value="<?php echo $juridica['CCM']; ?>">
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
                   					<div class="col-md-offset-2 col-md-6"><strong>CEP *:</strong><br/>
-					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="CEP">
+					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="CEP" value="<?php echo $juridica['CEP']; ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>Estado *:</strong><br/>
 					  <input type="text" class="form-control" id="Estado" name="Estado" placeholder="Estado">
@@ -1328,10 +1431,10 @@ case "edicaoPessoa":
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Número *:</strong><br/>
-					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero">
+					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero" value="<?php echo $juridica['Numero']; ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>Complemento:</strong><br/>
-					  <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento">
+					  <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento" value="<?php echo $juridica['Complemento']; ?>">
 					</div>
 				  </div>
 				  
@@ -1346,16 +1449,16 @@ case "edicaoPessoa":
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Telefone:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone1" name="Telefone1" placeholder="Telefone">
+					  <input type="text" class="form-control" id="Telefone1" name="Telefone1" placeholder="Telefone" value="<?php echo $juridica['Telefone1']; ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>Telefone:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone2" name="Telefone2" placeholder="Telefone" >
+					  <input type="text" class="form-control" id="Telefone2" name="Telefone2" placeholder="Telefone" value="<?php echo $juridica['Telefone2']; ?>" >
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Telefone:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone3" name="Telefone3" placeholder="Telefone">
+					  <input type="text" class="form-control" id="Telefone3" name="Telefone3" placeholder="Telefone" value="<?php echo $juridica['Telefone3']; ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>E-mail:</strong><br/>
 					  <input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail">
@@ -1379,7 +1482,7 @@ case "edicaoPessoa":
 		  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Observações:</strong><br/>
-					 <textarea name="Observacao" class="form-control" rows="10" placeholder=""></textarea>
+					 <textarea name="Observacao" class="form-control" rows="10" placeholder=""><?php echo $juridica['Observacao']; ?></textarea>
 					</div>
 				  </div>
 				  
@@ -1387,7 +1490,8 @@ case "edicaoPessoa":
 				<!-- Botão Gravar -->	
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-                     <input type="hidden" name="cadastrarJuridica" value="1" />
+                     <input type="hidden" name="editaJuridica" value="<?php echo $juridica['Id_PessoaJuridica'] ?>" />
+                     <input type="hidden" name="idPedidoContratacao" value="<?php echo $_POST['idPedidoContratacao'] ?>" />
 					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
 					</div>
 				  </div>
