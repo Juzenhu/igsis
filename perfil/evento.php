@@ -1300,8 +1300,8 @@ include "../include/menuEvento.php";
 
 if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	
-	$dataInicio = $_POST['dataInicio'];
-	$dataFinal = $_POST['dataFinal'];
+	$dataInicio = exibirDataMysql($_POST['dataInicio']);
+	$dataFinal = exibirDataMysql($_POST['dataFinal']);
 	if(($dataFinal == "") OR ($dataFinal == '0000-00-00')) {
 		$tipoOcorrencia = 3; // Tipo de Ocorrência data única
 	}else{
@@ -1799,11 +1799,11 @@ function habilitar(){
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
-                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" value="<?php echo $ocor['dataInicio'] ?>" placeholder="">
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" value="<?php echo exibirDataBr($ocor['dataInicio']) ?>" placeholder="">
                		 </div>
                 	<div class=" col-md-6">
                 		<label>Data encerramento</label>
-                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" value="<?php if($ocor['dataFinal'] != '0000-00-00'){echo $ocor['dataFinal'];} ?>"placeholder="só preencha se for temporada">
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" value="<?php if($ocor['dataFinal'] != '0000-00-00'){echo exibirDataBr($ocor['dataFinal']);} ?>"placeholder="só preencha se for temporada">
                		</div>
                 </div>
                 <div class="form-group">
@@ -2021,7 +2021,7 @@ function habilitar(){
 	?>
 
 <?php 
-
+break;
 case "subEvento":
 if(isset($_GET['action'])){
 	$action = $_GET['action'];
@@ -2157,7 +2157,7 @@ if(isset($_POST['apagar'])){
 
 
 ?>
-	<section id="list_items" class="home-section bg-white">
+<section id="list_items" class="home-section bg-white">
 		<div class="container">
       			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
@@ -2173,7 +2173,7 @@ if(isset($_POST['apagar'])){
                          <?php listaSubEventos($_SESSION['idEvento']); ?>
 			</div>
 		</div>
-	</section>
+	</section> 
 
 
 	<?php } // fim da switch do subEvento?>

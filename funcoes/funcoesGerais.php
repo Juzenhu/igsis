@@ -488,7 +488,7 @@ function listaEventosGravados($idUsuario){ //tabela para gerenciar eventos em ab
 						<tr class='list_menu'>
 							<td>Nome do evento</td>
 							<td>Tipo de evento</td>
-  							<td>Data de início</td>
+  							<td>Data/Período</td>
 							<td width='10%'></td>
 							<td width='10%'></td>
 						</tr>
@@ -498,7 +498,7 @@ function listaEventosGravados($idUsuario){ //tabela para gerenciar eventos em ab
 			echo "<tr>";
 			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
 			echo "<td class='list_description'>".retornaTipo($campo['ig_tipo_evento_idTipoEvento'])."</td>";
-			echo "<td class='list_description'></td>";
+			echo "<td class='list_description'>".retornaPeriodo($campo['idEvento'])."</td>";
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=evento&p=basica'>
@@ -1170,6 +1170,9 @@ function retornaPeriodo($id){ //retorna o período
 	$num = mysqli_num_rows($query_anterior01);
 	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00')){
 		$dataFinal01 = $data['dataFinal'];	
+	}else{
+		return "Não há ocorrências. <br />
+		Por favor, insira pelo menos uma ocorrência.";	
 	}
 	$query_anterior02 = mysqli_query($con,$sql_posterior02);
 	$data = mysqli_fetch_array($query_anterior02);

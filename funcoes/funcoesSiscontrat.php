@@ -3,6 +3,32 @@
 
 siscontrat 
 
+	$x = array(
+
+		"Nome" => "",
+		"NomeArtistico" => "",
+		"EstadoCivil" => "",
+		"DataNascimento" => "",
+		"LocalNascimento" => "",
+		"Naturalidade" => "",
+		"DRT" => "",
+		"PIS" => "",
+		"Observacao" => "",
+		"RG" => "",
+		"CPF" => "",
+		"CNPJ" => "",
+		"CCM" => "",
+		"OMB" => "",
+		"Endereco" => "",
+		"Telefones" => "",
+		"INSS" => "",
+		"Email" => "",
+		"Representante01" => "",
+		"Representante02" => ""
+
+	
+	);
+
 */
 
 
@@ -85,10 +111,8 @@ function siscontrat($idPedido){
 			"Fiscal" => $fiscal['nomeCompleto'] ,
 			"Suplente" => $suplente['nomeCompleto'],
 			"Observacao"=> $pedido['observacao'], //verificar
-			"DataCadastro" => $evento['dataEnvio'],
 			"NotaEmpenho" => "",
 			"Horario" => "", //SPCultura
-			"DataCadastro" => "",
 			"IdProponente" => $pedido['idPessoa']
 		);
 		
@@ -116,7 +140,7 @@ function siscontratDocs($idPessoa,$tipo){
 				"EstadoCivil" => $estadoCivil['EstadoCivil'] ,
 				"DataNascimento" => $x['DataNascimento'] ,
 				"LocalNascimento" => $x['LocalNascimento'] ,
-				"Naturalidade" => $x['Nacionalidade'] ,
+				"Nacionalidade" => $x['Nacionalidade'] ,
 				"DRT" => $x['DRT'] ,
 				"PIS" => $x['Pis'] ,
 				"Observacao" => $x['Observacao'] ,
@@ -128,9 +152,12 @@ function siscontratDocs($idPessoa,$tipo){
 				"Endereco" => $endereco ,
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => $x['InscricaoINSS'] ,
-				"Email" => $x['Email'] ,
+				"Email" => $x['Email'] ,				
 				"Representante01" => "",
-				"Representante02" => ""
+				"Representante02" => "",
+				"NumeroProcesso" => "",
+				"EmissaoNE" => "",
+				"EntregaNE" => ""
 			);
 			return $y;
 
@@ -161,7 +188,10 @@ function siscontratDocs($idPessoa,$tipo){
 				"INSS" => "" ,
 				"Email" => $x['Email'] ,
 				"Representante01" => $x['IdRepresentanteLegal1'],
-				"Representante02" => $x['IdRepresentanteLegal2']
+				"Representante02" => $x['IdRepresentanteLegal2'],
+				"NumeroProcesso" => "",
+				"EmissaoNE" => "",
+				"EntregaNE" => ""
 			);
 			return $y;	
 		break;
@@ -170,10 +200,34 @@ function siscontratDocs($idPessoa,$tipo){
 			$sql = "SELECT * FROM sis_representante_legal WHERE Id_RepresentanteLegal = $idPesso";
 			$query = mysqli_query($con,$sql);
 			$x = mysqli_fetch_array($query);
-			$y['nome'] = $x['RepresentanteLegal']; 
-			$y['tipo'] = "Representante legal";
-			$y['numero'] = $x['CPF'];		
-			return $y;
+			$endereco = retornaEndereco($x['CEP'],$x['Numero'],$x['Complemento']);
+				$y = array(
+				"Nome" => $x['RazaoSocial'],
+				"NomeArtistico" => "" ,
+				"IdEstadoCivil" => "" ,
+				"EstadoCivil" => "" ,
+				"DataNascimento" => "" ,
+				"LocalNascimento" => "" ,
+				"Naturalidade" => "" ,
+				"DRT" =>"" ,
+				"PIS" => "" ,
+				"Observacao" => $x['Observacao'] ,
+				"RG" => "" ,
+				"CPF" => "",
+				"CNPJ" => $x['CNPJ'],
+				"CCM" => "",
+				"OMB" => "",
+				"Endereco" => $endereco ,
+				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
+				"INSS" => "" ,
+				"Email" => $x['Email'] ,
+				"Representante01" => $x['IdRepresentanteLegal1'],
+				"Representante02" => $x['IdRepresentanteLegal2'],
+				"NumeroProcesso" => "",
+				"EmissaoNE" => "",
+				"EntregaNE" => ""
+			);
+			return $y;	
 		break;		
 
 	}
@@ -182,31 +236,7 @@ function siscontratDocs($idPessoa,$tipo){
 
 	
 	
-	$x = array(
 
-		"Nome" => "",
-		"NomeArtistico" => "",
-		"EstadoCivil" => "",
-		"DataNascimento" => "",
-		"LocalNascimento" => "",
-		"Naturalidade" => "",
-		"DRT" => "",
-		"PIS" => "",
-		"Observacao" => "",
-		"RG" => "",
-		"CPF" => "",
-		"CNPJ" => "",
-		"CCM" => "",
-		"OMB" => "",
-		"Endereco" => "",
-		"Telefones" => "",
-		"INSS" => "",
-		"Email" => "",
-		"Representante01" => "",
-		"Representante02" => ""
-
-	
-	);
 	
 
 }
