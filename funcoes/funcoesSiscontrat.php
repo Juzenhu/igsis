@@ -197,7 +197,7 @@ function siscontratDocs($idPessoa,$tipo){
 		break;
 
 		case '3': // Representante legal
-			$sql = "SELECT * FROM sis_representante_legal WHERE Id_RepresentanteLegal = $idPessoa";
+			$sql = "SELECT * FROM sis_representante_legal WHERE Id_RepresentanteLegal = $idPesso";
 			$query = mysqli_query($con,$sql);
 			$x = mysqli_fetch_array($query);
 			$endereco = retornaEndereco($x['CEP'],$x['Numero'],$x['Complemento']);
@@ -231,19 +231,15 @@ function siscontratDocs($idPessoa,$tipo){
 		break;		
 
 	}
-}
+	
 
-function listaPedidoContratacao($idEvento){
-		$con = bancoMysqli();
-		$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND publicado = '1'";
-		$query = mysqli_query($con,$sql);
-		$i = 0;
-		while($pedido = mysqli_fetch_array($query)){
-				$numero[$i] = $pedido['idPedidoContratacao'];
-				$i++;		
-		}
-		return $numero;	
+
+	
+	
+
+	
 
 }
+
 
 ?>

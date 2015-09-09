@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 
 //carrega as funcoes gerais
 require "../funcoes/funcoesGerais.php"; 
-require "../funcoes/funcoesConecta.php";
 
 //carrega o cabeçalho
 require "cabecalho.php"; 

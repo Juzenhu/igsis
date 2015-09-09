@@ -18,11 +18,6 @@
   $(function() {
     $('#duracao').maskMoney({thousands:'', decimal:'', allowZero:true, suffix: ''});
   })
- 
-  $(function() {
-    $('#minutagem').maskMoney({thousands:'', decimal:'', allowZero:true, suffix: ''});
-  })
-  
   $(function(){
 	$("#CEP").mask("99999-999");
   });
