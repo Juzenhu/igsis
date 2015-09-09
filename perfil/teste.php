@@ -2,7 +2,7 @@
 //@ini_set('display_errors', '1');
 //error_reporting(E_ALL); 
 
-
+/*
 $con = bancoMysqli(); //conecta o banco;
 
 if(isset($_GET['idPedido'])){
@@ -31,6 +31,10 @@ if(isset($_GET['evento'])){
 
 
 $casa = siscontrat($idPedido,$tipoPessoa,$instituicao);
+*/
+require_once("../funcoes/funcoesSiscontrat.php");
+$endereco = retornaEndereco($_GET['cep'],"386","casa");
+$pessoa = siscontratDocs($_GET['pessoa'],$_GET['tipo']);
 ?>
 
 	 <section id="services" class="home-section bg-white">
@@ -39,7 +43,9 @@ $casa = siscontrat($idPedido,$tipoPessoa,$instituicao);
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
 					 <h3>Teste Array Siscontrat</h3>
-<p><?php print_r($casa); ?>
+<p><?php //echo $endereco; ?></p>
+<p><?php print_r($pessoa) ?></p>
+
 
 					</div>
 				  </div>

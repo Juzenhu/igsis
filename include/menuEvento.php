@@ -28,7 +28,7 @@
                               
     						<?php } ?>
                             <?php if($_SESSION['cinema'] == 1){ ?>
-                                <li><a href="#enviar">Módulo Cinema</a> 
+                                <li><a href="?perfil=cinema">Módulo Cinema</a> 
     						<?php } ?>
                             <li><a href="?perfil=evento&p=arquivos">Anexar arquivos</a></li>
                             <li><a href="?perfil=contratados">Contratados</a></li>

@@ -3,6 +3,32 @@
 
 siscontrat 
 
+	$x = array(
+
+		"Nome" => "",
+		"NomeArtistico" => "",
+		"EstadoCivil" => "",
+		"DataNascimento" => "",
+		"LocalNascimento" => "",
+		"Naturalidade" => "",
+		"DRT" => "",
+		"PIS" => "",
+		"Observacao" => "",
+		"RG" => "",
+		"CPF" => "",
+		"CNPJ" => "",
+		"CCM" => "",
+		"OMB" => "",
+		"Endereco" => "",
+		"Telefones" => "",
+		"INSS" => "",
+		"Email" => "",
+		"Representante01" => "",
+		"Representante02" => ""
+
+	
+	);
+
 */
 
 
@@ -85,10 +111,8 @@ function siscontrat($idPedido){
 			"Fiscal" => $fiscal['nomeCompleto'] ,
 			"Suplente" => $suplente['nomeCompleto'],
 			"Observacao"=> $pedido['observacao'], //verificar
-			"DataCadastro" => $evento['dataEnvio'],
 			"NotaEmpenho" => "",
 			"Horario" => "", //SPCultura
-			"DataCadastro" => "",
 			"IdProponente" => $pedido['idPessoa']
 		);
 		
@@ -101,36 +125,125 @@ function siscontrat($idPedido){
 }
 
 function siscontratDocs($idPessoa,$tipo){
+	$con = bancoMysqli();
+	switch($tipo){
+		case '1': // Pessoa Física
+			$sql = "SELECT * FROM sis_pessoa_fisica WHERE Id_PessoaFisica = $idPessoa";
+			$query = mysqli_query($con,$sql);
+			$x = mysqli_fetch_array($query);
+			$estadoCivil = recuperaEstadoCivil($x['IdEstadoCivil']);
+			$endereco = retornaEndereco($x['CEP'],$x['Numero'],$x['Complemento']);
+				$y = array(
+				"Nome" => $x['Nome'],
+				"NomeArtistico" => $x['NomeArtistico'] ,
+				"IdEstadoCivil" => $x['IdEstadoCivil'] ,
+				"EstadoCivil" => $estadoCivil['EstadoCivil'] ,
+				"DataNascimento" => $x['DataNascimento'] ,
+				"LocalNascimento" => $x['LocalNascimento'] ,
+				"Nacionalidade" => $x['Nacionalidade'] ,
+				"DRT" => $x['DRT'] ,
+				"PIS" => $x['Pis'] ,
+				"Observacao" => $x['Observacao'] ,
+				"RG" => $x['RG'] ,
+				"CPF" => $x['CPF'],
+				"CNPJ" => "",
+				"CCM" => $x['CCM'],
+				"OMB" => $x['OMB'] ,
+				"Endereco" => $endereco ,
+				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
+				"INSS" => $x['InscricaoINSS'] ,
+				"Email" => $x['Email'] ,				
+				"Representante01" => "",
+				"Representante02" => "",
+				"NumeroProcesso" => "",
+				"EmissaoNE" => "",
+				"EntregaNE" => ""
+			);
+			return $y;
 
-	$x = array(
+		break;
+		case '2': // Pessoa Jurídica
+			$sql = "SELECT * FROM sis_pessoa_juridica WHERE Id_PessoaJuridica = $idPessoa";
+			$query = mysqli_query($con,$sql);
+			$x = mysqli_fetch_array($query);
+			$endereco = retornaEndereco($x['CEP'],$x['Numero'],$x['Complemento']);
+				$y = array(
+				"Nome" => $x['RazaoSocial'],
+				"NomeArtistico" => "" ,
+				"IdEstadoCivil" => "" ,
+				"EstadoCivil" => "" ,
+				"DataNascimento" => "" ,
+				"LocalNascimento" => "" ,
+				"Naturalidade" => "" ,
+				"DRT" =>"" ,
+				"PIS" => "" ,
+				"Observacao" => $x['Observacao'] ,
+				"RG" => "" ,
+				"CPF" => "",
+				"CNPJ" => $x['CNPJ'],
+				"CCM" => "",
+				"OMB" => "",
+				"Endereco" => $endereco ,
+				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
+				"INSS" => "" ,
+				"Email" => $x['Email'] ,
+				"Representante01" => $x['IdRepresentanteLegal1'],
+				"Representante02" => $x['IdRepresentanteLegal2'],
+				"NumeroProcesso" => "",
+				"EmissaoNE" => "",
+				"EntregaNE" => ""
+			);
+			return $y;	
+		break;
 
-		"Nome" => "",
-		"NomeArtistico" => "",
-		"EstadoCivil" => "",
-		"DataNascimento" => "",
-		"LocalNascimento" => "",
-		"Naturalidade" => "",
-		"DRT" => "",
-		"PIS" => "",
-		"Observacao" => "",
-		"RG" => "",
-		"CPF" => "",
-		"CNPJ" => "",
-		"CCM" => "",
-		"OMB" => "",
-		"Endereco" => "",
-		"Telefones" => "",
-		"INSS" => "",
-		"Email" => "",
-		"Representante01" => "",
-		"Representante02" => ""
+		case '3': // Representante legal
+			$sql = "SELECT * FROM sis_representante_legal WHERE Id_RepresentanteLegal = $idPessoa";
+			$query = mysqli_query($con,$sql);
+			$x = mysqli_fetch_array($query);
+			$endereco = retornaEndereco($x['CEP'],$x['Numero'],$x['Complemento']);
+				$y = array(
+				"Nome" => $x['RazaoSocial'],
+				"NomeArtistico" => "" ,
+				"IdEstadoCivil" => "" ,
+				"EstadoCivil" => "" ,
+				"DataNascimento" => "" ,
+				"LocalNascimento" => "" ,
+				"Naturalidade" => "" ,
+				"DRT" =>"" ,
+				"PIS" => "" ,
+				"Observacao" => $x['Observacao'] ,
+				"RG" => "" ,
+				"CPF" => "",
+				"CNPJ" => $x['CNPJ'],
+				"CCM" => "",
+				"OMB" => "",
+				"Endereco" => $endereco ,
+				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
+				"INSS" => "" ,
+				"Email" => $x['Email'] ,
+				"Representante01" => $x['IdRepresentanteLegal1'],
+				"Representante02" => $x['IdRepresentanteLegal2'],
+				"NumeroProcesso" => "",
+				"EmissaoNE" => "",
+				"EntregaNE" => ""
+			);
+			return $y;	
+		break;		
 
-	
-	);
-	
+	}
+}
+
+function listaPedidoContratacao($idEvento){
+		$con = bancoMysqli();
+		$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND publicado = '1'";
+		$query = mysqli_query($con,$sql);
+		$i = 0;
+		while($pedido = mysqli_fetch_array($query)){
+				$numero[$i] = $pedido['idPedidoContratacao'];
+				$i++;		
+		}
+		return $numero;	
 
 }
 
-
-}
 ?>

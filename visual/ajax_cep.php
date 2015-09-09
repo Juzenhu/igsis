@@ -1,12 +1,13 @@
 ﻿<?php
 
-include "../funcoes/funcoesGerais.php";
-$con = bancoMysqli();
+require "../funcoes/funcoesConecta.php";
+
+$con = bancoMysqliCEP();
 
 if(isset($_GET['CEP'])){
 	$cep = $_GET['CEP'];	
 }else{
-$cep = $_POST['CEP'];
+	$cep = $_POST['CEP'];
 }
 $cep_index = substr($cep, 0, 5);
 $dados['sucesso'] = 0;
@@ -29,7 +30,7 @@ $dados['sucesso'] = 0;
 $dados['rua']     = $campo02['tp_logradouro']." ".$campo02['logradouro'];
 $dados['bairro']  = $campo02['bairro'];
 $dados['cidade']  = $campo02['cidade'];
-$dados['estado']  = $campo01['uf'];
+$dados['estado']  = strtoupper($campo01['uf']);
  
 echo json_encode($dados);
  

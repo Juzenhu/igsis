@@ -610,7 +610,38 @@ if(isset($_POST['atualizar'])){
 		}
 	}
 }
-
+/*
+if(isset($_POST['ig_artesvisuais_identidade'])){
+	$painel = $_POST['ig_artesvisuais_paineis'];
+	$legendas = $_POST['ig_artesvisuais_legendas'];
+	$identidade = $_POST['ig_artesvisuais_identidade'];
+	$suporte = $_POST['ig_artesvisuais_suporte'];
+	
+	$verArtes = verificaExiste("ig_artes_visuais","idEvento",$_SESSION['idEvento'],0);
+	if($verArtes['numero'] == 0){
+		$idEvento = $_SESSION['idEvento'];
+		$sql_insere_artes = "INSERT INTO `ig_artes_visuais` (`idArtes`, `idEvento`, `numero`, `tipo`, `valorTotal`, `painel`, `legendas`, `identidade`, `suporte`) VALUES (NULL, '$idEvento', NULL, NULL, NULL, '$painel', '$legendas', '$identidade', '$suporte')";
+		if(mysqli_query($con,$sql_insere_artes){
+			$mensagem02 = $mensagem02." Informações expositivas inseridas com sucesso";
+		}else{
+			$mensagem02 = $mensagem02." Erro ao inserir informações expositivas";
+		}		
+	}else{
+		$sql_atualiza_artes = "UPDATE ig_artes_visuais SET 
+		`painel`,
+		`legendas`,
+		`identidade`,
+		`suporte`
+		WHERE idEvento = '$idEvento'";
+				
+		if(mysqli_query($con,$sql_atualiza_artes){
+			$mensagem02 = $mensagem02." Informações expositivas atualizadas com sucesso";
+		}else{
+			$mensagem02 = $mensagem02." Erro ao atualizar informações expositivas";
+		}	
+	} 
+	
+}*/
 
 
 $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em questão
@@ -666,22 +697,28 @@ $producao = recuperaDados("ig_producao",$campo['idEvento'],"ig_evento_idEvento")
             		<label>Infraestrutura</label>
             		<textarea name="ig_producao_infraestrutura" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $producao["infraestrutura"] ?></textarea>
             	</div> 
-            </div>            					<h5>Comunicação</h5>
+            </div>         
+			<br /><br />
+			<h5>Comunicação</h5>
+			<?php //artes visuais 
+			$artes = recuperaDados("ig_artes_visuais",$_SESSION['idEvento'],"idEvento");
+			if($campo['ig_tipo_evento_idTipoEvento'] == '2' ){
+			?>
 			                <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                     	<label>Criação de Identidade Visual</label>
-                    	                		 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
-                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
-                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                    	                		 <select class="form-control" name="ig_artesvisuais_identidade" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['identidade'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['identidade'] == 1){echo "selected";}} ?>>Sim</option>
                         
                         </select>
                 	</div>
 
                		<div class=" col-md-6">
                     	<label>Confecção de painéis</label>
-                		 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
-                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
-                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                		 <select class="form-control" name="ig_artesvisuais_paineis" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['painel'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['painel'] == 1){echo "selected";}} ?>>Sim</option>
                         
                         </select>
                 	</div>
@@ -689,24 +726,25 @@ $producao = recuperaDados("ig_producao",$campo['idEvento'],"ig_evento_idEvento")
 				                <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                     	<label>Confecção de legendas</label>
-                    	 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
-                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
-                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                    	 <select class="form-control" name="ig_artesvisuais_legendas" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['legendas'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['legendas'] == 1){echo "selected";}} ?>>Sim</option>
                         
                         </select>
                 	</div>
                		<div class=" col-md-6">
                     	<label>Suporte extra (exposição)</label>
-                		 <select class="form-control" name="ig_artesvisuais_identidadeVisual" id="inputSubject" >
-                        <option value="0" <?php if(isset($artes)){if($artes['identidadeVisual'] == 0){echo "selected";}} ?> >Não</option>
-                        <option value="1" <?php if(isset($artes)){if($artes['identidadeVisual'] == 1){echo "selected";}} ?>>Sim</option>
+                		 <select class="form-control" name="ig_artesvisuais_suporte" id="inputSubject" >
+                        <option value="0" <?php if(isset($artes)){if($artes['suporte'] == 0){echo "selected";}} ?> >Não</option>
+                        <option value="1" <?php if(isset($artes)){if($artes['suporte'] == 1){echo "selected";}} ?>>Sim</option>
                         
                         </select>
                 	</div>
                 </div>
+				<?php } //artes visuais?>
                 <div class="form-group">
                     
-           			<h5>Pedido de documentação</h5>
+           			<p>Pedido de documentação</p>
 	            	<div class="col-md-offset-2 col-md-8">
 
     		            <input type="checkbox" name="ig_comunicacao_registroFotografia" id="especial01" <?php checar($producao['registroFotografia']) ?> /><label  style="padding:0 10px 0 5px;">Fotografia</label>
@@ -1300,8 +1338,8 @@ include "../include/menuEvento.php";
 
 if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	
-	$dataInicio = $_POST['dataInicio'];
-	$dataFinal = $_POST['dataFinal'];
+	$dataInicio = exibirDataMysql($_POST['dataInicio']);
+	$dataFinal = exibirDataMysql($_POST['dataFinal']);
 	if(($dataFinal == "") OR ($dataFinal == '0000-00-00')) {
 		$tipoOcorrencia = 3; // Tipo de Ocorrência data única
 	}else{
@@ -1799,11 +1837,11 @@ function habilitar(){
                 <div class="form-group">
                 	<div class="col-md-offset-2 col-md-6">
                			 <label>Data início *</label>
-                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" value="<?php echo $ocor['dataInicio'] ?>" placeholder="">
+                		<input type="text" name="dataInicio" class="form-control" id="datepicker01" value="<?php echo exibirDataBr($ocor['dataInicio']) ?>" placeholder="">
                		 </div>
                 	<div class=" col-md-6">
                 		<label>Data encerramento</label>
-                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" value="<?php if($ocor['dataFinal'] != '0000-00-00'){echo $ocor['dataFinal'];} ?>"placeholder="só preencha se for temporada">
+                		<input type="text" name="dataFinal" class="form-control" id="datepicker02" onblur="validate()" value="<?php if($ocor['dataFinal'] != '0000-00-00'){echo exibirDataBr($ocor['dataFinal']);} ?>"placeholder="só preencha se for temporada">
                		</div>
                 </div>
                 <div class="form-group">
@@ -2021,7 +2059,7 @@ function habilitar(){
 	?>
 
 <?php 
-
+break;
 case "subEvento":
 if(isset($_GET['action'])){
 	$action = $_GET['action'];
@@ -2157,7 +2195,7 @@ if(isset($_POST['apagar'])){
 
 
 ?>
-	<section id="list_items" class="home-section bg-white">
+<section id="list_items" class="home-section bg-white">
 		<div class="container">
       			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
@@ -2173,7 +2211,7 @@ if(isset($_POST['apagar'])){
                          <?php listaSubEventos($_SESSION['idEvento']); ?>
 			</div>
 		</div>
-	</section>
+	</section> 
 
 
 	<?php } // fim da switch do subEvento?>
@@ -2182,6 +2220,11 @@ if(isset($_POST['apagar'])){
 break; 
 case "enviar":
 $evento = recuperaEvento($_SESSION['idEvento']);
+if(isset($_GET['action'])){
+	$action = $_GET['action'];
+}else{
+	$action = "evento";
+}
 ?>
 <?php include "../include/menuEvento.php" ?>
  	<section id="list_items" class="home-section bg-white">
@@ -2195,7 +2238,11 @@ $evento = recuperaEvento($_SESSION['idEvento']);
                  </div>
 				  </div>
 			  </div>  
-			<h5>Dados do evento | Pedidos de contratação</h5>
+<?php
+switch($action){
+case "evento":
+ ?>
+			  <h5>Dados do evento | <a href="?perfil=evento&p=enviar&action=pedidos">Pedidos de contratação</a></h5>
 			<div class="table-responsive list_info" >
             <h4><?php echo $evento['nomeEvento'] ?></h4>
             <p align="left">
@@ -2204,7 +2251,33 @@ $evento = recuperaEvento($_SESSION['idEvento']);
             <h5>Ocorrências</h5>
             <?php echo resumoOcorrencias($_SESSION['idEvento']); ?><br /><br />
             <?php listaOcorrenciasTexto($_SESSION['idEvento']); ?>
-            <?php print_r($_SESSION); ?>      
+			<h5>Especificidades</h5>
+			<div class="left">
+            <?php descricaoEspecificidades($_SESSION['idEvento'],$evento['ig_tipo_evento_idTipoEvento']); ?>
+			</div>
+			<?php
+break;
+case "pedidos":
+require "../funcoes/funcoesSiscontrat.php";
+$pedido = listaPedidoContratacao($_SESSION['idEvento']);
+?>
+			  <h5> <a href="?perfil=evento&p=enviar&action=evento">Dados do evento </a>| Pedidos de contratação</h5>
+			  <div class="table-responsive list_info" >
+            <h4><?php echo $evento['nomeEvento'] ?></h4>
+
+			  <?php for($i = 0; $i < count($pedido); $i++){
+			$dados = siscontrat($pedido[$i]);
+			$pessoa = siscontratDocs($dados['IdProponente'],$dados['TipoPessoa']);
+			?>
+            <p align="left">
+			Nome ou Razão Social: <b><?php echo $pessoa['Nome'] ?></b><br />
+			Tipo de pessoa: <b><?php echo retornaTipoPessoa($dados['TipoPessoa']);?></b><br />
+			Dotação: <b><?php echo retornaVerba($dados['Verba']);?></b><br />
+			Valor:<b>R$ <?php echo dinheiroParaBr($dados['ValorGlobal']);?></b><br />		
+			 </p>      
+<?php } // fechamento do for ?>
+<?php
+ } // fecha a switch action ?>	
 			</div>
 		</div>
 	</section>   
