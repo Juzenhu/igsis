@@ -15,6 +15,7 @@ error_reporting(E_ALL);
 
 if(isset($_POST['usuario'])){
 	include "funcoes/funcoesGerais.php";
+	require "funcoes/funcoesConecta.php";
 	$usuario = $_POST['usuario'];
 	$senha = $_POST['senha'];
 	autenticaUsuario($usuario,$senha);	

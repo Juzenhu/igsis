@@ -1115,15 +1115,16 @@ function listaArquivosPessoa($idPessoa,$tipo){
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
-							<td width='10%'>Foto 3x4</td>
+							<td width='30%'>Tipo</td>
 							<td>Nome do arquivo</td>
 							<td width='10%'></td>
 						</tr>
 					</thead>
 					<tbody>";
 	while($campo = mysqli_fetch_array($query)){
+		$tipoDoc = recuperaDados("igsis_upload_docs",$campo['tipo'],"idTipoDoc");
 			echo "<tr>";
-			echo "<td class='list_description'><input type='checkbox' name='status[]' value='1' /><input type='hidden' name='id' value='".$campo['idArquivosPessoa']."' /></td>";
+			echo "<td class='list_description'>".$tipoDoc['documento']."</td>";
 			echo "<td class='list_description'><a href='../uploadsdocs/".$campo['arquivo']."' target='_blank'>".$campo['arquivo']."</a></td>";
 			echo "
 			<td class='list_description'>
@@ -1143,7 +1144,9 @@ function listaArquivosPessoa($idPessoa,$tipo){
 		
 	echo "					</tbody>
 				</table>";	
-}	
+}
+
+	
 
 function listaLocais($idEvento){
 	$con = bancoMysqli();

@@ -6,7 +6,7 @@
 function bancoMysqli(){ 
 	$servidor = 'localhost';
 	$usuario = 'root';
-	$senha = '';
+	$senha = 'lic54eca';
 	$banco = 'igsis';
 	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
 	mysqli_set_charset($con,"utf8");
@@ -17,7 +17,7 @@ function bancoMysqli(){
 function bancoMysqliCep(){ 
 	$servidor = 'localhost';
 	$usuario = 'root';
-	$senha = '';
+	$senha = 'lic54eca';
 	$banco = 'cep';
 	$con = mysqli_connect($servidor,$usuario,$senha,$banco); 
 	mysqli_set_charset($con,"utf8");
