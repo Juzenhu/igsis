@@ -113,8 +113,12 @@ function siscontrat($idPedido){
 			"Observacao"=> $pedido['observacao'], //verificar
 			"NotaEmpenho" => "",
 			"Horario" => "", //SPCultura
-			"IdProponente" => $pedido['idPessoa']
-		);
+			"IdProponente" => $pedido['idPessoa'],
+			"NumeroProcesso" => "",
+			"EmissaoNE" => "",
+			"EntregaNE" => ""
+	
+			);
 		
 		
 		
@@ -148,16 +152,15 @@ function siscontratDocs($idPessoa,$tipo){
 				"CPF" => $x['CPF'],
 				"CNPJ" => "",
 				"CCM" => $x['CCM'],
+				"docCCM" => "nomedoarquivo",
 				"OMB" => $x['OMB'] ,
 				"Endereco" => $endereco ,
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => $x['InscricaoINSS'] ,
 				"Email" => $x['Email'] ,				
 				"Representante01" => "",
-				"Representante02" => "",
-				"NumeroProcesso" => "",
-				"EmissaoNE" => "",
-				"EntregaNE" => ""
+				"Representante02" => ""
+
 			);
 			return $y;
 
@@ -231,15 +234,28 @@ function siscontratDocs($idPessoa,$tipo){
 		break;		
 
 	}
-	
-
-
-	
-	
-
-	
 
 }
+function listaPedidoContratacao($idEvento){
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND publicado = '1'";
+	$query = mysqli_query($con,$sql);
+	$i = 0;
+	while($pedido = mysqli_fetch_array($query)){
+		$x[$i] = $pedido['idPedidoContratacao'];
+		$i++;	
+		
+	}	
+	return $x;
+}	
+
+
+
+	
+
+
+>>>>>>> 0afce3b
+
 
 
 ?>

@@ -1588,6 +1588,44 @@ case "edicaoPessoa":
 <?php
 break;
 case "arquivos":
+if(isset($_POST["enviar"])){
+$idPessoa = $_POST['idPessoa'];
+$tipoPessoa = $_POST['tipoPessoa'];
+$sql_arquivos = "SELECT * FROM igsis_upload_docs";
+$query_arquivos = mysqli_query($con,$sql_arquivos);
+while($arq = mysqli_fetch_array($query_arquivos)){ 
+	$y = $arq['idTipoDoc'];
+	$x = $arq['sigla'];
+	$nome_arquivo = $_FILES['arquivo']['name'][$x];
+	if($nome_arquivo != ""){
+	$nome_temporario = $_FILES['arquivo']['tmp_name'][$x];
+    //$ext = strtolower(substr($nome_arquivo[$i],-4)); //Pegando extensão do arquivo
+      $new_name = date("YmdHis")."_". $nome_arquivo; //Definindo um novo nome para o arquivo
+	  $hoje = date("Y-m-d H:i:s");
+      $dir = '../uploadsdocs/'; //Diretório para uploads
+	  
+      if(move_uploaded_file($nome_temporario, $dir.$new_name)){
+		  
+		$sql_insere_arquivo = "INSERT INTO `igsis_arquivos_pessoa` (`idArquivosPessoa`, `idTipoPessoa`, `idPessoa`, `arquivo`, `dataEnvio`, `publicado`, `tipo`) 
+		VALUES (NULL, '$tipoPessoa', '$idPessoa', '$new_name', '$hoje', '1', '$y'); ";
+		$query = mysqli_query($con,$sql_insere_arquivo);
+		if($query){
+		$mensagem = "Arquivo recebido com sucesso";
+		}else{
+		$mensagem = "Erro ao gravar no banco";
+		}
+		
+		}else{
+		 $mensagem = "Erro no upload"; 
+		  
+	  }
+	}
+	
+}
+
+}
+
+
 if(isset($_POST['apagar'])){
 	$idArquivo = $_POST['apagar'];
 	$sql_apagar_arquivo = "UPDATE igsis_arquivos_pessoa SET publicado = 0 WHERE idArquivosPessoa = '$idArquivo'";
@@ -1601,27 +1639,6 @@ if(isset($_POST['apagar'])){
 }
 $campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']); 
 ?>
-	<script type="text/javascript">
-	$(document).ready(function(){
-		$("input[name='status[]']").click(function(){
-			var $this = $( this );//guardando o ponteiro em uma variavel, por performance
- 
- 
-			var status = $this.attr('checked') ? 1 : 0;
-			var id = $this.next('input').val();
- 
- 
-			$.ajax({
-				url: 'atualiza3x4.php',
-				type: 'GET',
-				data: 'status='+status+'&id='+id,
-				success: function( data ){
-					alert( data );
-				}
-			});
-		});
-	});
-	</script>
     
     	 <section id="enviar" class="home-section bg-white">
 		<div class="container">
@@ -1630,123 +1647,35 @@ $campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']);
 					<div class="section-heading">
                                         <h2><?php echo $campo["nome"] ?>  </h2>
                                         <p><?php echo $campo["tipo"] ?></p>
-
 					 <h3>Envio de Arquivos</h3>
                      <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
 <p>Nesta página, você envia documentos digitalizados. O tamanho máximo do arquivo deve ser 60MB.</p>
 
 
-<?php
-
-if( isset( $_POST['enviar'] ) ) {
-
-    $pathToSave = '../uploadsdocs/';
-
-    // A variavel $_FILES é uma variável do PHP, e é ela a responsável
-    // por tratar arquivos que sejam enviados em um formulário
-    // Nesse caso agora, a nossa variável $_FILES é um array com 3 dimensoes
-    // e teremos de trata-lo, para realizar o upload dos arquivos
-    // Quando é definido o nome de um campo no form html, terminado por []
-    // ele é tratado como se fosse um array, e por isso podemos ter varios
-    // campos com o mesmo nome
-    $i = 0;
-    $msg = array( );
-    $arquivos = array( array( ) );
-    foreach(  $_FILES as $key=>$info ) {
-        foreach( $info as $key=>$dados ) {
-            for( $i = 0; $i < sizeof( $dados ); $i++ ) {
-                // Aqui, transformamos o array $_FILES de:
-                // $_FILES["arquivo"]["name"][0]
-                // $_FILES["arquivo"]["name"][1]
-                // $_FILES["arquivo"]["name"][2]
-                // $_FILES["arquivo"]["name"][3]
-                // para
-                // $arquivo[0]["name"]
-                // $arquivo[1]["name"]
-                // $arquivo[2]["name"]
-                // $arquivo[3]["name"]
-                // Dessa forma, fica mais facil trabalharmos o array depois, para salvar
-                // o arquivo
-                $arquivos[$i][$key] = $info[$key][$i];
-            }
-        }
-    }
-
-    $i = 1;
-
-    // Fazemos o upload normalmente, igual no exemplo anterior
-    foreach( $arquivos as $file ) {
-
-        // Verificar se o campo do arquivo foi preenchido
-        if( $file['name'] != '' ) {
-            $arquivoTmp = $file['tmp_name'];
-			$data = date('Y-m-d');
-            $arquivo = $pathToSave.$data."_".$file['name'];
-			$arquivo_base = $data."_".$file['name'];
-			$idPessoa = $_POST['idPessoa'];
-			$tipoPessoa = $_POST['tipoPessoa'];
-			if(file_exists($arquivo)){
-				echo "O arquivo ".$arquivo_base." já existe! Renomeie e tente novamente<br />";
-			}else{
-				$idEvento = $_SESSION['idEvento'];
-			$arquivo_base_alterado = $data."_".$arquivo_base;
-			$sql = "INSERT INTO  `igsis_arquivos_pessoa` (
-`idArquivosPessoa` ,
-`idTipoPessoa` ,
-`idPessoa` ,
-`arquivo` ,
-`dataEnvio` ,
-`publicado`
-)
-VALUES (
-NULL ,  '$tipoPessoa',  '$idPessoa',  '$arquivo_base',  '$data',  '1'
-);";
-			if(mysqli_query($con,$sql)){
-				echo "Arquivo inserido com sucesso";
-				gravarLog($sql);
-			}else{
-				echo "Erro ao registrar o arquivo.";
-				
-			}
-            if( !move_uploaded_file( $arquivoTmp, $arquivo ) ) {
-                $msg[$i] = 'Erro no upload do arquivo '.$i;
-            } else {
-                $msg[$i] = sprintf('Upload do arquivo %s foi um sucesso!',$i);
-            }
-			}
-       } 
-        $i++;
-    }
-
-    // Imprimimos as mensagens geradas pelo sistema
-
- foreach( $msg as $e ) {
-	 	echo " <div id = 'mensagem_upload'>";
-        printf('%s<br>', $e);
-		echo " </div>";
-    }
-
-}
-
-?>
-
 <br />
 <div class = "center">
 <form method='POST' action="?perfil=contratados&p=arquivos" enctype='multipart/form-data'>
-<p><input type='file' name='arquivo[]'></p>
-<p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
- <p><input type='file' name='arquivo[]'></p>
-  <p><input type='file' name='arquivo[]'></p>
-  <p><input type='file' name='arquivo[]'></p>
+<table>
+<tr>
+<td width="50%"><td>
+</tr>
+<?php 
+$sql_arquivos = "SELECT * FROM igsis_upload_docs";
+$query_arquivos = mysqli_query($con,$sql_arquivos);
+while($arq = mysqli_fetch_array($query_arquivos)){ ?>
+
+<tr>
+<td><label><?php echo $arq['documento']?></label></td><td><input type='file' name='arquivo[<?php echo $arq['sigla']; ?>]'></td>
+</tr>
+	
+<?php } ?>
+
+  </table>
     <br>
     <input type="hidden" name="idPessoa" value="<?php echo $_POST['idPessoa']; ?>"  />
     <input type="hidden" name="tipoPessoa" value="<?php echo $_POST['tipoPessoa']; ?>"  />
-
-    <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar' name='enviar'>
+    <input type="hidden" name="enviar" value="1"  />
+    <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar'>
 </form>
 </div>
 
