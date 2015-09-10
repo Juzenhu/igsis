@@ -4,6 +4,7 @@
 error_reporting(E_ALL);
 
 //carrega as funcoes gerais
+require "../funcoes/funcoesConecta.php";
 require "../funcoes/funcoesGerais.php"; 
 
 //carrega o cabeçalho
