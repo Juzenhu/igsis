@@ -234,7 +234,6 @@ function siscontratDocs($idPessoa,$tipo){
 		break;		
 
 	}
-
 }
 function listaPedidoContratacao($idEvento){
 	$con = bancoMysqli();
@@ -253,8 +252,6 @@ function listaPedidoContratacao($idEvento){
 
 	
 
-
->>>>>>> 0afce3b
 
 
 

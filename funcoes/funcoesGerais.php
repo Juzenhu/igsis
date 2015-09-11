@@ -24,6 +24,8 @@ function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
 }
 
 
+
+
 // Framework
 
 //autentica usuario e cria inicia uma session
@@ -170,6 +172,23 @@ function diasemana($data) {
 function somarDatas($data,$dias){ 
 	$data_final = date('Y-m-d', strtotime("$dias days",strtotime($data)));	
 	return $data_final;
+}
+
+//retorna a diferença de dias entre duas datas
+function diferencaDatas($data_inicial,$data_final){
+// Define os valores a serem usados
+$data_inicial = '2009-03-23';
+$data_final = '2009-11-04';
+// Usa a função strtotime() e pega o timestamp das duas datas:
+$time_inicial = strtotime($data_inicial);
+$time_final = strtotime($data_final);
+// Calcula a diferença de segundos entre as duas datas:
+$diferenca = $time_final - $time_inicial; // 19522800 segundos
+// Calcula a diferença de dias
+$dias = (int)floor( $diferenca / (60 * 60 * 24)); // 225 dias
+
+return $dias;
+
 }
 
 //Outras bibliotecas
@@ -499,7 +518,7 @@ function retornaInstituicao($local){
 }
 
 function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
-	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 ORDER BY dataInicio";
+	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 AND idTipoOcorrencia NOT LIKE '5' ORDER BY dataInicio";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
@@ -590,9 +609,11 @@ function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
 }
 
 function listaOcorrenciasTexto($idEvento){ //lista ocorrencias de determinado evento
-	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 ORDER BY dataInicio";
+	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 AND idTipoOcorrencia NOT LIKE '5' ORDER BY dataInicio";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
+	$evento = recuperaDados("ig_evento",$idEvento,"idEvento");
+	if($evento['ig_tipo_evento_idTipoEvento'] != 1){
 	while($campo = mysqli_fetch_array($query)){
 			$tipo_de_evento = retornaTipoOcorrencia($campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
 			if($campo['idSubEvento'] != NULL){
@@ -647,16 +668,24 @@ function listaOcorrenciasTexto($idEvento){ //lista ocorrencias de determinado ev
 					
 			echo $ocorrencia;		
 	}
-	
+	}
 }
 
 function resumoOcorrencias($idEvento){
-
+	$evento = recuperaDados("ig_evento",$idEvento,"idEvento");
+	
+	$mostra = periodoMostra($idEvento);
 	$local = listaLocais($idEvento);
+	$localMostra = listaLocaisMostra($idEvento);
 	$periodo = retornaPeriodo($idEvento);
-
-	$final = $periodo."<br />".substr($local,1);
-	return $final;
+	if($evento['ig_tipo_evento_idTipoEvento'] == 1){
+		$final = $mostra."<br />".substr($localMostra,1);
+		return $final;
+	}else{
+		$final = $periodo."<br />".substr($local,1);
+		return $final;
+		
+	}
 }
 
 function checar($id){ //funcao para imprimir checked do checkbox
@@ -667,7 +696,7 @@ function checar($id){ //funcao para imprimir checked do checkbox
 
 function listaArquivos($idEvento){ //lista arquivos de determinado evento
 	$con = bancoMysqli();
-	$sql = "SELECT * FROM ig_arquivo WHERE 	ig_evento_idEvento = $idEvento AND publicado = 1";
+	$sql = "SELECT * FROM ig_arquivo WHERE ig_evento_idEvento = '$idEvento' AND publicado = '1'";
 	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
@@ -756,7 +785,7 @@ function descricaoEspecificidades($idEvento,$tipo){
 	<strong>Artes Visuais</strong><br />
 	Tipo de contratação: ".$artes['tipo'].
 	"<br />Número de contratados: ".$artes['numero']."
-	<br />Valor total : ".$artes['total']."<br /><br />
+	<br />Valor total : R$".dinheiroParaBr($artes['valorTotal'])."<br /><br />
 	
 	";
 
@@ -769,6 +798,17 @@ function descricaoEspecificidades($idEvento,$tipo){
 	case 16:
 	case 17:
 	
+	$artes = recuperaDados("ig_teatro_danca",$idEvento,"ig_evento_idEvento");
+	if($artes['estreia'] == 0){
+		$estreia = "Não";
+	}else{
+		$estreia = "SIM";
+	}
+	echo"
+	<strong>Teatro / Dança</strong><br />
+	Estréia: ".$estreia.
+	"<br />Gênero: ".$artes['genero']."<br /><br />
+	";	
 	
 	
 	break;
@@ -779,6 +819,22 @@ function descricaoEspecificidades($idEvento,$tipo){
 	break;
 	case 11: //música
 	case 12:	
+	if($artes['venda'] == 0){
+		$venda = "Não";
+	}else{
+		$venda = "SIM";
+	}
+
+	$artes = recuperaDados("ig_musica",$idEvento,"ig_evento_idEvento");
+	echo"
+	<strong>Música</strong><br />
+	Gênero: ".$artes['genero'].
+	"<br />Venda de material: ".$venda."
+	<br />Especificação do material : ".$artes['material']."<br /><br />
+	
+	";
+	
+	
 		
 		
 	break;
@@ -1124,6 +1180,21 @@ function listaLocais($idEvento){
 
 }
 
+function listaLocaisMostra($idEvento){
+	$con = bancoMysqli();
+	$sql = "SELECT DISTINCT local FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' AND idTipoOcorrencia = '5' ";
+	$query = mysqli_query($con,$sql);	
+	$locais = "";
+	
+	while($local = mysqli_fetch_array($query)){
+		$sala = recuperaDados("ig_local",$local['local'],"idLocal");
+		$instituicao = recuperaDados("ig_instituicao",$sala['idInstituicao'],"idInstituicao");
+		$locais = $locais.", ".$sala['sala']." (".$instituicao['sigla'].")";
+	}
+	return $locais;
+
+}
+
 function retornaDuracao($idEvento){
 	$con = bancoMysqli();
 	$sql = "SELECT DISTINCT duracao FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' ORDER BY duracao DESC LIMIT 0,1";
@@ -1281,6 +1352,7 @@ function listaFilmes($idEvento){ //lista ocorrencias de determinado evento
 					<thead>
 						<tr class='list_menu'>
 							<td>Filmes</td>
+<td>Ocorrências</td>
 							<td width='10%'></td>
 							<td width='10%'></td>
 							<td width='10%'></td>
@@ -1310,15 +1382,18 @@ function listaFilmes($idEvento){ //lista ocorrencias de determinado evento
 					
 			echo "<tr>";
 			echo "<td class='list_description'>".$filme."</td>";
+			echo "<td class='list_description'><div class='left'>";
+			listaOcorrenciasFilmes($campo['idCinema']);
+			echo "</div></td>";
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=cinema&p=editar'>
-			<input type='hidden' name='editarFilme' value='".$campo['idCinema']."' />
+			<input type='hidden' name='carregarFilme' value='".$campo['idCinema']."' />
 			<input type ='submit' class='btn btn-theme btn-block' value='Editar'></td></form>"	;
 
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=cinema&p=ocorrencias'>
+			<form method='POST' action='?perfil=cinema&p=ocorrencias&action=listar'>
 			<input type='hidden' name='idCinema' value='".$campo['idCinema']."' />
 			<input type ='submit' class='btn btn-theme btn-block' value='Ocorrências'></td></form>"	;
 			
@@ -1337,5 +1412,324 @@ function retornaPais($id){
 	$pais = recuperaDados("ig_pais",$id,"paisId");
 	return $pais['paisNome'];	
 }
+
+function listaOcorrenciasCinema($idCinema){ //lista ocorrencias de determinado evento
+	$sql = "SELECT * FROM ig_ocorrencia WHERE idCinema = '$idCinema' AND publicado = 1 ORDER BY dataInicio";
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	$num = mysqli_num_rows($query);
+	if($num > 0){
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>Ocorrência</td>
+							<td width='10%'></td>
+							<td width='10%'></td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysqli_fetch_array($query)){
+			$tipo_de_evento = retornaTipoOcorrencia($campo['idTipoOcorrencia']); // retorna o tipo de ocorrência
+			if($campo['idSubEvento'] != NULL){
+				$sub = recuperaDados("ig_sub_evento",$campo['idSubEvento'],"idSubEvento");
+			}else{
+				$sub['titulo'] = "";		
+			}
+			if($campo['dataFinal'] == '0000-00-00'){
+				$data = exibirDataBr($campo['dataInicio'])." - ".diasemana($campo['dataInicio']); //precisa tirar a hora para fazer a função funcionar
+					$semana = "";
+			}else{
+				$data = "De ".exibirDataBr($campo['dataInicio'])." a ".exibirDataBr($campo['dataFinal']);
+				if($campo['segunda'] == 1){$seg = "segunda";}else{$seg = "";}
+				if($campo['terca'] == 1){$ter = "terça";}else{$ter = "";}
+				if($campo['quarta'] == 1){$qua = "quarta";}else{$qua = "";}
+				if($campo['quinta'] == 1){$qui = "quinta";}else{$qui = "";}
+				if($campo['sexta'] == 1){$sex = " sexta";}else{$sex = "";}
+				if($campo['sabado'] == 1){$sab = " sábado";}else{$sab = "";}
+				if($campo['domingo'] == 1){$dom = " domingo";}else{$dom = "";}
+				$semana = "(".$seg." ".$ter." ".$qua." ".$qui." ".$sex." ".$sab." ".$dom.")";	
+			}
+			
+			if($campo['diaEspecial'] == 1){
+				if($campo['libras'] == 1){$libras = "Tradução em libras";}else{$libras = "";}
+				if($campo['audiodescricao'] == 1){$audio = "Audiodescrição";}else{$audio = "";}
+				if($campo['precoPopular'] == 1){$popular = "Preço popular";}else{$popular = "";}
+				
+				$dia_especial =	" - Dia especial:".$libras." ".$audio." ".$popular;
+			}else{
+				$dia_especial = "";
+			}
+			
+			//recuperaDados($tabela,$idEvento,$campo)
+			$hora = exibirHora($campo['horaInicio']);
+			$retirada = recuperaIngresso($campo['retiradaIngresso']);
+			$valor = dinheiroParaBr($campo['valorIngresso']);
+			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
+			$espaco = $local['espaco'];
+			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
+			$instituicao = $inst['instituicao'];
+			$id = $campo['idOcorrencia'];
+			
+			
+			$ocorrencia = "<div class='left'>$tipo_de_evento $dia_especial ".
+			$sub['titulo']
+			."<br />
+			Data: $data $semana <br />
+			Horário: $hora<br />
+			Local: $espaco - $instituicao<br />
+			Retirada de ingresso: $retirada  - Valor: $valor <br /></br>";  
+			
+					
+			echo "<tr>";
+			echo "<td class='list_description'>".$ocorrencia."</td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=cinema&p=ocorrencias&action=editar'>
+			<input type='hidden' name='id' value='$id' />
+			<input type='hidden' name='idCinema' value='".$campo['idCinema']."' />
+			<input type ='submit' class='btn btn-theme btn-block' value='Editar'></td></form>"	;
+
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=cinema&p=ocorrencias&action=listar'>
+			<input type='hidden' name='duplicar' value='".$campo['idOcorrencia']."' />
+			<input type='hidden' name='idCinema' value='".$campo['idCinema']."' />
+			<input type ='submit' class='btn btn-theme btn-block' value='Duplicar'></td></form>"	;
+			
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=cinema&p=ocorrencias&action=listar'>
+			<input type='hidden' name='apagar' value='".$campo['idOcorrencia']."' />
+			<input type='hidden' name='idCinema' value='".$campo['idCinema']."' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='Apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+	echo "					</tbody>
+				</table>";
+	}else{
+		echo "<h3>Não há ocorrências cadastradas.</h3>";
+	}
+}
+
+function listaOcorrenciasFilmes($idCinema){ //lista ocorrencias de determinado filme
+	$sql = "SELECT * FROM ig_ocorrencia WHERE idCinema = '$idCinema' AND publicado = 1 ORDER BY dataInicio";
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	while($campo = mysqli_fetch_array($query)){
+			if($campo['dataFinal'] == '0000-00-00'){
+				$data = exibirDataBr($campo['dataInicio'])." - ".diasemana($campo['dataInicio']); //precisa tirar a hora para fazer a função funcionar
+					$semana = "";
+			}else{
+				$data = "De ".exibirDataBr($campo['dataInicio'])." a ".exibirDataBr($campo['dataFinal']);
+				if($campo['segunda'] == 1){$seg = "segunda";}else{$seg = "";}
+				if($campo['terca'] == 1){$ter = "terça";}else{$ter = "";}
+				if($campo['quarta'] == 1){$qua = "quarta";}else{$qua = "";}
+				if($campo['quinta'] == 1){$qui = "quinta";}else{$qui = "";}
+				if($campo['sexta'] == 1){$sex = " sexta";}else{$sex = "";}
+				if($campo['sabado'] == 1){$sab = " sábado";}else{$sab = "";}
+				if($campo['domingo'] == 1){$dom = " domingo";}else{$dom = "";}
+				$semana = "(".$seg." ".$ter." ".$qua." ".$qui." ".$sex." ".$sab." ".$dom.")";	
+			}
+			
+			if($campo['diaEspecial'] == 1){
+				if($campo['libras'] == 1){$libras = "Tradução em libras";}else{$libras = "";}
+				if($campo['audiodescricao'] == 1){$audio = "Audiodescrição";}else{$audio = "";}
+				if($campo['precoPopular'] == 1){$popular = "Preço popular";}else{$popular = "";}
+				
+				$dia_especial =	" - Dia especial:".$libras." ".$audio." ".$popular;
+			}else{
+				$dia_especial = "";
+			}
+			
+			//recuperaDados($tabela,$idEvento,$campo)
+			$hora = exibirHora($campo['horaInicio']);
+			$retirada = recuperaIngresso($campo['retiradaIngresso']);
+			$valor = dinheiroParaBr($campo['valorIngresso']);
+			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
+			$espaco = $local['espaco'];
+			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
+			$instituicao = $inst['instituicao'];
+			$id = $campo['idOcorrencia'];
+			
+			
+			$ocorrencia = "
+			Data: $data $semana <br />
+			Horário: $hora<br />
+			Local: $espaco - $instituicao<br />
+			Retirada de ingresso: $retirada  - Valor: $valor <br /></br>";  
+			
+					
+			echo $ocorrencia;		
+	}
+	
+}
+
+function periodoMostra($idEvento){
+	$con = bancoMysqli();
+	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' AND idTipoOcorrencia = '5' ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
+	$query_anterior = mysqli_query($con,$sql_anterior);
+	$data = mysqli_fetch_array($query_anterior);
+	$data_inicio = $data['dataInicio'];
+	
+	$sql_posterior01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' ORDER BY dataFinal DESC LIMIT 0,1"; //quando existe data final
+	$sql_posterior02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' ORDER BY dataInicio DESC LIMIT 0,1"; //quando há muitas datas únicas
+	
+	$query_anterior01 = mysqli_query($con,$sql_posterior01);
+	$data = mysqli_fetch_array($query_anterior01);
+	$num = mysqli_num_rows($query_anterior01);
+	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00')){
+		$dataFinal01 = $data['dataFinal'];	
+	}else{
+		return "Não há ocorrências. <br />
+		Por favor, insira pelo menos uma ocorrência.";	
+	}
+	$query_anterior02 = mysqli_query($con,$sql_posterior02);
+	$data = mysqli_fetch_array($query_anterior02);
+	$dataFinal02 = $data['dataInicio'];
+	
+		
+	if(isset($dataFinal01)){
+		if($dataFinal01 > $dataFinal02){
+			$dataFinal = $dataFinal01;
+		}else{
+			$dataFinal = $dataFinal02;
+		}
+	}
+	
+
+	if($data_inicio == $dataFinal){
+		return exibirDataBr($data_inicio);
+	}else{
+		return "Período da Mostra: <br />
+		de ".exibirDataBr($data_inicio)." a ".exibirDataBr($dataFinal);
+	}
+		
+
+}
+
+function retornaTipoPessoa($tipo){
+	switch($tipo){
+	case 1:
+		return "Pessoa física";
+	break;
+	case 2:
+		return "Pessoa jurídica";
+	break;
+	case 3:
+		return "Representante legal";
+	break;	
+		
+	}
+	
+}
+
+function retornaVerba($tipo){
+	$verba = recuperaDados("sis_verba",$tipo,"Id_verba");
+	return $verba['Verba'];
+}
+
+function listaServicosInternos($idEvento){
+	$evento = recuperaDados("ig_evento",$idEvento,"idEvento");
+	$interno = recuperaDados("ig_producao",$idEvento,"ig_evento_idEvento");
+	if($interno){
+		if(($interno['carros'] != '') AND ($interno['carros'] != NULL)){ echo "Carros: ".$interno['carros']."<br />";}	
+		if(($interno['equipe'] != '') AND ($interno['equipe'] != NULL)){ echo "Equipe: ".$interno['equipe']."<br />";}	
+		if(($interno['infraestrutura'] != '') AND ($interno['infraestrutura'] != NULL)){ echo "Infraestrutura: ".$interno['infraestrutura']."<br />";}	
+		if($interno['registroAudio'] == 1){ echo "Registro de Áudio: Sim <br />";}	
+		if($interno['registroFotografia'] == 1){ echo "Registro de Fotografia: Sim <br />";}	
+		if($interno['registroVideo'] == 1){ echo "Registro de Vídeo: Sim <br />";}	
+	} else {
+		echo "Não há dados.";	
+	}
+	
+	if($evento['ig_tipo_evento_idTipoEvento'] == '2'){
+		$artes = recuperaDados("ig_artes_visuais",$idEvento,"idEvento");
+		if($artes){
+			echo "<br /><br />";
+			echo "<h5>Serviços para Exposições</h5>";
+			if($artes['painel'] == 1){ echo "Confecção de Painel: Sim <br />";}	
+			if($artes['legendas'] == 1){ echo "Confecção de Legendas: Sim <br />";}	
+			if($artes['identidade'] == 1){ echo "Criação de Identidade Visual: Sim <br />";}	
+			if($artes['suporte'] == 1){ echo "Pedido de suporte de comunicação: Sim <br />";}	
+		}
+	}
+}
+
+function listaServicosExternos($idEvento){
+	$externo = recuperaDados("ig_servico",$idEvento,"ig_evento_idEvento");
+	if($externo){
+	if(($externo['legenda'] != '') AND ($externo['legenda'] != NULL)){ echo "Legenda / legendagem: ".$externo['legenda']."<br />";}
+	if(($externo['traducao'] != '') AND ($externo['traducao'] != NULL)){ echo "Tradução: ".$externo['traducao']."<br />";}
+	if(($externo['seguro'] != '') AND ($externo['seguro'] != NULL)){ echo "Seguro: ".$externo['seguro']."<br />";}
+	if(($externo['transporte'] != '') AND ($externo['transporte'] != NULL)){ echo "Transporte: ".$externo['transporte']."<br />";}
+	if(($externo['montagem'] != '') AND ($externo['montagem'] != NULL)){ echo "Montagem fina: ".$externo['montagem']."<br />";}
+	if(($externo['passagens'] != '') AND ($externo['passagens'] != NULL)){ echo "Passagem aérea: ".$externo['passagens']."<br />";}
+	if(($externo['itinerario'] != '') AND ($externo['itinerario'] != NULL)){ echo "Descrição da passagem: ".$externo['itinerario']."<br />";}
+	if(($externo['hospedagem'] != '') AND ($externo['hospedagem'] != NULL)){ echo "Hospedagem: ".$externo['hospedagem']."<br />";}
+	if(($externo['locacao'] != '') AND ($externo['locacao'] != NULL)){ echo "Locação de equipamentos: ".$externo['locacao']."<br />";}
+	if(($externo['bilhetagem'] != '') AND ($externo['bilhetagem'] != NULL)){ echo "Bilhetagem: ".$externo['bilhetagem']."<br />";}
+	}else{
+		echo "Não há dados.";	
+	}
+}
+
+function retornaDatas($id){ //retorna o período
+	$con = bancoMysqli();
+	$evento = recuperaDados("ig_evento",$id,"idEvento");
+	if($evento['ig_tipo_evento_idTipoEvento'] != 1){
+	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
+	$query_anterior = mysqli_query($con,$sql_anterior);
+	$data = mysqli_fetch_array($query_anterior);
+	$data_inicio = $data['dataInicio'];
+	
+	$sql_posterior01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataFinal DESC LIMIT 0,1"; //quando existe data final
+	$sql_posterior02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio DESC LIMIT 0,1"; //quando há muitas datas únicas
+	
+	$query_anterior01 = mysqli_query($con,$sql_posterior01);
+	$data = mysqli_fetch_array($query_anterior01);
+	$num = mysqli_num_rows($query_anterior01);
+	}else{
+	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' AND idTipoOcorrencia = '5' ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
+	$query_anterior = mysqli_query($con,$sql_anterior);
+	$data = mysqli_fetch_array($query_anterior);
+	$data_inicio = $data['dataInicio'];
+	
+	$sql_posterior01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' AND idTipoOcorrencia = '5'  ORDER BY dataFinal DESC LIMIT 0,1"; //quando existe data final
+	$sql_posterior02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' AND idTipoOcorrencia = '5'  ORDER BY dataInicio DESC LIMIT 0,1"; //quando há muitas datas únicas
+	
+	$query_anterior01 = mysqli_query($con,$sql_posterior01);
+	$data = mysqli_fetch_array($query_anterior01);
+	$num = mysqli_num_rows($query_anterior01);
+
+		
+	}
+	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00')){
+		$dataFinal01 = $data['dataFinal'];	
+	}else{
+		return "Não há ocorrências. <br />
+		Por favor, insira pelo menos uma ocorrência.";	
+	}
+	$query_anterior02 = mysqli_query($con,$sql_posterior02);
+	$data = mysqli_fetch_array($query_anterior02);
+	$dataFinal02 = $data['dataInicio'];
+	
+		
+	if(isset($dataFinal01)){
+		if($dataFinal01 > $dataFinal02){
+			$dataFinal = $dataFinal01;
+		}else{
+			$dataFinal = $dataFinal02;
+		}
+	}
+	
+	$x['dataInicio'] = $data_inicio;
+	$x['dataFinal'] = $dataFinal;	
+
+	return $x;
+
+}
+
+
 
 ?>
