@@ -819,13 +819,14 @@ function descricaoEspecificidades($idEvento,$tipo){
 	break;
 	case 11: //música
 	case 12:	
+	$artes = recuperaDados("ig_musica",$idEvento,"ig_evento_idEvento");
 	if($artes['venda'] == 0){
 		$venda = "Não";
 	}else{
 		$venda = "SIM";
 	}
 
-	$artes = recuperaDados("ig_musica",$idEvento,"ig_evento_idEvento");
+
 	echo"
 	<strong>Música</strong><br />
 	Gênero: ".$artes['genero'].
@@ -1730,6 +1731,8 @@ function retornaDatas($id){ //retorna o período
 
 }
 
-
+function busca($termo){
+	
+}
 
 ?>

@@ -30,7 +30,7 @@ function verificaCampos($idEvento){
 			$tabela = $y[0];
 			$campo = $y[1];
 			$campoEvento = $y['2'];
-			$sql_verifica = "SELECT $campo FROM $tabela WHERE $campoEvento = '$idEvento' LIMIT 0,1"; //gera a query e retorna 1 registro
+			$sql_verifica = "SELECT * FROM $tabela WHERE $campoEvento = '$idEvento' LIMIT 0,1"; //gera a query e retorna 1 registro
 			$query_verifica = mysqli_query($con,$sql_verifica);
 			$campoRecuperado = mysqli_fetch_array($query_verifica);
 			if(
@@ -95,9 +95,31 @@ function prazoContratos($idEvento){ //deixar mais redondo.
 
 }
 
+function prazoEmCartaz($idEvento){ //deixar mais redondo.
+	$data = retornaDatas($idEvento);
+	$opcoes = recuperaDados("igsis_opcoes","dataEmCartaz","opcao");
+	if($opcoes['valor'] == 1){	
+		$data_final = $opcoes['codigo'];
+		$hoje = date("Y-m-d");
+		if($data_final >= $hoje){
+			echo "Hoje é ".exibirDataBr($hoje).".<br />
+			O seu evento se inicia em ".exibirDataBr($data['dataInicio'])." .<br />
+			O prazo para a revista Em Cartaz é ".exibirDataBr($data_final).".<br />
+			Você está no prazo.";
+		}else{
+			echo "Hoje é ".exibirDataBr($hoje).".<br />
+			O seu evento se inicia em ".exibirDataBr($data['dataInicio'])." .<br />
+			O prazo para contratos é de $prazo dias.<br />
+			O prazo para a revista Em Cartaz é ".exibirDataBr($data_final).".<br />
+			Você está fora do prazo.";
+		}
+	}
+
+}
+
 function verificaPendencias($idEvento){
 
-
+	return '0';
 
 	
 }

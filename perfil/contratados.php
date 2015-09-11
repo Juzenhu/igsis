@@ -192,6 +192,7 @@ if(isset($_POST['cadastrarJuridica'])){ //cadastra e insere pessoa jurídica
 	}
 }
 if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
+	$idInstituicao = $_SESSION['idInstituicao'];
 	$idPessoa = $_POST['Id_PessoaJuridica'];
 	$idEvento = $_SESSION['idEvento'];
 	$sql_verifica_cnpj = "SELECT * FROM igsis_pedido_contratacao WHERE idPessoa = '$idPessoa' AND tipoPessoa = '2' AND publicado = '1' AND idEvento = '$idEvento' ";
@@ -200,7 +201,7 @@ if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
 	if($num_rows > 0){
 		$mensagem = "A pessoa jurídica já está na lista de pedido de contratação.";	
 	}else{
-		$sql_insere_cnpj = "INSERT INTO igsis_pedido_contratacao (idPessoa, tipoPessoa, publicado,idEvento) VALUES ('$idPessoa','2','1','$idEvento')";
+		$sql_insere_cnpj = "INSERT INTO igsis_pedido_contratacao (idPessoa, tipoPessoa, publicado, idEvento, instituicao) VALUES ('$idPessoa','2','1','$idEvento','$idInstituicao')";
 		$query_insere_cnpj = mysqli_query($con,$sql_insere_cnpj);
 		if($query_insere_cnpj){
 			$mensagem = "Pedido inserido com sucesso!";

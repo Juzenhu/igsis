@@ -32,13 +32,21 @@ siscontrat
 */
 
 
-function siscontratLista($tipoPessoa,$instituicao,$registro,$pagina,$ordem){
+function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem){
 	$con = bancoMysqli();
-	$sql_lista = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND instituicao = '$instituicao' ORDER BY idPedidoContratacao $ordem LIMIT $registro,$limite ";
-	echo $sql_lista;
-	$query_lista = mysqli_query($con,$sql_lista);
+
+	
+	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND instituicao = '$instituicao' ORDER BY idPedidoContratacao $ordem ";
+	$query_lista_total = mysqli_query($con,$sql_lista_total);
+	$total_registros = mysqli_num_rows($query_lista_total);
+	$pag = $pagina - 1;
+	$registro_inicial = $num_registro * $pag;
+	$total_paginas = $total_registros / $num_registro; // gera o número de páginas
+	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND instituicao = '$instituicao' ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
+		$query_lista_pagina = mysqli_query($con,$sql_lista_pagina);
+	//$x = $sql_lista_pagina;
 	$i = 0;
-	while($pedido = mysqli_fetch_array($query_lista)){
+	while($pedido = mysqli_fetch_array($query_lista_pagina)){
 		$evento = recuperaDados("ig_evento",$pedido['idEvento'],"idEvento"); //$tabela,$idEvento,$campo
 		$usuario = recuperaDados("ig_usuario",$evento['idUsuario'],"idUsuario");
 		$instituicao = recuperaDados("ig_instituicao",$usuario['idInstituicao'],"idInstituicao");
@@ -46,12 +54,14 @@ function siscontratLista($tipoPessoa,$instituicao,$registro,$pagina,$ordem){
 		$periodo = retornaPeriodo($pedido['idEvento']);
 		$duracao = retornaDuracao($pedido['idEvento']);
 		$pessoa = recuperaPessoa($pedido['idPessoa'],$tipoPessoa);
-		
+		$fiscal = recuperaUsuario($evento['idResponsavel']);
+		$suplente = recuperaUsuario($evento['suplente']);
+				
 		$x[$i] = array(
 			"idSetor" => $usuario['idInstituicao'],
 			"Setor" => $instituicao['instituicao']  ,
+			"TipoPessoa" => $pedido['tipoPessoa'],
 			"CategoriaContratacao" => $evento['ig_modalidade_IdModalidade'] , //precisa ver se retorna o id
-
 			"Objeto" => retornaTipo($evento['ig_tipo_evento_idTipoEvento'])." - ".$evento['nomeEvento'] ,
 			"Local" => substr($local,1) , //retira a virgula no começo da string
 			"ValorGlobal" => $pedido['valor'],
@@ -59,15 +69,19 @@ function siscontratLista($tipoPessoa,$instituicao,$registro,$pagina,$ordem){
 			"FormaPagamento" => $pedido['formaPagamento'],
 			"Periodo" => $periodo, 
 			"Duracao" => $duracao, 
-			"CargaHoraria" => $carga , //fazer a funcao
-			"Proponente" => $pessoa['nome'],
 			"Verba" => $pedido['idVerba'] ,
 			"Justificativa" => $evento['justificativa'] ,
 			"ParecerTecnico" => $evento['parecerArtistico'],
-			"DataCadastro" => exibirDataBr($evento['dataEnvio']),
-			"Fiscal" => $evento['idResponsavel'] ,
-			"Suplente" => $evento['suplente'],
-			"Observacao"=> $pedido['observacao'] //verificar
+			"DataCadastro" => $evento['dataEnvio'],
+			"Fiscal" => $fiscal['nomeCompleto'] ,
+			"Suplente" => $suplente['nomeCompleto'],
+			"Observacao"=> $pedido['observacao'], //verificar
+			"NotaEmpenho" => "",
+			"Horario" => "", //SPCultura
+			"IdProponente" => $pedido['idPessoa'],
+			"NumeroProcesso" => "",
+			"EmissaoNE" => "",
+			"EntregaNE" => ""
 		);
 		
 		$i++;

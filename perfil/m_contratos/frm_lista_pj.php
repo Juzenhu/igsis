@@ -1,25 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-  </head>
-  <body>
 
 <?php
-require ("../conectar.php");
-
-$consulta_tabela_pj = mysqli_query ($conexao,"SELECT * FROM sis_pessoa_juridica ORDER BY RazaoSocial");
-$linha_tabela_pj= mysqli_fetch_assoc($consulta_tabela_pj);
-
-$link="frm_edita_pj.php";
-
+$dados =  siscontratLista(2,$_SESSION['idInstituicao'],3,1,"DESC");
 ?>
 	
 <?php include 'includes/menu.php';?>
@@ -36,21 +17,21 @@ $link="frm_edita_pj.php";
 							<td>Proponente</td>
 							<td>CNPJ</td>
 							<td>Telefone 1</td>
-							<td>Telefone 2</td>
 							<td>E-mail</td>
 						</tr>
 					</thead>
 					<tbody>
-<?php 					  
-	do 
-	{
-	echo "<tr><td class='lista'> <a href='$link?id_pj=$linha_tabela_pj[Id_PessoaJuridica]'>$linha_tabela_pj[RazaoSocial]</a></td>";
-	echo '<td class="lista">'.$linha_tabela_pj['CNPJ'].				'</td> ';
-	echo '<td class="lista">'.$linha_tabela_pj['Telefone1'].		'</td> ';
-	echo '<td class="lista">'.$linha_tabela_pj['Telefone2'].		'</td> ';
-	echo '<td class="lista">'.$linha_tabela_pj['Email'].			'</td></tr>';
-	}
-	while($linha_tabela_pj = mysqli_fetch_assoc($consulta_tabela_pj));
+<?php 
+for($x = 0; $x < count($dados); $x++){
+	$pessoa = siscontratDocs($dados[$x],2);
+?>
+ 					  
+	<tr><td class='lista'><?php echo $pessoa['Nome'] ?> </td>
+	<td class="lista"><?php echo $pessoa['CNPJ'] ?>				</td>
+	<td class="lista"><?php echo $pessoa['Telefones'] ?></td>
+	<td class="lista">	<?php echo $pessoa['Email'] ?>		</td></tr>
+<?php 
+} //fecha o for
 ?>
 					
 					</tbody>
@@ -58,11 +39,3 @@ $link="frm_edita_pj.php";
 			</div>
 		</div>
 	</section>
-<!--fim_list-->
-
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-
-
-</html>

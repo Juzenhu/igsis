@@ -2188,7 +2188,11 @@ case "servicos":
 			<?php
 break;
 case "pendencias":
-
+require_once("../funcoes/funcoesVerifica.php");
+require_once("../funcoes/funcoesSiscontrat.php");
+	$evento = recuperaDados("ig_evento",$_SESSION['idEvento'],"idEvento");
+	$campos = verificaCampos($_SESSION['idEvento']);
+	$ocorrencia = verificaOcorrencias($_SESSION['idEvento']);
 
 ?>   
 			  <h5> <a href="?perfil=evento&p=enviar&action=evento">Dados do evento </a>| Solicitação de serviços | <a href="?perfil=evento&p=enviar&action=pedidos">Pedidos de contratação</a></h5>
@@ -2196,11 +2200,24 @@ case "pendencias":
             <h4><?php echo $evento['nomeEvento'] ?></h4>
             <div class="left">
             
-            <h5>Previsão de serviços externos</h5>
-            <?php listaServicosExternos($_SESSION['idEvento']); ?><br /><br />
+<?php //print_r($evento);
+if($campos['total'] > 0){
+	echo "Há campos obrigatórios não preenchidos.";	
+}else{
+	echo "Todos os campos obrigatórios foram preenchidos";
+}
 
-			<h5>Serviços Internos</h5>
-			<?php listaServicosInternos($_SESSION['idEvento']) ?>
+?></p>
+<p>
+<?php //print_r($evento);
+if($ocorrencia > 0){
+	echo "Há ocorrências cadastradas.";	
+}else{
+	echo "Não há ocorrências cadastradas.";
+}
+
+?></p>
+<p><?php prazoContratos($_SESSION['idEvento']); ?></p>
 
             </div>
 <?php
@@ -2224,19 +2241,59 @@ break;
 <?php 
 break;
 case "finalizar":
-include "../include/menuEvento.php" ?>
+include "../include/menuEvento.php";
+require_once("../funcoes/funcoesVerifica.php");
+require_once("../funcoes/funcoesSiscontrat.php");
+
+$verifca = verificaPendencias($_SESSION['idEvento']);
+if($verifica = 0){
+ ?>
 
 <section id="contact" class="home-section bg-white">
     <div class="container">
         <div class="row">
+        
             <div class="col-md-offset-2 col-md-8">
                 <div class="text-hide">
-	                <h1>O pedido será enviado!</h1>
+	                <h2>O pedido será enviado!</h2>
                 </div>
             </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-8">
-	       	          <form method='POST' action='?perfil=finalizar'>
+			<p>Uma vez enviado o formulário, não poderá mais editá-lo.</p>
+            </div>
+          </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-8">
+	       	        	       	          <form method='POST' action='?perfil=finalizar'>
+			<input type='hidden' name='finalizar' value='".$campo['idEvento']."' />
+			<input type ='submit' class='btn btn-theme btn-lg btn-block' value='Enviar'></form>
+            </div>
+          </div>
+        </div>
+    </div>
+</section>      
+
+<?php }else{?>
+<section id="contact" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+        
+            <div class="col-md-offset-2 col-md-8">
+                <div class="text-hide">
+	                <h2>Não é possível enviar o formulário!</h2>
+                </div>
+            </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-8">
+			<p>Há pendências que necessitam ser resolvidas. </p>
+            </div>
+          </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-8">
+	       	        	       	          <form method='POST' action='?perfil=finalizar'>
 			<input type='hidden' name='finalizar' value='".$campo['idEvento']."' />
 			<input type ='submit' class='btn btn-theme btn-lg btn-block' value='Enviar'></form>
 
@@ -2244,7 +2301,8 @@ include "../include/menuEvento.php" ?>
           </div>
         </div>
     </div>
-</section>        
+</section>    
+<?php } ?> 
 <?php break; ?>
 <?php } 
 // fim eventos ?>

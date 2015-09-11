@@ -1,9 +1,11 @@
 ﻿<?php
 require_once("../funcoes/funcoesVerifica.php");
+require_once("../funcoes/funcoesSiscontrat.php");
 if(isset($_GET['idEvento'])){
 	$evento = verificaCampos($_GET['idEvento']);
 	$ocorrencia = verificaOcorrencias($_GET['idEvento']);	
 }
+
 ?>
 
 	 <section id="services" class="home-section bg-white">
@@ -32,6 +34,13 @@ if($ocorrencia > 0){
 
 ?></p>
 <p><?php prazoContratos($_GET['idEvento']); ?></p>
+<p>
+<?php print_r($_SESSION);
+$lista =  siscontratLista(2,$_SESSION['idInstituicao'],3,1,"DESC");
+
+var_dump($lista);
+?></p>
+
 
 
 					</div>
