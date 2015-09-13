@@ -1,3 +1,8 @@
+[20150912]
+
++ Adicionado campo "idInstituicao" em sis_assinatura.
+
+
 [20150911]
 
 + Modificação na tabela "ig_opcoes" para uso nas opções gerais do sistema.

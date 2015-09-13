@@ -171,7 +171,8 @@ function siscontratDocs($idPessoa,$tipo){
 				"Endereco" => $endereco ,
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => $x['InscricaoINSS'] ,
-				"Email" => $x['Email'] ,				
+				"Email" => $x['Email'] ,	
+				"Funcao" => $x['Funcao'],			
 				"Representante01" => "",
 				"Representante02" => ""
 
@@ -204,11 +205,11 @@ function siscontratDocs($idPessoa,$tipo){
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => "" ,
 				"Email" => $x['Email'] ,
+				"Funcao" => $x['Funcao'],
 				"Representante01" => $x['IdRepresentanteLegal1'],
-				"Representante02" => $x['IdRepresentanteLegal2'],
-				"NumeroProcesso" => "",
-				"EmissaoNE" => "",
-				"EntregaNE" => ""
+				"Representante02" => $x['IdRepresentanteLegal2']
+
+
 			);
 			return $y;	
 		break;
@@ -238,11 +239,10 @@ function siscontratDocs($idPessoa,$tipo){
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => "" ,
 				"Email" => $x['Email'] ,
+				"Funcao" => $x['Funcao'],
 				"Representante01" => $x['IdRepresentanteLegal1'],
-				"Representante02" => $x['IdRepresentanteLegal2'],
-				"NumeroProcesso" => "",
-				"EmissaoNE" => "",
-				"EntregaNE" => ""
+				"Representante02" => $x['IdRepresentanteLegal2']
+
 			);
 			return $y;	
 		break;		
@@ -263,7 +263,9 @@ function listaPedidoContratacao($idEvento){
 }	
 
 
-
+function listaAssinatura($idInstituicao){
+	$sql = 
+}
 	
 
 
