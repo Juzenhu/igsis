@@ -3,31 +3,23 @@
 
 siscontrat 
 
-	$x = array(
+Exemplo de uso:
 
-		"Nome" => "",
-		"NomeArtistico" => "",
-		"EstadoCivil" => "",
-		"DataNascimento" => "",
-		"LocalNascimento" => "",
-		"Naturalidade" => "",
-		"DRT" => "",
-		"PIS" => "",
-		"Observacao" => "",
-		"RG" => "",
-		"CPF" => "",
-		"CNPJ" => "",
-		"CCM" => "",
-		"OMB" => "",
-		"Endereco" => "",
-		"Telefones" => "",
-		"INSS" => "",
-		"Email" => "",
-		"Representante01" => "",
-		"Representante02" => ""
+require "../funcoes/funcoesSiscontrat.php";
 
-	
-	);
+$contrato = siscontrat($idPedido);
+$pj = siscontratDocs($contrato['IdProponente'],$contrato['TipoPessoa']);
+$representante01 = siscontratDocs($pj['Representante01'],3);
+$representante02 = siscontratDocs($pj['Representante02'],3);
+$executante = siscontratDocs($contrato['executante'],1);
+
+$conectar = bancoMysqli(); //cria conexão
+$sql = "SELECT * FROM ig_evento WHERE idEvento = '$idEvento' LIMIT 0,10";
+while($pedido = mysqli_fetch_array(mysqli_query($conectar,$sql))){
+	$nome_do_evento = $pedido['nomeEvento'];
+		
+} //executa query
+
 
 */
 
@@ -56,6 +48,7 @@ function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem){
 		$pessoa = recuperaPessoa($pedido['idPessoa'],$tipoPessoa);
 		$fiscal = recuperaUsuario($evento['idResponsavel']);
 		$suplente = recuperaUsuario($evento['suplente']);
+		$protocolo = recuperaDados("sis_protocolo",$pedido['idEvento'],"idEvento");
 				
 		$x[$i] = array(
 			"idSetor" => $usuario['idInstituicao'],
@@ -76,9 +69,9 @@ function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem){
 			"Fiscal" => $fiscal['nomeCompleto'] ,
 			"Suplente" => $suplente['nomeCompleto'],
 			"Observacao"=> $pedido['observacao'], //verificar
-			"NotaEmpenho" => "",
 			"Horario" => "", //SPCultura
 			"IdProponente" => $pedido['idPessoa'],
+			"ProtocoloSIS" => $protocolo['idProtocolo'],
 			"NumeroProcesso" => "",
 			"EmissaoNE" => "",
 			"EntregaNE" => ""
@@ -128,6 +121,7 @@ function siscontrat($idPedido){
 			"NotaEmpenho" => "",
 			"Horario" => "", //SPCultura
 			"IdProponente" => $pedido['idPessoa'],
+			"Executante" => $pedido['executante'],
 			"NumeroProcesso" => "",
 			"EmissaoNE" => "",
 			"EntregaNE" => ""
@@ -176,6 +170,7 @@ function siscontratDocs($idPessoa,$tipo){
 				"Representante01" => "",
 				"Representante02" => ""
 
+
 			);
 			return $y;
 
@@ -205,7 +200,7 @@ function siscontratDocs($idPessoa,$tipo){
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => "" ,
 				"Email" => $x['Email'] ,
-				"Funcao" => $x['Funcao'],
+				"Funcao" => "",
 				"Representante01" => $x['IdRepresentanteLegal1'],
 				"Representante02" => $x['IdRepresentanteLegal2']
 
@@ -239,9 +234,9 @@ function siscontratDocs($idPessoa,$tipo){
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => "" ,
 				"Email" => $x['Email'] ,
-				"Funcao" => $x['Funcao'],
-				"Representante01" => $x['IdRepresentanteLegal1'],
-				"Representante02" => $x['IdRepresentanteLegal2']
+				"Funcao" => "",
+				"Representante01" => "",
+				"Representante02" => ""
 
 			);
 			return $y;	
@@ -263,9 +258,7 @@ function listaPedidoContratacao($idEvento){
 }	
 
 
-function listaAssinatura($idInstituicao){
-	$sql = 
-}
+
 	
 
 
