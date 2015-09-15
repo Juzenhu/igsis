@@ -48,9 +48,10 @@ function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem){
 		$pessoa = recuperaPessoa($pedido['idPessoa'],$tipoPessoa);
 		$fiscal = recuperaUsuario($evento['idResponsavel']);
 		$suplente = recuperaUsuario($evento['suplente']);
-		$protocolo = recuperaDados("sis_protocolo",$pedido['idEvento'],"idEvento");
+		$protocolo = ""; //recuperaDados("sis_protocolo",$pedido['idEvento'],"idEvento");
 				
 		$x[$i] = array(
+		    "idPedido" => $pedido['idPedidoContratacao'], 
 			"idSetor" => $usuario['idInstituicao'],
 			"Setor" => $instituicao['instituicao']  ,
 			"TipoPessoa" => $pedido['tipoPessoa'],
@@ -71,10 +72,11 @@ function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem){
 			"Observacao"=> $pedido['observacao'], //verificar
 			"Horario" => "", //SPCultura
 			"IdProponente" => $pedido['idPessoa'],
-			"ProtocoloSIS" => $protocolo['idProtocolo'],
+			"ProtocoloSIS" => '', //$protocolo['idProtocolo'],
 			"NumeroProcesso" => "",
 			"EmissaoNE" => "",
-			"EntregaNE" => ""
+			"EntregaNE" => "",
+			"Status" => ""
 		);
 		
 		$i++;
@@ -121,7 +123,6 @@ function siscontrat($idPedido){
 			"NotaEmpenho" => "",
 			"Horario" => "", //SPCultura
 			"IdProponente" => $pedido['idPessoa'],
-			"Executante" => $pedido['executante'],
 			"NumeroProcesso" => "",
 			"EmissaoNE" => "",
 			"EntregaNE" => ""

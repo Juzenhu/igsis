@@ -1,7 +1,3 @@
-[20150914[
-
-+ Adicionado campo "executante" em igsis_pedido_contratacao
-
 [20150912]
 
 + Adicionado campo "idInstituicao" em sis_assinatura.

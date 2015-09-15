@@ -475,7 +475,7 @@ function recuperaProdutor($idProdutor){ //recupera dados da tabela produtor
 
 function listaEventosGravados($idUsuario){ //tabela para gerenciar eventos em aberto
 	$con = bancoMysqli();
-	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 1";
+	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 1 AND dataEnvio IS NULL";
 	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>

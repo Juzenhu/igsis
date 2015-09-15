@@ -12,7 +12,7 @@ if(isset($_POST['finalizar'])){
 			$query_protocolo = mysqli_query($con,$sql_protocolo);
 			if($query_protocolo){
 				$protocolo = recuperaUltimo("ig_protocolo");
-				$mensagem = "O formulário de evento foi enviado com sucesso. O protocolo é IGSIS.E.".$protocolo['idProtocolo']." .";
+				$mensagem = "O formulário de evento foi enviado com sucesso. O protocolo é IGSIS.E.".$protocolo." . <br />";
 				$sql_recupera_pedidos = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND publicado = '1'";
 				$query_recupera_pedidos = mysqli_query($con,$sql_recupera_pedidos);
 				$num_pedidos = mysqli_num_rows($query_recupera_pedidos);
@@ -26,11 +26,12 @@ if(isset($_POST['finalizar'])){
 						if($sql_fecha_pedido){
 								$protoPedido = recuperaUltimo("sis_protocolo");
 								$pedidos[$i] = $protoPedido;
+								$mensagem = $mensagem."Foi gerado um pedido de contratação com o Protocolo 2015.$protocolo.".$pedidos[$i].".<br />";
+								$i++;
 							
 						} 
-						
-						
-						}	
+					}
+					
 				}
 				
 					
@@ -40,16 +41,16 @@ if(isset($_POST['finalizar'])){
 		}else{
 				$mensagem = "Erro ao enviar formulário";	
 		}
-
-
+	
+	
 // Criar data para fechamento
 // Criar Protocolo da IG
 // Criar Protocolo dos Pedidos de Contratação
 // Enviar e-mail para as áreas interessadas
-
+// Fecha sessão
 // Verificar datas
 
-	
+$_SESSION['idEvento'] = NULL;	
 
 }
 
@@ -62,9 +63,10 @@ if(isset($_POST['finalizar'])){
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
 					 <h3>Teste Array Siscontrat</h3>
-<p><?php //echo $endereco; ?></p>
+                     
+<p><?php //var_dump($_SESSION); ?></p>
 <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
-
+<p><a href="?p=inicio">Voltar ao início.</a></p>
 
 					</div>
 				  </div>
