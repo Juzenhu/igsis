@@ -1,62 +1,40 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
+<?php
 
-<?php 
-require("../conectar.php");
-$consulta_tabela_assinatura = mysqli_query ($conexao,"SELECT * FROM sis_assinatura");
-$linha_tabela_assinatura= mysqli_fetch_assoc($consulta_tabela_assinatura);
+if(isset($_POST['Valor'])){ // atualiza o pedido
+	$con = bancoMysqli();
+	$ped = $_GET['id_ped'];
+	$valor = $_POST['Valor']; 
+	$valor_individual = $_POST['ValorIndividual'];
+	$forma_pagamento = $_POST['FormaPagamento'];
+	$verba = $_POST['Verba'];
+	$justificativa = $_POST['Justificativa'];
+	$fiscal = $_POST['Fiscal'];
+	$suplente  = $_POST['Suplente'];
+	$parecer = $_POST['ParecerTecnico'];
+
+	$sql_atualiza_pedido = "UPDATE igsis_pedido_contratacao SET
+		valor = '$valor',
+		valorIndividual = '$valor_individual',
+		formaPagamento = '$forma_pagamento',
+		idVerba = '$verba',
+		justificativa = '$justificativa',
+		parecerArtistico = '$parecerArtistico'
+		WHERE idPedidoContratacao = '$ped'";
+	$query_atualiza_pedido = mysqli_query($con,$sql_atualiza_pedido);
+	if($query_atualiza_pedido){
+		$mensagem = "Pedido atualizado com sucesso.";
+	}else{
+		$mensagem = "Erro ao atualizar pedido.";
+	}
 
 
-
-$id_ped=$_GET['id'];
-
-$sql_query_tabelas ="
-						SELECT 	sis_pedido_contratacao_pf.Id_PedidoContratacaoPF,
-								sis_pedido_contratacao_pf.Objeto,
-								sis_pedido_contratacao_pf.LocalEspetaculo,
-								sis_pedido_contratacao_pf.Valor,
-								sis_pedido_contratacao_pf.ValorIndividual,
-								sis_pedido_contratacao_pf.FormaPagamento,
-								sis_pedido_contratacao_pf.Periodo,
-								sis_pedido_contratacao_pf.Duracao,
-								sis_pedido_contratacao_pf.CargaHoraria,
-								sis_pedido_contratacao_pf.Justificativa,
-								sis_pedido_contratacao_pf.Fiscal,
-								sis_pedido_contratacao_pf.Suplente,
-								sis_pedido_contratacao_pf.ParecerTecnico,
-								sis_pedido_contratacao_pf.Observacao,
-								sis_setor.Setor,
-								sis_categoria_contratacao.CategoriaContratacao,
-								sis_verba.*,
-								sis_pessoa_fisica.Nome
-						FROM sis_pedido_contratacao_pf
-						
-						INNER JOIN sis_setor
-							ON sis_pedido_contratacao_pf.IdSetor = sis_setor.Id_Setor
-						INNER JOIN sis_categoria_contratacao
-							ON sis_pedido_contratacao_pf.IdCategoria = sis_categoria_contratacao.Id_CategoriaContratacao
-						INNER JOIN sis_verba 
-							ON sis_pedido_contratacao_pf.IdVerba = sis_verba.Id_Verba
-						INNER JOIN sis_pessoa_fisica
-							ON sis_pedido_contratacao_pf.IdPessoaFisica = sis_pessoa_fisica.Id_PessoaFisica
-						
-						WHERE Id_PedidoContratacaoPF = $id_ped
-					";
-					
-$consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas);
-$linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
-
+}
+$ano=date('Y');
+$id_ped = $_GET['id_ped'];	
+$linha_tabelas = siscontrat($id_ped);
+$fisico = siscontratDocs($linha_tabelas['IdProponente'],1);		
+$evento = recuperaDados("ig_evento",$linha_tabelas['idEvento'],"idEvento");
+$pedido = recuperaDados("igsis_pedido_contratacao",$_GET['id_ped'],"idPedidoContratacao");
 ?>
 
 <!-- MENU -->	
@@ -67,103 +45,121 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
-					<div class="sub-title">CADASTRO DE PROPOSTA PESSOA FÍSICA</div>
-			  </div>
+					<h2>PEDIDO DE CONTRTAÇÃO DE PESSOA FÍSICA</h2>
+                    <h4><?php if(isset($mensagem)){ echo $mensagem; } ?></h4>
+                     </div>
 
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
 
-				<form class="form-horizontal" role="form" <?php echo "action='insercao_propostapf.php?id=$id_ped'"; ?> method="post">
+				
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Código do Pedido de Contratação:</strong><br/>
-					  <input  name="Id_PedidoContratacaoPF" type="text" class="form-control" id="Id_PedidoContratacaoPF" readonly <?php echo "value='$id_ped'"; ?> >
 					</div>
                   </div>
 				  <div class="form-group">                    
                     <div class=" col-md-offset-2 col-md-6"><strong>Setor:</strong> 
-					  <input type="text" class="form-control" readonly <?php echo "value='$linha_tabelas[Setor]'";?>>
+					  <input type="text" readonly class="form-control" value="<?php echo $linha_tabelas['Setor'];?>">
                     </div>
                     <div class="col-md-6"><strong>Categoria da Contratação:</strong> 
-					  <input type="text" class="form-control" readonly <?php echo "value='$linha_tabelas[CategoriaContratacao]'";?>>
+                    <input type="text" readonly class="form-control" value="<?php echo retornaTipo($evento['ig_tipo_evento_idTipoEvento']);?>">
+                      
                     </div>
                   </div>
                   <div class="form-group"> 
 					<div class="col-md-offset-2 col-md-8"><strong>Proponente:</strong><br/>
-					  <input type='text' class='form-control' name='nome' id='nome' readonly <?php echo "value='$linha_tabelas[Nome]'";?>>                    	
+					  <input type='text' readonly class='form-control' name='nome' id='nome' value='<?php echo $fisico['Nome'];?>'>                    	
                     </div>
                   </div>  
+					<div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                    	<br />
+                </div>
+                    	<br />
+					</div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Objeto:</strong><br/>
-					  <input type="text" class="form-control" readonly <?php echo "value='$linha_tabelas[Objeto]'";?>>
+					  <input type="text" readonly name="Objeto" class="form-control"  value="<?php echo $linha_tabelas['Objeto'];?>">
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Local:</strong><br/>
-					 <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[LocalEspetaculo]'";?>>
+					 <input type='text' readonly name="LocalEspetaculo" class='form-control' value="<?php echo $linha_tabelas['Local'];?>">
 					</div>
 				  </div>
+                  
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>Valor:</strong><br/>
-					  <input type='text' class='form-control' readonly <?php echo "value='R$ $linha_tabelas[Valor]'";?>>
+					<div class="col-md-offset-2 col-md-6"><strong>Valor Global:</strong><br/>
+					  <input type='text' readonly name="Valor" class='form-control' id='valor' value='<?php echo dinheiroParaBr($linha_tabelas['ValorGlobal']);?>'>
+					</div>
+					<div class="col-md-6"><strong>Valor Individual:</strong><br/>
+					  <input type='text' readonly name="ValorIndividual" class='form-control' id='valor' value='<?php echo dinheiroParaBr($linha_tabelas['ValorIndividual']);?>'>
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Forma de Pagamento:</strong><br/>
-                      <textarea name="FormaPagamento" cols="40" rows="5" readonly><?php echo "$linha_tabelas[FormaPagamento]";?></textarea>
+                      <textarea name="FormaPagamento" readonly cols="40" rows="5"><?php echo "$linha_tabelas[FormaPagamento]";?></textarea>
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Período:</strong><br/>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Periodo]'";?>>
+					   <input type='text' readonly name="Periodo" class='form-control' <?php echo "value='$linha_tabelas[Periodo]'";?>>
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Duração: </strong>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Duracao]'";?>>
+					   <input type='text' readonly name="Duracao" class='form-control' <?php echo "value='$linha_tabelas[Duracao]'";?>>
 					</div>
 					<div class="col-md-6"><strong>Carga Horária:</strong><br/>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[CargaHoraria]'";?>>
+					   <input type='text' readonly name="CargaHoraria" class='form-control' <?php //echo "value='$linha_tabelas[CargaHoraria]'";?>>
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Verba:</strong><br/>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Verba]'";?>>
+					   <select readonly class="form-control" name="Verba" id="Verba">
+                       <?php geraOpcao("sis_verba",$linha_tabelas['Verba'],"") ?>
+                      </select>
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Justificativa:</strong><br/>
-					  <textarea name="Justificativa" cols="40" rows="5" readonly><?php echo "$linha_tabelas[Justificativa]";?></textarea>
+                      <textarea name="Justificativa" readonly cols="40" rows="5"><?php echo $pedido['justificativa']; ?></textarea>
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Fiscal:</strong>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Fiscal]'";?>>
+					   <input type='text' name="Fiscal" readonly class='form-control' value="<?php echo $linha_tabelas['Fiscal'];?>">
 					</div>
 					<div class="col-md-6"><strong>Suplente:</strong>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Suplente]'";?>>
+					   <input type='text' name="Suplente" readonly class='form-control' value="<?php echo $linha_tabelas['Suplente'];?>">
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Parecer Técnico:</strong><br/>
-					  <textarea name="ParecerTecnico" cols="40" rows="5" readonly><?php echo "$linha_tabelas[ParecerTecnico]";?></textarea>
+					  <textarea name="ParecerTecnico" readonly cols="40" rows="5"><?php echo $pedido['parecerArtistico']; ?></textarea>
 					</div>
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Observação:</strong><br/>
-					   <input type='text' class='form-control' readonly <?php echo "value='$linha_tabelas[Observacao]'";?>>
+					   <input type='text' name="Observacao" readonly class='form-control' <?php echo "value='$linha_tabelas[Observacao]'";?>>
 					</div>
 				  </div>
                   <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Data do Cadastro:</strong><br/>
+					   <input type='text' name="DataAtual" readonly class='form-control' value="<?php echo $linha_tabelas['DataCadastro'];?>">
+					</div>
+				  </div>
+                  
+                  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Assinatura:</strong><br/>
+                    <form class="form-horizontal" role="form" action="?perfil=contratos&p=update_proposta_pf&id_ped=<?php echo $_GET['id_ped']; ?>" method="post">
+                    
 					  <select class="form-control" name="Id_Assinatura" id="Id_Assinatura"><option>Selecione</option>
                       <?php
-					  do
-					  {
-					  echo "<option value='$linha_tabela_assinatura[Id_Assinatura]'>$linha_tabela_assinatura[Assinatura]</option>";
-					  }
-					  while ($linha_tabela_assinatura = mysqli_fetch_assoc($consulta_tabela_assinatura))
+						geraOpcao("sis_assinatura",$pedido['IdAssinatura'],$_SESSION['idInstituicao']);
 					  ?>  
                       </select>
+                      <br />
 					</div>
 				  </div>
                   
@@ -184,9 +180,3 @@ $linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
 	  	</div>
 	  </section>  
 
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-
-  	
-</html>

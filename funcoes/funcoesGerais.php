@@ -740,7 +740,12 @@ function verificaSubEvento($idEvento){ //retorna os dados de um subevento
 
 function recuperaUsuario($idUsuario){ //retorna dados do usuário
 	$recupera = recuperaDados('ig_usuario',$idUsuario,'idUsuario');
-	return $recupera;	
+	if($recupera){
+		return $recupera;
+	}else{
+		return NULL;
+	}
+	;	
 }
 
 
@@ -768,8 +773,9 @@ function descricaoEvento($idEvento){ //imprime dados de um evento
 	echo "<br /><br />";
 	echo "<b>Sinopse:</b><br />".$evento['sinopse']."<br /><br />";
 	echo "<b>Release:</b><br />".$evento['releaseCom']."<br /><br />";
-	echo "<b>Justificativa:</b><br />".$evento['justificativa']."<br /><br />";
-	echo "<b>Parecer artístico:</b><br />".$evento['parecerArtistico']."<br /><br />";
+	// Foi para área de pedido de contratação
+	//echo "<b>Justificativa:</b><br />".$evento['justificativa']."<br /><br />"; 
+	//echo "<b>Parecer artístico:</b><br />".$evento['parecerArtistico']."<br /><br />";
 
 }
 
@@ -1019,7 +1025,6 @@ function iniciaFormulario($idUsuario){ //inicia um evento zerado
 `faixaEtaria` ,
 `sinopse` ,
 `releaseCom` ,
-`parecerArtistico` ,
 `confirmaFinanca` ,
 `confirmaDiretoria` ,
 `confirmaComunicacao` ,
@@ -1030,7 +1035,7 @@ function iniciaFormulario($idUsuario){ //inicia um evento zerado
 `idUsuario`
 )
 VALUES (
-NULL ,  '',  '',  '',  '',  '', NULL , NULL ,  '',  '',  '',  '',  '',  '',  '',  '', NULL , NULL , NULL , NULL , NULL , NULL , NULL , $idUsuario
+NULL ,  '',  '',  '',  '',  '', NULL , NULL ,  '',  '',  '',  '',  '',  '',  '', NULL , NULL , NULL , NULL , NULL , NULL , NULL , $idUsuario
 )
 ";
 	// Executa a query

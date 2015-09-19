@@ -1,42 +1,29 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
-
 <?php
-require("../conectar.php");
+$conexao = bancoMysqli();
 include 'includes/menu.php';
+$server = $_SERVER['SERVER_NAME'];
 
-$link1="rlt_recibo_ne_pf.php";
-
+$link1="http://$server/igsis/perfil/m_contratos/rlt_recibo_ne_pf.php";
 
 
 $numeroNE=$_POST['NumeroNotaEmpenho'];
-$emissaoNE=$_POST['DataEmissaoNotaEmpenho'];
-$entregaNE=$_POST['DataEntregaNotaEmpenho'];
+$emissaoNE= $_POST['DataEmissaoNotaEmpenho'];
+$entregaNE= $_POST['DataEntregaNotaEmpenho'];
 
 $id_ped=$_GET['id'];
-$idContrato=$_GET['idContrato'];
+//$idContrato=$_GET['idContrato'];
 
-$update1 = "UPDATE sis_contrato_pf SET 
+$update1 = "UPDATE igsis_pedido_contratacao SET 
 			NumeroNotaEmpenho = '$numeroNE',
 			DataEmissaoNotaEmpenho = '$emissaoNE',
 			DataEntregaNotaEmpenho = '$entregaNE'
-			WHERE Id_contratoPF = '$idContrato' ";
+			WHERE idPedidoContratacao = '$id_ped' ";
 
 $stmt1 = mysqli_prepare($conexao,$update1);
 
  if(mysqli_stmt_execute($stmt1))
 {
+		
 	echo"<p>&nbsp;</p><h4><center>Dados Inseridos com sucesso!</h4><br>";
 	 $last_id = mysqli_insert_id($conexao);
 	 echo "<br><br><h6>Qual modelo de Recibo deseja imprimir?</h6><br>
@@ -45,6 +32,6 @@ $stmt1 = mysqli_prepare($conexao,$update1);
 	 <a href='$link1?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Padrão</a>
 	 <br /></center>";
 };
- 
+ var_dump($_POST);
 
 ?>

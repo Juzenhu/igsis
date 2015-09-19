@@ -406,14 +406,13 @@ if(isset($_POST['atualizar'])){
 	// Atualiza o banco
 	$sinopse = addslashes($_POST['sinopse']);
 	$releaseCom = addslashes($_POST['releaseCom']); 
-	$parecerArtistico = addslashes($_POST['parecerArtistico']); 
+ 
 	$linksCom = addslashes($_POST['linksCom']); 
-	$justificativa = addslashes($_POST['justificativa']); 
+
 	$sql_atualizar = "UPDATE `ig_evento` SET 
 	`sinopse` = '$sinopse', 
 	`releaseCom` = '$releaseCom', 
-	`parecerArtistico` = '$parecerArtistico',
-	`justificativa` = '$justificativa', 
+
  
 	`linksCom` = '$linksCom'
 	WHERE `ig_evento`.`idEvento` = ".$_SESSION['idEvento'].";";
@@ -454,19 +453,6 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
             	<div class="col-md-offset-2 col-md-8">
             		<label>Release *</label>
             		<textarea name="releaseCom" class="form-control" rows="10" placeholder="Texto auxiliar para as ações de comunicação. Releases do trabalho, pequenas biografias, currículos, etc"><?php echo $campo["releaseCom"] ?></textarea>
-            	</div> 
-            </div>
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Justificativa*</label>
-            		<textarea name="justificativa" class="form-control" rows="10" placeholder="Texto usado fins jurídicos e confecção de contratos."><?php echo $campo["justificativa"] ?></textarea>
-            	</div> 
-            </div>
-
-      		 <div class="form-group">
-            	<div class="col-md-offset-2 col-md-8">
-            		<label>Parecer artístico*</label>
-            		<textarea name="parecerArtistico" class="form-control" rows="10" placeholder="Texto usado fins jurídicos e confecção de contratos."><?php echo $campo["parecerArtistico"] ?></textarea>
             	</div> 
             </div>
       		 <div class="form-group">
@@ -1270,7 +1256,9 @@ include "../include/menuEvento.php";
 if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	
 	$dataInicio = exibirDataMysql($_POST['dataInicio']);
-	$dataFinal = exibirDataMysql($_POST['dataFinal']);
+	if(isset($_POST['dataFinal'])){
+		$dataFinal = exibirDataMysql($_POST['dataFinal']);
+	}
 	if(($dataFinal == "") OR ($dataFinal == '0000-00-00')) {
 		$tipoOcorrencia = 3; // Tipo de Ocorrência data única
 	}else{
@@ -1278,8 +1266,13 @@ if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	}
 	
 	if(isset($_POST['idSubEvento'])){ //Tipo de Ocorrência de Sub-evento
+		if($_POST['idSubEvento'] == 0){
+			$idSubEvento = NULL;	
+		}else{
 		$tipoOcorrencia = 6;
 		$idSubEvento = $_POST['idSubEvento'];	
+			
+		}
 	}
 	
 	$ig_comunicao_idCom = 0;
@@ -1523,7 +1516,8 @@ function habilitar(){
                             <div class="form-group">  
                           <div class="col-md-offset-2 col-md-8">
  						            <select class="form-control" name="idSubEvento" id="inputSubject" >
-               		 <option>Selecione</option>
+               		 <option>Selecione o sub-evento</option>
+                     <option value="0">Não é sub-evento</option>
 					<?php geraOpcaoSub($_SESSION['idEvento'],""); ?>
                 	</select>
                 	</div>

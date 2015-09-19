@@ -13,7 +13,7 @@ if(isset($_GET['p'])){
 $nomeEvento = recuperaEvento($_SESSION['idEvento']);
 
 ?>
-<script type="text/javascript">$(document).ready(function(){	$("#cpf").mask("999.999.999-99");});</script>
+
 	<div class="menu-area">
 			<div id="dl-menu" class="dl-menuwrapper">
 						<button class="dl-trigger">Open Menu</button>
@@ -38,38 +38,11 @@ $nomeEvento = recuperaEvento($_SESSION['idEvento']);
 
 <?php switch($p){
 case 'lista': 
-	
-if(isset($_POST['cadastrarRepresentante'])){ //cadastra e insere represenante
-	$RepresentanteLegal = $_POST['RepresentanteLegal'];
-	$RG = $_POST['RG'];
-	$CPF = $_POST['CPF'];
-	$Nacionalidade = $_POST['Nacionalidade'];
-	$IdEstadoCivil = $_POST['IdEstadoCivil'];
-	
-	$sql_insert = "INSERT INTO `sis_representante_legal` (`Id_RepresentanteLegal`, `RepresentanteLegal`, `RG`, `CPF`, `Nacionalidade`, `IdEstadoCivil`) VALUES (NULL, '$RepresentanteLegal', '$RG', '$CPF', '$Nacionalidade', $IdEstadoCivil)";
-	if(mysql_query($sql_insert)){
-		gravarLog($sql_insert);
-		$sql_ultimo = "SELECT * FROM `sis_representante_legal` ORDER BY Id_RepresentanteLegal DESC LIMIT 0,1"; //recupera ultimo id inserido
-		$id_evento = mysql_fetch_array(mysql_query($sql_ultimo));
-		$id = $id_evento['Id_RepresentanteLegal'];
-		$idEvento = $_SESSION['idEvento'];	
-		$sql_insert_pedido = "INSERT INTO `igsis_pedido_contratacao` (`idPedidoContratacao`, `idEvento`, `tipoPessoa`, `idPessoaJuridica`, `idPessoaFisica`, `valor`, `valorPorExtenso`, `formaPagamento`, `idVerba`, `anexo`, `observacao`, `publicado`) VALUES (NULL, '$idEvento', '3', NULL, '$id', NULL, NULL, NULL, NULL, NULL, NULL, '1')";
-
-	if(mysql_query($sql_insert_pedido)){
-		gravarLog($sql_insert_pedido);
-		$mensagem = "Representante legal inserido com sucesso. Agora é possível inserir Pessoas Jurídicas.";		
-	}else{
-		$mensagem = "Erro ao inserir o representante legal";
-	}
-	
-		
-}else{
-	$mensagem = "Erro ao inserir o representante legal";
+if($_SESSION['idPedido']){ // fecha a session idPedido
+	unset($_SESSION['idPedido']);
 }
 
 
-	
-}
 if(isset($_POST['inserirRepresentante'])){ //insere represenante existente
 	
 }
@@ -191,12 +164,13 @@ if(isset($_POST['cadastrarJuridica'])){ //cadastra e insere pessoa jurídica
 		}
 	}
 }
-if(isset($_POST['insereJurídica'])){ //insere pessoa jurídica
+
+if(isset($_POST['insereJuridica'])){ //insere pessoa jurídica
 	$idInstituicao = $_SESSION['idInstituicao'];
-	$idPessoa = $_POST['Id_PessoaJuridica'];
+	$idPessoa = $_POST['insereJuridica'];
 	$idEvento = $_SESSION['idEvento'];
 	$sql_verifica_cnpj = "SELECT * FROM igsis_pedido_contratacao WHERE idPessoa = '$idPessoa' AND tipoPessoa = '2' AND publicado = '1' AND idEvento = '$idEvento' ";
-	$query_verifica_cnpj = mysqli_query($con,$sql_verifica_cpf);
+	$query_verifica_cnpj = mysqli_query($con,$sql_verifica_cnpj);
 	$num_rows = mysqli_num_rows($query_verifica_cnpj);
 	if($num_rows > 0){
 		$mensagem = "A pessoa jurídica já está na lista de pedido de contratação.";	
@@ -352,8 +326,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=contratados&p=lista'>
-			<input type='hidden' name='insereJuridica' value='1'>
-			<input type='hidden' name='Id_PessoaJuridica' value='".$descricao['Id_PessoaJuridica']."'>
+			<input type='hidden' name='insereJuridica' value='".$descricao['Id_PessoaJuridica']."'>
 			<input type ='submit' class='btn btn-theme btn-md btn-block' value='inserir'></td></form>"	;
 			echo "
 			<td class='list_description'>
@@ -814,13 +787,25 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 
 <?php break;
 case 'representante':
+if(isset($_POST['idPedido'])){
+	$_SESSION['idPedido'] = $_POST['idPedido'];	
+}
+if(isset($_POST['numero'])){
+	$_SESSION['numero'] = $_POST['numero'];	
+}
+include "../funcoes/funcoesSiscontrat.php";
+$pedido = recuperaDados("igsis_pedido_contratacao",$_SESSION['idPedido'],"idPedidoContratacao");
+$pessoa = siscontratDocs($pedido['idPessoa'],$pedido['tipoPessoa']);
+$k = "?perfil=contratados&p=representante";
  ?>
+ 
+ 
     <?php
-if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
+if(isset($_POST['pesquisar'])){ // inicia a busca por CPF
 	$busca = $_POST['busca'];
-	$sql_busca = "SELECT * FROM sis_representante_legal WHERE RepresentanteLegal LIKE '%$busca%' OR CPF LIKE '%$busca%' ORDER BY RepresentanteLegal";
-	$query_busca = mysql_query($sql_busca); 
-	$num_busca = mysql_num_rows($query_busca);
+	$sql_busca = "SELECT * FROM sis_representante_legal WHERE CPF LIKE '%$busca%' ORDER BY RepresentanteLegal";
+	$query_busca = mysqli_query($con,$sql_busca); 
+	$num_busca = mysqli_num_rows($query_busca);
 	if($num_busca > 0){ // Se exisitr, lista a resposta.
 	?>
 	 <section id="services" class="home-section bg-white">
@@ -828,10 +813,9 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h3>Contratados - Pesso Jurídica - Representantes Legais</h3>
-                    <p>Você está inserindo representantes legais de pessoas jurídicas para serem contratadas para o evento <strong><?php echo $nomeEvento['nomeEvento']; ?></strong></p>
-
-<p></p>
+             <h2>CADASTRO DE REPRESENTANTE LEGAL</h2>
+              <p>O sistema encontrou informações sobre representantes legais com referência a <br /><strong><?php echo $_POST['busca'] ?>". </strong><br /> </p>
+ 
 
 					</div>
 				  </div>
@@ -850,17 +834,19 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					</thead>
 					<tbody>
                     <?php
-				while($descricao = mysql_fetch_array($query_busca)){			
+				while($descricao = mysqli_fetch_array($query_busca)){			
 			echo "<tr>";
 			echo "<td class='list_description'><b>".$descricao['RepresentanteLegal']."</b></td>";
 			echo "<td class='list_description'>".$descricao['CPF']."</td>";
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=$k'>
+			<input type='hidden' name='idPessoa' value='1'>
 			<input type ='submit' class='btn btn-theme btn-md btn-block' value='detalhe'></td></form>"	;
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=$k'>
+			<form method='POST' action='?perfil=?perfil=contratados&p=edicaoPedido'>
+			<input type='hidden' name='inserirRepresentante' value='1'>
 			<input type ='submit' class='btn btn-theme btn-md btn-block' value='inserir'></td></form>"	;
 
 			echo "</tr>";
@@ -869,6 +855,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 						
 					</tbody>
 				</table>
+                <?php var_dump($_SESSION); ?>
 			</div>
             		</div>
 	</section>
@@ -879,14 +866,16 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
-              <p>O sistema não encontrou informações sobre representantes legais com referência a "<?php echo $busca ?>".<br />Insira um novo representante legal ou <a href="?perfil=contratados&p=representante">faça uma nova busca</a>. </p>
-					<h3>CADASTRO DE REPRESENTANTE LEGAL</h3>
+              <h2>CADASTRO DE REPRESENTANTE LEGAL</h2>
+              <p> Não foi possivel encontrar nenhum representante legal com o CPF <?php echo $busca; ?></p>
+              A pessoa jurídica para quem você está cadastrando representante legal é <strong><?php echo $pessoa['Nome']; ?></strong></p>
+					
 			  </div>
 
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
 
-				<form class="form-horizontal" role="form" action="?perfil=contratados&p=lista" method="post">
+				<form class="form-horizontal" role="form" action="?perfil=contratados&p=edicaoPedido" method="post">
 				  
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
@@ -899,7 +888,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					  <input type="text" class="form-control" id="RG" name="RG" placeholder="RG">
 					</div>
 					<div class="col-md-6">
-					  <input type="text" class="form-control" id="cpf" name="CPF" placeholder="CPF">
+					  <input type="text" readonly class="form-control" id="cpf" name="CPF" placeholder="CPF" value="<?php echo $busca; ?>">
 					</div>
 				  </div>
                   
@@ -910,14 +899,10 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 					<div class="col-md-6">
 					  <select class="form-control" name="IdEstadoCivil" id="IdEstadoCivil"><option>Estado Civil</option>
                       <?php
-					  $consulta_tabela_estado_civil = mysql_query("SELECT * FROM sis_estado_civil");
-						$linha_tabela_estado_civil= mysql_fetch_assoc($consulta_tabela_estado_civil);
-					  do
-					  {
-					  echo "<option value='$linha_tabela_estado_civil[Id_EstadoCivil]'>$linha_tabela_estado_civil[EstadoCivil]</option>";
-					  }
-					  while ($linha_tabela_estado_civil = mysql_fetch_assoc($consulta_tabela_estado_civil))
-					  ?>  
+					                   
+					  geraOpcao("sis_estado_civil","","");
+					  ?> 
+					 
                       </select>
 					</div>
 				  </div>
@@ -926,6 +911,8 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     <input type="hidden" name="cadastrarRepresentante" value="1" />
+                    <input type="hidden" name="numero" value="<?php echo $_SESSION['numero'] ?>" />
+                    
 					 <input type="image" name="enviar" alt="CADASTRAR" value="submit" class="btn btn-theme btn-lg btn-block">
 					</div>
                     
@@ -952,11 +939,8 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h2>Contratados - Pessoa Jurídica - Representantes</h2>
-                    <p>Você está inserindo representantes de pessoas jurídicas para serem contratadas para o evento <strong><?php  echo $nomeEvento['nomeEvento']; ?></strong></p>
-
-<p</p>
-
+             <h2>CADASTRO DE REPRESENTANTE LEGAL</h2>
+           <p>A pessoa jurídica para quem você está cadastrando representantes legais é <strong><?php echo $pessoa['Nome'];  ?></strong></p>  
 					</div>
 				  </div>
 			  </div>
@@ -967,7 +951,7 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
             
                         <form method="POST" action="?perfil=contratados&p=representante" class="form-horizontal" role="form">
             		<label>Insira o CNPJ ou a Razão social</label>
-            		<input type="text" name="busca" class="form-control" id="" >
+            		<input type="text" name="busca" class="form-control" id="cpf" >
             	</div>
              </div>
 				<br />             
@@ -986,9 +970,13 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 <?php 
 break;
 case "edicaoPedido":
+if(isset($_POST['idPedidoContratacao'])){
+$_SESSION['idPedido'] = $_POST['idPedidoContratacao'];
+}
 
-	$idPedido = $_POST['idPedidoContratacao'];
-echo "<h1>$idPedido</h1>";
+if($_SESSION['numero']){
+unset($_SESSION['numero']);
+}
 
 if(isset($_POST['atualizar'])){
 	
@@ -997,10 +985,15 @@ if(isset($_POST['atualizar'])){
 	$FormaPagamento = $_POST['FormaPagamento'];
 	$Observacao = $_POST['Observacao'];
 	$Verba = $_POST['verba'];
+	$parecer = $_POST['parecerArtistico'];
+	$justificativa = $_POST['justificativa'];
 	$idPedidoContratacao = $_POST['idPedidoContratacao'];
 	$sql_atualizar_pedido = "UPDATE  `igsis_pedido_contratacao` SET  `valor` =  '$Valor',
 `formaPagamento` =  '$FormaPagamento',
 `observacao` =  '$Observacao',
+`parecerArtistico` =  '$parecer',
+`justificativa` =  '$justificativa',
+
 `idVerba` =  '$Verba',
 `valorIndividual` =  '$ValorIndividual' WHERE  `igsis_pedido_contratacao`.`idPedidoContratacao` = '$idPedidoContratacao';
 ";
@@ -1012,22 +1005,48 @@ if(isset($_POST['atualizar'])){
 	
 }
 
-$pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContratacao");
+if(isset($_POST['cadastrarRepresentante'])){
+	$numero = $_POST['numero'];
+	$representante = $_POST['RepresentanteLegal'];
+	$rg = $_POST['RG'];
+	$cpf = $_POST['CPF'];
+	$nacionalidade = $_POST['Nacionalidade'];
+	$estado_civil = $_POST['idEstadoCivil'];
+	$sql_insere_representante =  "INSERT INTO `sis_representante_legal` (`Id_RepresentanteLegal`, `RepresentanteLegal`, `RG`, `CPF`, `Nacionalidade`, `IdEstadoCivil`, `idEvento`) VALUES (NULL, '$representante', '$rg', '$cpf', '$nacionalidade', '$estado_civil', NULL)";
+	$con = bancoMysqli();
+	$query_insere_representante = mysqli_query($con,$sql_insere_representante);
+	if($query_insere_representante){
+		$ultimo = recuperaUltimo("sis_representante_legal");
+		$sql_atualiza_representante = "UPDATE igsis_pedido_contratacao SET idRepresentante0".$numero." = '$ultimo' WHERE idPedidoContratacao = '".$_SESSION['idPedido']."' ";
+		verificaMysql($sql_atualiza_representante);
+		$query_atualiza_representante = mysqli_query($con,$sql_atualiza_representante);
+		if($query_atualiza_representante){
+			$mensagem = "Represenante legal 0".$numero." atualizado com sucesso!";
+		}else{
+			$mensagem = "Erro(1)";
+		}
+		
+	}else{
+		$mensagem = "Erro(2)";		
+	}
+
+}
+
+$pedido = recuperaDados("igsis_pedido_contratacao",$_SESSION['idPedido'],"idPedidoContratacao");
 
 ?>
 	 <!-- Contact -->
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
-					<div class="sub-title">PEDIDO DE CONTRTAÇÃO DE PESSOA FÍSICA</div>
+					<div class="sub-title">PEDIDO DE CONTRTAÇÃO <?php if($pedido['tipoPessoa'] == 1){echo "PESSOA FÍSICA";}else{echo "PESSOA JURÍDICA";} ?> </div>
                     <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
 			  </div>
 
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
-
-				<form class="form-horizontal" role="form" action="?perfil=contratados&p=edicaoPedido" method="post">
-				  <div class="form-group">
+                
+                				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     <p class="left">
                     	<?php $evento = recuperaEvento($_SESSION['idEvento']); ?>
@@ -1041,19 +1060,65 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContrataca
                         <?php 
 						$fiscal = recuperaUsuario($evento['idResponsavel']);
 						$suplente = recuperaUsuario($evento['suplente']);
+						include "../funcoes/funcoesSiscontrat.php";
+						$representante01 = siscontratDocs($pedido['idRepresentante01'],3);
 						 ?>
 						<strong>Fiscal:</strong>  <?php echo $fiscal['nomeCompleto']; ?> - <strong>Suplente:</strong>  <?php echo $suplente['nomeCompleto']; ?> 
 
                     </p>
 					</div>
                   </div>
+                  <?php if($pedido['tipoPessoa'] == 2){ ?>
+                    <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Representante legal #01:</strong><br/>
+					  <form class="form-horizontal" role="form"  method="post" action="?perfil=contratados&p=representante">
+                      <input type='text' readonly class='form-control' name='representante01' id='Executante' value="<?php echo $representante01['Nome']; ?>">  
+                      <input type="hidden" name="numero" value="1" />
+                     
+					 <input type="submit" class="btn btn-theme btn-med btn-block" value="Abrir Representante legal #01">
+                     </form>
+
+					</div>
+				  </div>
+					<div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                    <br />
+	                </div>
+					</div>
+
+
+
+                                      <div class="form-group"> 
+					<div class="col-md-offset-2 col-md-8"><strong>Representante legal #02:</strong><br/>
+					         	
+                    </div>
+                  </div>  
+                    <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					  <form class="form-horizontal" role="form"  method="post">
+                                            <input type="hidden" name="numero" value="2" />
+                    <input type='text' readonly class='form-control' name='representante02' id='Executante' value="">              
+					 <input type="submit" class="btn btn-theme btn-med btn-block" value="Abrir Representante legal #02">
+                     </form>
+
+					</div>
+				  </div>
+					<div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                    	<br />
+                </div>
+                    	<br />
+					</div>
+                    <?php } // fecha if do representante legal?>
+				<form class="form-horizontal" role="form" action="?perfil=contratados&p=edicaoPedido" method="post">
+
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Valor:</strong><br/>
-					  <input type='text' name="Valor" id="valor" class='form-control' value="<?php echo dinheiroParaBr($pedido['valor']) ?>" >
+					  <input type='text' name="Valor" id='valor' class='form-control' value="<?php echo dinheiroParaBr($pedido['valor']) ?>" >
 					</div>					
                     
                     <div class="col-md-6"><strong>Valor Individual:</strong><br/>
-					  <input type='text' name="ValorIndividual" id="valor" class='form-control' value="<?php echo dinheiroParaBr($pedido['valorIndividual']) ?>">
+					  <input type='text' name="ValorIndividual" id='valor_individual' class='form-control' value="<?php echo dinheiroParaBr($pedido['valorIndividual']) ?>">
 					</div>
 
 				  </div>
@@ -1072,6 +1137,21 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContrataca
 					</div>		
 
 				  </div>
+ 
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Justificativa*</label>
+            		<textarea name="justificativa" class="form-control" rows="10" placeholder="Texto usado fins jurídicos e confecção de contratos."><?php echo $pedido["justificativa"] ?></textarea>
+            	</div> 
+            </div>
+
+      		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Parecer artístico*</label>
+            		<textarea name="parecerArtistico" class="form-control" rows="10" placeholder="Texto usado fins jurídicos e confecção de contratos."><?php echo $pedido["parecerArtistico"] ?></textarea>
+            	</div> 
+            </div>
+
  
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Observação:</strong><br/>
@@ -1111,6 +1191,11 @@ case "apagarPedido":
 <?php 
 break;
 case "edicaoPessoa":
+
+if(isset($_POST['idPedidoContratacao'])){
+	
+}
+
 
 	if(isset($_POST['cadastrarFisica'])){
 		$idPessoaFisica = $_POST['cadastrarFisica'];
@@ -1395,6 +1480,10 @@ case "edicaoPessoa":
 
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
+                
+                
+                
+                
 
 				<form class="form-horizontal" role="form" action="?perfil=contratados&p=edicaoPessoa" method="post">
 				  
@@ -1544,13 +1633,7 @@ case "edicaoPessoa":
 					<div class="col-md-6">
 					  <select class="form-control" name="IdEstadoCivil" id="IdEstadoCivil"><option>Estado Civil</option>
                       <?php
-					  $consulta_tabela_estado_civil = mysql_query("SELECT * FROM sis_estado_civil");
-						$linha_tabela_estado_civil= mysql_fetch_assoc($consulta_tabela_estado_civil);
-					  do
-					  {
-					  echo "<option value='$linha_tabela_estado_civil[Id_EstadoCivil]'>$linha_tabela_estado_civil[EstadoCivil]</option>";
-					  }
-					  while ($linha_tabela_estado_civil = mysql_fetch_assoc($consulta_tabela_estado_civil))
+					  geraOpcao("sis_estado_civil","","");
 					  ?>  
                       </select>
 					</div>
@@ -1589,9 +1672,13 @@ case "edicaoPessoa":
 <?php
 break;
 case "arquivos":
+$idPessoa = $_REQUEST['idPessoa'];
+$tipoPessoa = $_REQUEST['tipoPessoa'];
+
+$mensagem = $idPessoa." - ".$tipoPessoa;
+
 if(isset($_POST["enviar"])){
-$idPessoa = $_POST['idPessoa'];
-$tipoPessoa = $_POST['tipoPessoa'];
+
 $sql_arquivos = "SELECT * FROM igsis_upload_docs";
 $query_arquivos = mysqli_query($con,$sql_arquivos);
 while($arq = mysqli_fetch_array($query_arquivos)){ 
@@ -1638,7 +1725,7 @@ if(isset($_POST['apagar'])){
 		$mensagem = "Erro ao apagar o arquivo. Tente novamente!";
 	}
 }
-$campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']); 
+$campo = recuperaPessoa($_REQUEST['idPessoa'],$_REQUEST['tipoPessoa']); 
 ?>
     
     	 <section id="enviar" class="home-section bg-white">
@@ -1655,7 +1742,7 @@ $campo = recuperaPessoa($_POST['idPessoa'],$_POST['tipoPessoa']);
 
 <br />
 <div class = "center">
-<form method='POST' action="?perfil=contratados&p=arquivos" enctype='multipart/form-data'>
+<form method="POST" action="?perfil=contratados&p=arquivos&idPessoa=<?php echo $_REQUEST['idPessoa']; ?>&tipoPessoa=<?php echo $_REQUEST['tipoPessoa']; ?>" enctype="multipart/form-data">
 <table>
 <tr>
 <td width="50%"><td>
@@ -1673,8 +1760,8 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
 
   </table>
     <br>
-    <input type="hidden" name="idPessoa" value="<?php echo $_POST['idPessoa']; ?>"  />
-    <input type="hidden" name="tipoPessoa" value="<?php echo $_POST['tipoPessoa']; ?>"  />
+    <input type="hidden" name="idPessoa" value="<?php echo $_REQUEST['idPessoa']; ?>"  />
+    <input type="hidden" name="tipoPessoa" value="<?php echo $_REQUEST['tipoPessoa']; ?>"  />
     <input type="hidden" name="enviar" value="1"  />
     <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar'>
 </form>

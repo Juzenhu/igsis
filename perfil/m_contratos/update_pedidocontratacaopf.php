@@ -1,74 +1,32 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
-
 <?php
-require("../conectar.php");
+$conexao = bancoMysqli();
 include 'includes/menu.php';
 try{
-$link1="rlt_pedido_contratacao_pf.php";
+$link1="m_contratos&p=rlt_pedido_contratacao_pf";
+$url = urlAtual();
+$server = $_SERVER['SERVER_NAME'];
 
-
-$categoria=$_POST['Categoria'];
-$objeto=$_POST['Objeto'];
-$local=$_POST['LocalEspetaculo'];
-$valor=$_POST['Valor'];
-$valorIndividual=$_POST['ValorIndividual'];
-$formaPagamento=$_POST['FormaPagamento'];
-$periodo=$_POST['Periodo'];
-$duracao=$_POST['Duracao'];
-$cargaHoraria=$_POST['CargaHoraria'];
-$verba=$_POST['Verba'];
-$justificativa=$_POST['Justificativa'];
-$parecer=$_POST['ParecerTecnico'];
-$fiscal=$_POST['Fiscal'];
-$suplente=$_POST['Suplente'];
-$observacao=$_POST['Observacao'];
-$dataAtual=$_POST['DataAtual'];
-$idUsuario=1;
+$assinatura = $_POST['Id_Assinatura'];
+$idUsuario = $_SESSION['idUsuario'];
 $id_ped=$_GET['id_ped'];
 
-$update = "UPDATE sis_pedido_contratacao_pf 
+$update = "UPDATE igsis_pedido_contratacao 
 			SET
 			
-			Objeto = '$objeto',
-			LocalEspetaculo = '$local',
-			Valor = '$valor',
-			ValorIndividual = '$valorIndividual',
-			FormaPagamento = '$formaPagamento',
-			Periodo = '$periodo',
-			Duracao = '$duracao',
-			CargaHoraria = '$cargaHoraria',
-			IdCategoria = '$categoria',
-			IdVerba = '$verba',
-			Justificativa = '$justificativa',
-			Fiscal = '$fiscal',
-			Suplente = '$suplente',
-			ParecerTecnico = '$parecer',
-			Observacao = '$observacao',
-			DataAtual = '$dataAtual'
-			WHERE Id_PedidoContratacaoPF = '$id_ped' ";
+			idAssinatura = '$assinatura'
+			WHERE IdPedidoContratacao = '$id_ped' ";
 
 $stmt = mysqli_prepare($conexao,$update);
 
  if(mysqli_stmt_execute($stmt))
+ 	echo "<p>$url -  $server</p><br />";
 	  echo "<p>&nbsp;</p><h4><center>Pedido alterado com sucesso</h4><br>";
 	  echo "<br><br><h6>Deseja imprimir o Pedido de Contratação?</h6><br>
+	  
 	 <div class='form-group'>
             <div class='col-md-offset-2 col-md-8'>
-	 <a href='$link1?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Imprimir</a>
+	 <a href='http://$server/igsis/perfil/m_contratos/rlt_pedido_contratacao_pf.php?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Imprimir</a>
 	 <br /></center>";
- echo $update;
 }
 catch (Exception $e) {
     echo $e->getMessage();

@@ -1,7 +1,12 @@
+[20150917]
+
++ Extinção da tabela "sis_contrato"
++ Criação dos campos NumeroProcesso, NumeroNotaEmpenho, DataEmissaoNotaEmpenho, DataEntregaNotaEmpenho, idUsuarioContratos, idAssinatura, idExecutante, justificativa, parecerArtistico em "igsis_pedido_contratacao"
++ Apagar os campos justificativa e parecerArtistico em "ig_evento"
+
 [20150912]
 
 + Adicionado campo "idInstituicao" em sis_assinatura.
-
 
 [20150911]
 

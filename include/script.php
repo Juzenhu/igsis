@@ -14,6 +14,9 @@
     $(function() {
     $('#valor').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
   });
+      $(function() {
+    $('#valor_indivisual').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
+  });
 
   $(function() {
     $('#duracao').maskMoney({thousands:'', decimal:'', allowZero:true, suffix: ''});
@@ -29,6 +32,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){	$("#CNPJ").mask("99.999.999/9999-99");});
 </script>
+<script type="text/javascript">$(document).ready(function(){	$("#cpf").mask("999.999.999-99");});</script>
 
 <script type="text/javascript">
 	$(document).ready( function() {

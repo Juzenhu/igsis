@@ -1,10 +1,15 @@
 <?php 
-   
+
    // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
-   require('../lib/fpdf/fpdf.php');
-   
+	require_once("../../include/lib/fpdf/fpdf.php");
+	
+   //require '../include/';
+   require_once("../../funcoes/funcoesConecta.php");
+   require_once("../../funcoes/funcoesGerais.php");
+   require_once("../../funcoes/funcoesSiscontrat.php");
+
    //CONEXÃO COM BANCO DE DADOS 
-   include("../conectar.php"); 
+   $conexao = bancoMysqli();
    
 
 class PDF extends FPDF
@@ -13,10 +18,10 @@ class PDF extends FPDF
 function Header()
 {
     // Logo
-    $this->Image('../img/logo_dec.JPG',20,20,40);
+    $this->Image('../../visual/img/logo_dec.JPG',20,20,40);
     // Move to the right
     $this->Cell(80);
-    $this->Image('../img/logo_smc.jpg',170,10);
+    $this->Image('../../visual/img/logo_smc.jpg',170,10);
     // Line break
     $this->Ln(20);
 }
@@ -59,59 +64,15 @@ function PrintChapter($file)
 
 
 
-
 //CONSULTA 
 $id_ped=$_GET['id'];
 
-$sql_query_tabelas ="
-						SELECT 	sis_pedido_contratacao_pf.Id_PedidoContratacaoPF,
-								sis_pedido_contratacao_pf.Objeto,
-								sis_pedido_contratacao_pf.LocalEspetaculo,
-								sis_pedido_contratacao_pf.Valor,
-								sis_pedido_contratacao_pf.ValorPorExtenso,
-								sis_pedido_contratacao_pf.FormaPagamento,
-								sis_pedido_contratacao_pf.Periodo,
-								sis_pedido_contratacao_pf.Duracao,
-								sis_pedido_contratacao_pf.CargaHoraria,
-								sis_pedido_contratacao_pf.Justificativa,
-								sis_pedido_contratacao_pf.Fiscal,
-								sis_pedido_contratacao_pf.Suplente,
-								sis_pedido_contratacao_pf.ParecerTecnico,
-								sis_pedido_contratacao_pf.Observacao,
-								sis_setor.Setor,
-								sis_categoria_contratacao.CategoriaContratacao,
-								sis_verba.*,
-								sis_pessoa_fisica.*
-						FROM sis_pedido_contratacao_pf
-						
-						INNER JOIN sis_setor
-							ON sis_pedido_contratacao_pf.IdSetor = sis_setor.Id_Setor
-						INNER JOIN sis_categoria_contratacao
-							ON sis_pedido_contratacao_pf.IdCategoria = sis_categoria_contratacao.Id_CategoriaContratacao
-						INNER JOIN sis_verba 
-							ON sis_pedido_contratacao_pf.IdVerba = sis_verba.Id_Verba
-						INNER JOIN sis_pessoa_fisica
-							ON sis_pedido_contratacao_pf.IdPessoaFisica = sis_pessoa_fisica.Id_PessoaFisica
-						
-						INNER JOIN sis_estado_civil
-							ON sis_pessoa_fisica.IdEstadoCivil = sis_estado_civil.Id_EstadoCivil
-						
-						WHERE Id_PedidoContratacaoPF = $id_ped
-					";
-					
+$linha_tabelas = siscontrat($id_ped);
 
-$consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas);
-$linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
-
-
-$consulta_tabela_estado_civil = mysqli_query ($conexao,"SELECT * FROM sis_estado_civil");
-$linha_tabela_estado_civil= mysqli_fetch_assoc($consulta_tabela_estado_civil);
-
-$codPed = $linha_tabelas["Id_PedidoContratacaoPF"];
+$codPed = $id_ped;
 $objeto = $linha_tabelas["Objeto"];
-$local = $linha_tabelas["LocalEspetaculo"];
-$valor = $linha_tabelas["Valor"];
-$valorExtenso = $linha_tabelas["ValorPorExtenso"];
+$local = $linha_tabelas["Local"];
+$valor = $linha_tabelas["ValorGlobal"];
 $formaPagamento = $linha_tabelas["FormaPagamento"];
 $periodo = $linha_tabelas["Periodo"];
 $duracao = $linha_tabelas["Duracao"];
@@ -121,27 +82,31 @@ $fiscal = $linha_tabelas["Fiscal"];
 $suplente = $linha_tabelas["Suplente"];
 $parecer = $linha_tabelas["ParecerTecnico"];
 $observacao = $linha_tabelas["Observacao"];
-
-$nome = $linha_tabelas["Nome"];
-$nomeArtistico = $linha_tabelas["NomeArtistico"];
-$estadoCivil = $linha_tabelas["IdEstadoCivil"];
-$nacionalidade = $linha_tabelas["Nacionalidade"];
-$rg = $linha_tabelas["RG"];
-$cpf = $linha_tabelas["CPF"];
-$ccm = $linha_tabelas["CCM"];
-$omb = $linha_tabelas["OMB"];
-$drt = $linha_tabelas["DRT"];
-$funcao = $linha_tabelas["Funcao"];
-$numero = $linha_tabelas["Numero"];
-$complemento = $linha_tabelas["Complemento"];
-//$cep = $linha_tabelas["CEP"];
-$telefone1 = $linha_tabelas["Telefone1"];
-$telefone2 = $linha_tabelas["Telefone2"];
-$telefone3 = $linha_tabelas["Telefone3"];
-$email = $linha_tabelas["Email"];
-$inss = $linha_tabelas["InscricaoINSS"];
+$dataAtual = date("d/m/Y");
+$data_entrega_empenho = exibirDataBr($linha_tabelas['EntregaNE']);
+$data_emissao_empenho = exibirDataBr($linha_tabelas['EmissaoNE']);
 
 
+$linha_tabelas_pessoa = siscontratDocs($linha_tabelas['IdProponente'],1);
+
+$nome = $linha_tabelas_pessoa["Nome"];
+$cpf = $linha_tabelas_pessoa["CPF"];
+$telefone1 = $linha_tabelas_pessoa["Telefones"];
+$telefone2 = $linha_tabelas_pessoa["Telefones"];
+$telefone3 = $linha_tabelas_pessoa["Telefones"];
+$email = $linha_tabelas_pessoa["Email"];
+
+$setor = $linha_tabelas["Setor"];
+
+$nomeArtistico = $linha_tabelas_pessoa["NomeArtistico"];
+$estadoCivil = $linha_tabelas_pessoa["EstadoCivil"];
+$nacionalidade = $linha_tabelas_pessoa["Nacionalidade"];
+$rg = $linha_tabelas_pessoa["RG"];
+$cpf = $linha_tabelas_pessoa["CPF"];
+$ccm = $linha_tabelas_pessoa["CCM"];
+$omb = $linha_tabelas_pessoa["OMB"];
+$drt = $linha_tabelas_pessoa["DRT"];
+$func = $linha_tabelas_pessoa["Func"];
 
 $ano=date('Y');
 
@@ -217,7 +182,7 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,utf8_decode('Função:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(45,$l,utf8_decode($funcao),0,1,'L');
+   $pdf->Cell(45,$l,utf8_decode($func),0,1,'L');
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
@@ -396,6 +361,7 @@ $pdf->PrintChapter('penalidades.txt');
 
 //for($i=1;$i<=20;$i++)
    // $pdf->Cell(0,10,'Printing line number '.$i,0,1);
+   ob_start ();   // Limpa o cachê antes de gerar o arquivo.
 $pdf->Output();
 
 

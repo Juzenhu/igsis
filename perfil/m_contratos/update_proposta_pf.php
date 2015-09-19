@@ -1,51 +1,38 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
 
 <?php
-require("../conectar.php");
 include 'includes/menu.php';
+$conexao = bancoMysqli();
+$server = $_SERVER['SERVER_NAME'];
+$http = "http://$server/igsis/perfil/m_contratos/";
+$link1=$http."rlt_proposta_padrao_pf.php";
+$link2=$http."rlt_proposta_artistico_pf.php";
+$link3=$http."rlt_proposta_eventoexterno_pf.php";
+$link4=$http."rlt_proposta_oficina_pf.php";
+$link5=$http."#";
+$link6=$http."#";
+$link7=$http."#";
+$link8=$http."#";
+$link9=$http."#";
+$link10=$http."#";
 
-$link1="rlt_proposta_padrao_pf.php";
-$link2="rlt_proposta_artistico_pf.php";
-$link3="rlt_proposta_eventoexterno_pf.php";
-$link4="rlt_proposta_oficina_pf.php";
-$link5="#";
-$link6="#";
-$link7="#";
-$link8="#";
-$link9="#";
-$link10="#";
+$url = urlAtual();
+$server = $_SERVER['SERVER_NAME'];
 
+$assinatura = $_POST['Id_Assinatura'];
+$idUsuario = $_SESSION['idUsuario'];
+$id_ped=$_GET['id_ped'];
 
-$processo=$_POST['NumeroProcesso'];
-$numeroNE=$_POST['NumeroNotaEmpenho'];
-$emissaoNE=$_POST['DataEmissaoNotaEmpenho'];
-$entregaNE=$_POST['DataEntregaNotaEmpenho'];
-$idContrato=$_GET['idContrato'];
+$update = "UPDATE igsis_pedido_contratacao 
+			SET
+			
+			idAssinatura = '$assinatura'
+			WHERE IdPedidoContratacao = '$id_ped' ";
 
-$update1 = "UPDATE sis_contrato_pf SET 
-			NumeroProcesso = '$processo',
-			NumeroNotaEmpenho = '$numeroNE',
-			DataEmissaoNotaEmpenho = '$emissaoNE',
-			DataEntregaNotaEmpenho = '$entregaNE'
-			WHERE Id_contratoPF = '$idContrato' ";
+$stmt = mysqli_prepare($conexao,$update);
 
-$stmt1 = mysqli_prepare($conexao,$update1);
-
- if(mysqli_stmt_execute($stmt1))
+ if(mysqli_stmt_execute($stmt))
 {
-	echo"<p>&nbsp;</p><h4><center>Dados Inseridos com sucesso!</h4><br>";
+ 	echo"<p>&nbsp;</p><h4><center>Dados Inseridos com sucesso!</h4><br>";
 	 $last_id = mysqli_insert_id($conexao);
 	 echo "<br><br><h6>Qual modelo de documento deseja imprimir?</h6><br>
 	 <div class='form-group'>
@@ -61,6 +48,8 @@ $stmt1 = mysqli_prepare($conexao,$update1);
 	 <a href='$link9?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Pedido de Reserva Cooperativas</a>
 	 <a href='$link10?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Recibo de Entrega de Nota de Empenho</a>
 	 <br /></center>";
-};
 
+}
 ?>
+
+

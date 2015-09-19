@@ -57,7 +57,7 @@ $pasta = "?perfil=contratos&p=";
 									<ul class="dl-submenu">
 										<li><a href="<?php echo $pasta ?>frm_listapedidocontratacaopf_cadastraproposta">Cadastrar</a></li>
 										<li><a href="<?php echo $pasta ?>frm_listapedidocontratacaopf_cadastraprocesso">Inserir Processo</a></li>
-										<li><a href="<?php echo $pasta ?>frm_listapedidocontratacaopf_cadastrane.php">Inserir N.E.</a></li>
+										<li><a href="<?php echo $pasta ?>frm_listapedidocontratacaopf_cadastrane">Inserir N.E.</a></li>
 										<li><a href="<?php echo $pasta ?>frm_lista_propostapf">Listar</a></li>
 									</ul>
 								</li>

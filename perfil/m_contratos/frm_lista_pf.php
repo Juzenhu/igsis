@@ -1,24 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-  </head>
-  <body>
-
 <?php
-require ("../conectar.php");
 
-$consulta_tabela_pf = mysqli_query ($conexao,"SELECT * FROM sis_pessoa_fisica ORDER BY Nome");
-$linha_tabela_pf= mysqli_fetch_assoc($consulta_tabela_pf);
+$con = bancoMysqli();
+$sql_lista = "SELECT * FROM sis_pessoa_fisica ORDER BY Nome";
+$query_lista = mysqli_query($con,$sql_lista);
 
-$link="frm_edita_pf.php";
+$link="?perfil=contratos&p=frm_edita_pf&";
 
 ?>
 	
@@ -30,7 +16,7 @@ $link="frm_edita_pf.php";
 		<div class="container">
 			 <div class="sub-title">PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
+				<table class="table table-condensed">
 					<thead>
 						<tr class="list_menu">
 							<td>Proponente</td>
@@ -42,15 +28,14 @@ $link="frm_edita_pf.php";
 					</thead>
 					<tbody>
 <?php 					  
-	do 
-	{
-	echo "<tr><td class='lista'> <a href='$link?id_pf=$linha_tabela_pf[Id_PessoaFisica]'>$linha_tabela_pf[Nome]</a></td>";
+	while($linha_tabela_pf = mysqli_fetch_assoc($query_lista)){
+	echo "<tr><td class='lista'> <a href='$link&id_pf=$linha_tabela_pf[Id_PessoaFisica]'>$linha_tabela_pf[Nome]</a></td>";
 	echo '<td class="lista">'.$linha_tabela_pf['CPF'].				'</td> ';
 	echo '<td class="lista">'.$linha_tabela_pf['Telefone1'].		'</td> ';
 	echo '<td class="lista">'.$linha_tabela_pf['Telefone2'].		'</td> ';
 	echo '<td class="lista">'.$linha_tabela_pf['Email'].			'</td></tr>';
 	}
-	while($linha_tabela_pf = mysqli_fetch_assoc($consulta_tabela_pf));
+	
 ?>
 					
 					</tbody>
@@ -59,10 +44,3 @@ $link="frm_edita_pf.php";
 		</div>
 	</section>
 <!--fim_list-->
-
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-
-
-</html>

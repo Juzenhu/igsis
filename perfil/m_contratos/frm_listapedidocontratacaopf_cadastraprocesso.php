@@ -1,41 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-  </head>
-  <body>
-
 <?php
-require ("../conectar.php");
-$sql__tabela_pedido_contratacaopf = "SELECT
-											sis_pedido_contratacao_pf.Id_PedidoContratacaoPF, 
-											sis_pessoa_fisica.Nome,
-											sis_pedido_contratacao_pf.Objeto,
-											sis_pedido_contratacao_pf.LocalEspetaculo,
-											sis_pedido_contratacao_pf.Periodo,
-											sis_contrato_pf.Id_ContratoPF
-										FROM
-											sis_pessoa_fisica 
-										INNER JOIN sis_pedido_contratacao_pf 
-										ON 
-											(sis_pedido_contratacao_pf.IdPessoaFisica = 
-											 sis_pessoa_fisica.Id_PessoaFisica)
-                                        INNER JOIN sis_contrato_pf
-										ON 
-                                        (sis_pedido_contratacao_pf.Id_PedidoContratacaoPF =
-											sis_contrato_pf.IdPedidoContratacaoPF)";
-											 
-$consulta_tabela_pedido_contratacaopf= mysqli_query($conexao, $sql__tabela_pedido_contratacaopf);
-$linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf);
 
-$link="frm_cadastra_processopf.php";
+// não precisa chamar a funcao porque o index contrato já chama.
+$linha_tabela_lista = siscontratLista(1,5,10,1,"DESC"); //esse gera uma array com os pedidos
+
+$link="index.php?perfil=contratos&p=frm_cadastra_processopf&id_ped=";
+
+//$link="frm_edita_pedidocontratacaopj.php";
 
 ?>
 	
@@ -61,16 +31,17 @@ $link="frm_cadastra_processopf.php";
 					<tbody>
 <?php        
  $data=date('Y');
- do 
+$data=date('Y');
+for($i = 0; $i < count($linha_tabela_lista); $i++)
  {
- echo "<tr><td class='lista'> <a href='$link?id=$linha_tabela_pedido_contratacaopf[Id_PedidoContratacaoPF]&idContrato=$linha_tabela_pedido_contratacaopf[Id_ContratoPF]'>$data-$linha_tabela_pedido_contratacaopf[Id_PedidoContratacaoPF]</a></td>";
- echo '<td class="lista">'.$linha_tabela_pedido_contratacaopf['Nome'].         '</td> ';
- echo '<td class="lista">'.$linha_tabela_pedido_contratacaopf['Objeto'].         '</td> ';
- echo '<td class="lista">'.$linha_tabela_pedido_contratacaopf['LocalEspetaculo'].      '</td> ';
- echo '<td class="lista">'.$linha_tabela_pedido_contratacaopf['Periodo'].      '</td> ';
- echo '<td class="lista">'.$linha_tabela_pedido_contratacaopf['Id_ContratoPF'].        '</td></tr>';
- }
- while($linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf));
+	$linha_tabela_pedido_contratacaopf = recuperaDados("sis_pessoa_fisica",$linha_tabela_lista[$i]['IdProponente'],"Id_PessoaFisica");	 
+	echo "<tr><td class='lista'> <a href='".$link.$linha_tabela_lista[$i]['idPedido']."'>".$linha_tabela_lista[$i]['idPedido']."</a></td>";
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['Nome'].					'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Objeto'].						'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Local'].				'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Periodo'].						'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Status'].						'</td> </tr>';
+	}
 ?>
 
 					
@@ -79,11 +50,3 @@ $link="frm_cadastra_processopf.php";
 			</div>
 		</div>
 	</section> 
-<!--fim_list-->
-
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-	
-  	
-</html>

@@ -1,24 +1,14 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
+
 
 <?php
-require("../conectar.php");
-include 'includes/menu.php';
 
-$link1="rlt_reserva_padrao_pf.php";
-$link2="rlt_reserva_fepac_pf.php";
-$link3="rlt_reserva_cooperativa_pf.php";
+include 'includes/menu.php';
+$conexao = bancoMysqli();
+$server = $_SERVER['SERVER_NAME'];
+$link0="http://$server/igsis/perfil/m_contratos/";
+$link1=$link0."rlt_reserva_padrao_pf.php";
+$link2=$link0."rlt_reserva_fepac_pf.php";
+$link3=$link0."rlt_reserva_cooperativa_pf.php";
 
 
 $processo=$_POST['NumeroProcesso'];
@@ -26,9 +16,9 @@ $processo=$_POST['NumeroProcesso'];
 $id_ped=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
-$incluir = "UPDATE sis_contrato_pf 
+$incluir = "UPDATE igsis_pedido_contratacao 
 			SET NumeroProcesso = '$processo' 
-			WHERE Id_contratoPF = '$idContrato' ";
+			WHERE idPedidoContratacao = '$id_ped' ";
 
 //PREPARANDO A VARIAVEL DO UPDATE
 $stmt = mysqli_prepare($conexao,$incluir);
