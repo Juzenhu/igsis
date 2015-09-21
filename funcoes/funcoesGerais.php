@@ -23,7 +23,12 @@ function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
 	}
 }
 
+function habilitarErro(){
 
+   @ini_set('display_errors', '1');
+	error_reporting(E_ALL); 	
+
+}
 
 
 // Framework
@@ -928,7 +933,7 @@ function retornaEndereco($cep,$numero,$complemento){
 		$sql02 = "SELECT * FROM $uf WHERE cep = '$cep'";
 		$query02 = mysqli_query($con,$sql02);
 		$campo02 = mysqli_fetch_array($query02);
-		$endereco =  $campo02['tp_logradouro']." ".$campo02['logradouro'].", ".$numero." / ".$complemento."<br />".
+		$endereco =  $campo02['tp_logradouro']." ".$campo02['logradouro'].", ".$numero." / ".$complemento." - ".
 		$campo02['bairro']." - ".$campo02['cidade']." / ".strtoupper($campo01['uf']);
 		return $endereco;
 	}else{
@@ -965,7 +970,7 @@ function valorPorExtenso($valor=0) { //retorna um valor por extenso
 	for($i=0;$i<count($inteiro);$i++)
 		for($ii=strlen($inteiro[$i]);$ii<3;$ii++)
 			$inteiro[$i] = "0".$inteiro[$i];
- 
+  	$rt = "";
 	// $fim identifica onde que deve se dar junção de centenas por "e" ou por "," ;) 
 	$fim = count($inteiro) - ($inteiro[count($inteiro)-1] > 0 ? 1 : 2);
 	for ($i=0;$i<count($inteiro);$i++) {
@@ -1736,8 +1741,78 @@ function retornaDatas($id){ //retorna o período
 
 }
 
-function busca($termo){
+function busca($busca,$tipo){
+	$con = bancoMysqli();
+	switch($tipo){
+
+	case 1:	// busca em ig_eventos
+	$sql_busca = "SELECT DISTINCT * FROM ig_evento WHERE 
+	(nomeEvento LIKE '%$busca%' OR 
+	projeto LIKE '%$busca%' OR
+	autor LIKE '%$busca%' OR
+	fichaTecnica LIKE '%$busca%' OR
+	sinopse LIKE '%$busca%' OR
+	releaseCom LIKE '%$busca%' OR
+	projeto LIKE '%$busca%') AND publicado = '1'";
+	$query_busca = mysqli_query($con,$sql_busca);
+	$num = mysqli_num_rows($query_busca);
+	if($num > 0){
+		$i = 0;
+		while($evento = mysqli_fetch_array($query_busca)){
+			$x[$i]['nomeEvento'] = $evento['nomeEvento'];
+			$x[$i]['idEvento'] = $evento['idEvento'];
+			$i++;
+		}	
+	}
 	
-}
+	
+
+	$x['numReg'] = $num;
+	return $x;	
+	
+	break;
+	case 2:
+	$con = bancoMysqli();
+	// busca em sis_pessoa_fisica
+	$sql = "SELECT  * FROM sis_pessoa_fisica WHERE 
+	(Nome LIKE '%$busca%' OR 
+	NomeArtistico LIKE '%$busca%' OR
+	Funcao LIKE '%$busca%' OR
+	Nacionalidade LIKE '%$busca%')";
+	$query = mysqli_query($con,$sql);
+	$num_pf = mysqli_num_rows($query);
+		if($num_pf > 0){
+		$i = 0;
+		while($evento = mysqli_fetch_array($query)){
+			$x['fisica'][$i]['Nome'] = $evento['Nome'];
+			$x['fisica'][$i]['IdPessoa'] = $evento['Id_PessoaFisica'];
+			$i++;
+		}	
+	}
+	
+	// busca em sis_pessoa_juridica
+	$sql = "SELECT * FROM sis_pessoa_juridica WHERE 
+	RazaoSocial LIKE '%$busca%'";
+	$query = mysqli_query($con,$sql);
+	$num_pj = mysqli_num_rows($query);
+		if($num_pj > 0){
+		$i = 0;
+		while($evento = mysqli_fetch_array($query)){
+			$x['juridica'][$i]['Nome'] = $evento['Nome'];
+			$x['juridica'][$i]['IdPessoa'] = $evento['Id_PessoaJuridica'];
+			$i++;
+		}	
+	}
+
+
+
+	$x['numReg'] = $num_pf + $num_pj;
+	return $x;	
+
+	break;
+
+	}
+}	
+
 
 ?>

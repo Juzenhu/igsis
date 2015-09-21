@@ -2,21 +2,20 @@
 <?php
 include 'includes/menu.php';
 $conexao = bancoMysqli();
-$server = $_SERVER['SERVER_NAME'];
-$http = "http://$server/igsis/perfil/m_contratos/";
+$server = "http://".$_SERVER['SERVER_NAME']."/igsis/";
+$http = $server."/pdf/";
 $link1=$http."rlt_proposta_padrao_pf.php";
 $link2=$http."rlt_proposta_artistico_pf.php";
 $link3=$http."rlt_proposta_eventoexterno_pf.php";
 $link4=$http."rlt_proposta_oficina_pf.php";
-$link5=$http."#";
-$link6=$http."#";
-$link7=$http."#";
-$link8=$http."#";
-$link9=$http."#";
-$link10=$http."#";
+$link5=$http."rlt_declaracao_dados_bancarios_pf.php";
+$link6=$http."rlt_declaracao_convenio500_pf.php";
+$link7=$http."rlt_pedido_reserva_padrao_pf.php";
+$link8=$http."rlt_pedido_reserva_fepac_pf.php";
+$link9=$http."rlt_pedido_reserva_cooperativa_pf.php";
+$link10=$http."rlt_recibo_ne_pf.php";
 
-$url = urlAtual();
-$server = $_SERVER['SERVER_NAME'];
+
 
 $assinatura = $_POST['Id_Assinatura'];
 $idUsuario = $_SESSION['idUsuario'];

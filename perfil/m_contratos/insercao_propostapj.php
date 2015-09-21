@@ -1,49 +1,26 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
+
 
 <?php
-require("../conectar.php");
 include 'includes/menu.php';
+$conexao = bancoMysqli();
+$server = "http://".$_SERVER['SERVER_NAME']."/igsis/";
+$http = $server."/pdf/";
+$id_ped = $_GET['id_ped'];
+$assinatura = $_POST['Id_Assinatura'];
+$idUsuario = $_SESSION['idUsuario'];
 
-$link1="rlt_proposta_padrao_pj.php";
-$link2="rlt_proposta_artistico_pj.php";
-$link3="rlt_proposta_eventoexterno_pj.php";
-$link4="rlt_proposta_oficina_pj.php";
+$link1=$http."rlt_proposta_padrao_pj.php";
+$link2=$http."rlt_proposta_artistico_pj.php";
+$link3=$http."rlt_proposta_eventoexterno_pj.php";
+$link4=$http."rlt_proposta_padrao_pf.php";
 
+$update = "UPDATE igsis_pedido_contratacao 
+			SET
+			
+			idAssinatura = '$assinatura'
+			WHERE IdPedidoContratacao = '$id_ped' ";
 
-
-$IdPedidoContratacaoPJ=$_POST['Id_PedidoContratacaoPJ'];
-$IdUsuario=1;
-$IdAssinatura=$_POST['Id_Assinatura'];
-
-$id_ped=$_GET['id'];
-
-
-$incluir = "INSERT INTO sis_contrato_pj
-(
-IdPedidoContratacaoPJ,
-IdUsuario,
-IdAssinatura
-)
-Values
-(
-'$IdPedidoContratacaoPJ',
-'$IdUsuario',
-'$IdAssinatura'
-)";
-
-$stmt = mysqli_prepare($conexao,$incluir);
+$stmt = mysqli_prepare($conexao,$update);
 
 if( mysqli_stmt_execute($stmt))
 {

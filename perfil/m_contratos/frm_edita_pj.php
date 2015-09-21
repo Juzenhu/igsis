@@ -1,121 +1,129 @@
-
 <?php
+$con = bancoMysqli();
+$id_pj = $_GET['id_pj'];
+if(isset($_POST['idPedido'])){
+	$_SESSION['idPedido'] = $_POST['idPedido'];
+}
 
-
-$id_pj=$_GET['id_pj'];
-
-$sql_query_tabelas_pj ="SELECT * FROM sis_pessoa_juridica 
-							
-							WHERE Id_PessoaJuridica = $id_pj";
-
-$consulta_tabelas = mysqli_query($conexao,$sql_query_tabelas_pj);
-$linha_tabelas = mysqli_fetch_assoc ($consulta_tabelas);
-
-
-$consulta_tabela_representante_legal = mysqli_query ($conexao,"SELECT * FROM sis_representante_legal");
-$linha_tabela_representante_legal= mysqli_fetch_assoc($consulta_tabela_representante_legal);
-
-?>	
-    	<?php include 'includes/menu.php';?>
+if(isset($_POST['editaJuridica'])){
+		$idJuridica = $_POST['editaJuridica'];
+		$RazaoSocial = $_POST['RazaoSocial'];
+		$CNPJ = $_POST['CNPJ'];
+		$CCM = $_POST['CCM'];
+		$CEP = $_POST['CEP'];
+		$Numero = $_POST['Numero'];
+		$Complemento = $_POST['Complemento'];
+		$Telefone1 = $_POST['Telefone1'];
+		$Telefone2 = $_POST['Telefone2'];
+		$Telefone3 = $_POST['Telefone3'];
+		$Email = $_POST['Email'];
+		$Observacao = $_POST['Observacao'];
+		$data = date("Y-m-d");
+		$idUsuario = $_SESSION['idUsuario'];
 		
-	  
-	 <!-- Contact -->
+		$sql_atualizar_juridica = "UPDATE `sis_pessoa_juridica` SET `RazaoSocial` = '$RazaoSocial', `CNPJ` = '$CNPJ', `CCM` = '$CCM', `CEP` = '$CEP', `Numero` = '$Numero', `Complemento` = '$Complemento', `Telefone1` = '$Telefone1', `Telefone2` = '$Telefone2', `Telefone3` = '$Telefone3', `Email` = '$Email',  `DataAtualizacao` = '$data', `Observacao` = '$Observacao' WHERE `sis_pessoa_juridica`.`Id_PessoaJuridica` = '$idJuridica';";
+				if(mysqli_query($con,$sql_atualizar_juridica)){
+			$mensagem = "Atualizado com sucesso!";	
+		}else{
+			$mensagem = "Erro ao atualizar! Tente novamente.";
+		}
+		
+}
+
+
+$pj = recuperaDados("sis_pessoa_juridica",$_GET['id_pj'],"Id_PessoaJuridica");
+
+
+
+	
+	?>
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
 					<div class="sub-title">CADASTRO DE PESSOA JURÍDICA</div>
+                                        <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
 			  </div>
 
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
+                
+                
+                
+                
 
-				<form class="form-horizontal" role="form" <?php echo "action='update_pessoajuridica.php?id_pj=$id_pj'" ;?> method="post">
+				<form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_pj&id_pj=<?php echo $_GET['id_pj'];?>" method="post">
 				  
-				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>Id:</strong><br/>
-					  <input type="text" class="form-control" id="Id_PessoaJuridica"  name="Id_PessoaJuridica" <?php echo " value='$id_pj' ";?>>
-					</div>
-				  </div>
-				  
+			  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Razão Social:</strong><br/>
-					  <input type="text" class="form-control" id="RazaoSocial" name="RazaoSocial" placeholder="RazaoSocial" <?php echo "value='$linha_tabelas[RazaoSocial]'";?>>
+					  <input type="text" class="form-control" id="RazaoSocial" name="RazaoSocial" placeholder="RazaoSocial" value="<?php echo $pj['RazaoSocial']; ?>">
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>CNPJ:</strong><br/>
-					  <input type="text" class="form-control" id="CNPJ" name="CNPJ" placeholder="CNPJ" <?php echo "value='$linha_tabelas[CNPJ]'";?>>
+					  <input type="text" readonly class="form-control" id="CNPJ" name="CNPJ" placeholder="CNPJ" value="<?php echo $pj['CNPJ']; ?>" >
 					</div>
 					<div class="col-md-6"><strong>CCM:</strong><br/>
-					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" <?php echo "value='$linha_tabelas[CCM]'";?>>
+					  <input type="text" class="form-control" id="CCM" name="CCM" placeholder="CCM" value="<?php echo $pj['CCM']; ?>">
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>CEP:</strong><br/>
-					  <input type="text" class="form-control" id="IdEndereco" name="IdEndereco" placeholder="CEP">
+                  					<div class="col-md-offset-2 col-md-6"><strong>CEP *:</strong><br/>
+					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="CEP" value="<?php echo $pj['CEP']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>Estado *:</strong><br/>
+					  <input type="text" class="form-control" id="Estado" name="Estado" placeholder="Estado">
+					</div>
+
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Endereço *:</strong><br/>
+					  <input type="text" class="form-control" id="Endereco" name="Endereco" placeholder="Endereço">
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>Endereço:</strong><br/>
-					  <input type="text" class="form-control" id="" name="" placeholder="Endereço">
+					<div class="col-md-offset-2 col-md-6"><strong>Número *:</strong><br/>
+					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero" value="<?php echo $pj['Numero']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>Complemento:</strong><br/>
+					  <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento" value="<?php echo $pj['Complemento']; ?>">
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Número:</strong><br/>
-					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero" <?php echo "value='$linha_tabelas[Numero]'";?>>
-					</div>
-					<div class="col-md-6"><strong>Complemento:</strong><br/>
-					  <input type="text" class="form-control" id="Complemento" name="Complemento" placeholder="Complemento" <?php echo "value='$linha_tabelas[Complemento]'";?>>
+					<div class="col-md-offset-2 col-md-6"><strong>Bairro *:</strong><br/>
+					  <input type="text" class="form-control" id="Bairro" name="Bairro" placeholder="Bairro">
+					</div>				  
+					<div class=" col-md-6"><strong>Cidade *:</strong><br/>
+					  <input type="text" class="form-control" id="Cidade" name="Cidade" placeholder="Cidade">
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Telefone:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone1" name="Telefone1" placeholder="Telefone" <?php echo "value='$linha_tabelas[Telefone1]'";?>>
+					  <input type="text" class="form-control" id="Telefone1" name="Telefone1" placeholder="Telefone" value="<?php echo $pj['Telefone1']; ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>Telefone:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone2" name="Telefone2" placeholder="Telefone" <?php echo "value='$linha_tabelas[Telefone2]'";?>>
+					  <input type="text" class="form-control" id="Telefone2" name="Telefone2" placeholder="Telefone" value="<?php echo $pj['Telefone2']; ?>" >
 					</div>
 				  </div>
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Telefone:</strong><br/>
-					  <input type="text" class="form-control" id="Telefone3" name="Telefone3" placeholder="Telefone" <?php echo "value='$linha_tabelas[Telefone3]'";?>>
+					  <input type="text" class="form-control" id="Telefone3" name="Telefone3" placeholder="Telefone" value="<?php echo $pj['Telefone3']; ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>E-mail:</strong><br/>
-					  <input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail" <?php echo "value='$linha_tabelas[Email]'";?>>
+					  <input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail">
 					</div>
 				  </div>
 				  
-				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>Representante Legal:</strong><br/>
-					  <select class="form-control" id="IdRepresentanteLegal1" name="IdRepresentanteLegal1" > <option>Selecione</option>
-					 <!-- Código do combobox aqui -->
-					  </select>
-					</div>
-				  </div>
-				  
-				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>Representante Legal:</strong><br/>
-					  <select class="form-control" id="IdRepresentanteLegal2" name="IdRepresentanteLegal2" ><option>Selecione</option>
-					  <!-- Código do combobox aqui -->
-					  </select>
-					</div>
-				  </div>
-				  
-				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>Data da Atualização do Cadastro:</strong><br/>
-					  <input type="text" class="form-control" id="DataAtualizacao" name="DataAtualizacao" placeholder="Data da Atualização do Cadastro" <?php echo "value='$linha_tabelas[DataAtualizacao]'";?>>
-					</div>
-				  </div>
-				  
-				  <div class="form-group">
+			  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Observações:</strong><br/>
-					  <input type="text" class="form-control" id="Observacao" name="Observacao" placeholder="Observações" <?php echo "value='$linha_tabelas[Observacao]'";?>>
+					 <textarea name="Observacao" class="form-control" rows="10" placeholder=""><?php echo $pj['Observacao']; ?></textarea>
 					</div>
 				  </div>
 				  
@@ -123,17 +131,59 @@ $linha_tabela_representante_legal= mysqli_fetch_assoc($consulta_tabela_represent
 				<!-- Botão Gravar -->	
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					 <input type="submit" value="GRAVAR" class="btn btn-theme btn-lg btn-block">
+                     <input type="hidden" name="editaJuridica" value="<?php echo $pj['Id_PessoaJuridica'] ?>" />
+                     <input type="hidden" name="idPedidoContratacao" value="<?php echo $_SESSION['idPedido']; ?>" />
+					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
 					</div>
 				  </div>
 				</form>
 	
 	  			</div>
-			
+
+					<div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                    	<br />
+                </div>
+                    	<br />
+					</div>
+
+
+				  <div class="form-group">
+               	<div class="col-md-offset-2 col-md-8">
+                <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_arquivos&idPessoa=<?php echo $pj['Id_PessoaJuridica']; ?>&tipoPessoa=2" method="post">
+                    <input type="hidden" name="cadastrarFisica" value="<?php echo $pj['Id_PessoaJuridica'] ?>" />
+                    <?php if(isset($id_pedido)){ ?>
+                   <input type="hidden" name="idPedido" value="<?php echo $_SESSION['idPedido']; ?>" />
+                   <?php } ?>
+
+                    <input type="hidden" name="Sucesso" id="Sucesso" />
+					 <input type="image" alt="Anexos" value="submit" class="btn btn-theme btn-block">
+				</form>
+	
+	  			</div>
 				
 	  		</div>
+            					<div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                    	<br />
+                </div>
+                    	<br />
+					</div>
+
+							  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                    <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido'];?>" method="post">
+                     <input type="hidden" name="editaJuridica" value="<?php echo $pj['Id_PessoaJuridica'] ?>" />
+                     <input type="hidden" name="idPedidoContratacao" value="<?php echo $_SESSION['idPedido']; ?>" />
+					 <input type="image" alt="Voltar ao pedido de contratação" value="submit" class="btn btn-theme  btn-block">
+					</div>
+				  </div>
+				</form>
+
+
 			
 
 	  	</div>
 	  </section>  
 
+<?php var_dump($pj); ?>

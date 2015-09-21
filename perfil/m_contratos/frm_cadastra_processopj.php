@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
 <?php
-require("../conectar.php");
 
-$id_ped=$_GET['id'];
-$idContrato=$_GET['idContrato'];
+$id_ped=$_GET['id_ped'];
+//$idContrato=$_GET['idContrato'];
 
 ?>	
     	<?php include 'includes/menu.php';?>
@@ -31,7 +17,7 @@ $idContrato=$_GET['idContrato'];
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
 
-				<form class="form-horizontal" role="form" <?php echo "action='insercao_processopj.php?idContrato=$idContrato&id=$id_ped'"; ?> method="post">
+				<form class="form-horizontal" role="form" <?php echo "action='?perfil=contratos&p=insercao_processopj&id=$id_ped'"; ?> method="post">
 				  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
@@ -47,23 +33,15 @@ $idContrato=$_GET['idContrato'];
 					
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
 					</div>
 				  </div>
 				</form>
 	
 	  			</div>
 			
-				
 	  		</div>
 			
 
 	  	</div>
 	  </section>  
-
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-
-  	
-</html>

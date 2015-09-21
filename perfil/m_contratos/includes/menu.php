@@ -73,6 +73,7 @@ $pasta = "?perfil=contratos&p=";
                                 </ul>
                             </li>
 							<li><a href="#">Ajuda</a></li>
+                            <li><a href="<?php echo $pasta ?>frm_busca">busca</a></li>
 							<li><a href="../index.php">Sair</a></li>
 						</ul>
 			</div>

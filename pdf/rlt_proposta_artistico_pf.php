@@ -1,183 +1,315 @@
-<?php
+<?php 
+   
 
-// PRIMEIRAMENTE: INSTALEI A CLASSE NA PASTA FPDF DENTRO DE MEU SITE.
-define('FPDF_FONTPATH','../lib/fpdf/font/'); 
+   // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
+	require_once("../include/lib/fpdf/fpdf.php");
+	
+   //require '../include/';
+   require_once("../funcoes/funcoesConecta.php");
+   require_once("../funcoes/funcoesGerais.php");
+   require_once("../funcoes/funcoesSiscontrat.php");
 
-// INSTALA AS FONTES DO FPDF
-require('../lib/fpdf/fpdf.php'); 
+   //CONEXÃO COM BANCO DE DADOS 
+   $conexao = bancoMysqli();  
+   
 
-// INSTALA A CLASSE FPDF
-class PDF extends FPDF {
+class PDF extends FPDF
+{
+// Page header
+function Header()
+{
+    // Logo
+    $this->Image('../visual/img/logo_dec.JPG',20,20,40);
+    // Move to the right
+    $this->Cell(80);
+    $this->Image('../visual/img/logo_smc.jpg',170,10);
+    // Line break
+    $this->Ln(20);
+}
 
-// CRIA UMA EXTENSÃO QUE SUBSTITUI AS FUNÇÕES DA CLASSE. 
-// SOMENTE AS FUNÇÕES QUE ESTÃO DENTRO DESTE EXTENDS É QUE SERÃO SUBSTITUIDAS.
+
+//INSERIR ARQUIVOS
+
+function ChapterBody($file)
+{
+    // Read text file
+    $txt = file_get_contents($file);
+    // Arial 10
+    $this->SetFont('Arial','',10);
+    // Output justified text
+    $this->MultiCell(0,5,$txt);
+    // Line break
+    $this->Ln();
+}
+
+function PrintChapter($file)
+{
+    $this->ChapterBody($file);
+}
+
+}
 
 
-    function Header(){ //CABECALHO
-        global $codigo; // EXEMPLO DE UMA VARIAVEL QUE TERÁ O MESMO VALOR EM QUALQUER ÁREA DO PDF.
-        $l=5; // DEFINI ESTA VARIAVEL PARA ALTURA DA LINHA
-        $this->SetXY(10,10); // SetXY - DEFINE O X E O Y NA PAGINA
-        $this->Rect(10,10,190,280); // CRIA UM RETÂNGULO QUE COMEÇA NO X = 10, Y = 10 E 
-                                    //TEM 190 DE LARGURA E 280 DE ALTURA. 
-                                    //NESTE CASO, É UMA BORDA DE PÁGINA.
+//CONSULTA 
+$id_ped=$_GET['id'];
 
-        $this->Image('../img/logo_dec.JPG',11,17,40); // INSERE UMA LOGOMARCA NO PONTO X = 11, Y = 11, E DE TAMANHO 40.
-        $this->SetFont('Arial','B',8); // DEFINE A FONTE ARIAL, NEGRITO (B), DE TAMANHO 8
+$ano=date('Y');
 
-        $this->Cell(170,15,'INSIRA SEU TEXTO AQUI',0,0,'L'); 
-        // CRIA UMA CELULA COM OS SEGUINTES DADOS, RESPECTIVAMENTE: 
-        // LARGURA = 170, 
-        // ALTURA = 15, 
-        // TEXTO = 'INSIRA SEU TEXTO AQUI'
-        // BORDA = 0. SE = 1 TEM BORDA SE 'R' = RIGTH, 'L' = LEFT, 'T' = TOP, 'B' = BOTTOM
-        // QUEBRAR LINHA NO FINAL = 0 = NÃO
-        // ALINHAMENTO = 'L' = LEFT
+$pedido = siscontrat($id_ped);
+$pessoa = siscontratDocs($pedido['IdProponente'],1);
 
-        $this->Image('../img/logo_smc.jpg',170,11); 
-        // CRIA UMA CELULA DA MESMA FORMA ANTERIOR MAS COM ALTURA DEFINIDA PELA VARIAVEL $l E 
-        // INSERINDO UMA VARIÁVEL NO TEXTO.
+$Objeto = $pedido["Objeto"];
+$Periodo = $pedido["Periodo"];
+$Duracao = $pedido["Duracao"];
+$CargaHoraria = $pedido["CargaHoraria"];
+$Local = $pedido["Local"];
+$ValorGlobal = dinheiroParaBr($pedido["ValorGlobal"]);
+//$ValorPorExtenso = valorPorExtenso($valor=0); VER COMO ESCREVER ISSO
+$FormaPagamento = $pedido["FormaPagamento"];
+$Justificativa = $pedido["Justificativa"];
+$Fiscal = $pedido["Fiscal"];
+$Suplente = $pedido["Suplente"];
 
-        $this->Ln(); // QUEBRA DE LINHA
+$Nome = $pessoa["Nome"];
+$NomeArtistico = $pessoa["NomeArtistico"];
+$EstadoCivil = $pessoa["EstadoCivil"];
+$Nacionalidade = $pessoa["Nacionalidade"];
+$RG = $pessoa["RG"];
+$CPF = $pessoa["CPF"];
+$CCM = $pessoa["CCM"];
+$OMB = $pessoa["OMB"];
+$DRT = $pessoa["DRT"];
+$Funcao = $pessoa["Funcao"];
+$Endereco = $pessoa["Endereco"];
+$Telefones = $pessoa["Telefones"];
+$Email = $pessoa["Email"];
+$INSS = $pessoa["INSS"];
 
-        $this->Cell(190,10,'',0,0,'L');
-        $this->Ln();
-        $l = 17;
-        $this->SetFont('Arial','B',12);
-        $this->SetXY(10,15);
-        $this->Cell(190,$l,'TITULO','B',1,'C');
-        $l=5;
-        $this->SetFont('Arial','B',10);
-        $this->Cell(20,$l,'Dados 1:',0,0,'L');
-        $this->Cell(100,$l,'','B',0,'L');
-        $this->Cell(35,$l,'',0,0,'L');
-        $this->Cell(15,$l,'Data:',0,0,'L');
-        $this->Cell(20,$l,date('d/m/Y'),'B',0,'L'); // INSIRO A DATA CORRENTE NA CELULA
 
-        $this->Ln();
-        $this->Cell(20,$l,'Dados 2:',0,0,'L');
-        $this->Cell(100,$l,'','B',0,'L');
-        $this->Ln();
-        $this->Cell(20,$l,'Dados 3:',0,0,'L');
-        $this->Cell(100,$l,'','B',0,'L');
-        $this->Cell(35,$l,'',0,0,'L');
-        $this->Cell(15,$l,'Dados 4:',0,0,'L');
-        $this->Cell(20,$l,'','B',0,'L');
-        $this->Ln();
+// GERANDO O PDF:
+$pdf = new PDF('P','mm','A4'); //CRIA UM NOVO ARQUIVO PDF NO TAMANHO A4
+$pdf->AliasNbPages();
+$pdf->AddPage();
 
-        //FINAL DO CABECALHO COM DADOS
-        //ABAIXO É CRIADO O TITULO DA TABELA DE DADOS
+   
+$x=20;
+$l=7; //DEFINE A ALTURA DA LINHA   
+   
+   $pdf->SetXY( $x , 40 );// SetXY - DEFINE O X (largura) E O Y (altura) NA PÁGINA
 
-        $this->Cell(190,2,'',0,0,'C'); 
-        //ESPAÇAMENTO DO CABECALHO PARA A TABELA
-        $this->Ln();
-
-        $this->SetTextColor(255,255,255);
-        $this->Cell(190,$l,'Titulo 1',1,0,'C',1);
-        $this->Ln();
-
-        //TITULO DA TABELA DE SERVIÇOS
-        $this->SetFillColor(232,232,232);
-        $this->SetTextColor(0,0,0);
-        $this->SetFont('Arial','B',8);
-        $this->Cell(10,$l,'Titulo 1',1,0,'L',1);
-        $this->Cell(31,$l,'Titulo 2',1,0,'l',1);
-        $this->Cell(70,$l,'Titulo 3',1,0,'L',1);
-        $this->Cell(12,$l,'Titulo 4',1,0,'C',1);
-        $this->Cell(12,$l,'Titulo 5',1,0,'C',1);
-        $this->Cell(40,$l,'Titulo 6',1,0,'C',1);
-        $this->Cell(15,$l,'Titulo 7',1,0,'C',1);
-        $this->Ln();
-
-    }
-
-    function Footer(){ // CRIANDO UM RODAPE
-
-        $this->SetXY(15,280);
-        $this->Rect(10,270,190,20);
-        $this->SetFont('Arial','',10);
-        $this->Cell(70,8,'Assinatura ','T',0,'L');
-        $this->Cell(40,8,' ',0,0,'L');
-        $this->Cell(70,8,'Assinatura','T',0,'L'); 
-        $this->Ln();
-        $this->SetFont('Arial','',7);
-        $this->Cell(190,7,'Página '.$this->PageNo().' de {nb}',0,0,'C');
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(10,5,'(A)',0,0,'L');
+   $pdf->SetFont('Arial','B', 12);
+   $pdf->Cell(170,5,'CONTRATADO',0,1,'C');
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','I', 10);
+   $pdf->Cell(10,10,utf8_decode('(Quando se tratar de grupo, o líder do grupo)'),0,0,'L');
+   
+   $pdf->Ln();
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(12,$l,'Nome:',0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(168,$l,utf8_decode($Nome));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(28,$l,utf8_decode('Nome Artístico:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(152,$l,utf8_decode($NomeArtistico));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(23,$l,utf8_decode('Estado Civil:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(65,$l,utf8_decode($EstadoCivil),0,0,'L');
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(28,$l,utf8_decode('Nacionalidade:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(17,$l,utf8_decode($Nacionalidade),0,1,'L');
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(7,$l,utf8_decode('RG:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(50,$l,utf8_decode($RG),0,0,'L');
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(10,$l,utf8_decode('CPF:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(53,$l,utf8_decode($CPF),0,0,'L');
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(10,$l,utf8_decode('CCM:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(45,$l,utf8_decode($CCM),0,1,'L');
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(12,$l,utf8_decode('OMB:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(45,$l,utf8_decode($OMB),0,0,'L');
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(10,$l,utf8_decode('DRT:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(45,$l,utf8_decode($DRT),0,0,'L');
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(15,$l,utf8_decode('Função:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(45,$l,utf8_decode($Funcao),0,1,'L');
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(20,$l,utf8_decode('Endereço:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(160,$l,utf8_decode($Endereco));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(17,$l,utf8_decode('Telefone:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(87,$l,utf8_decode($Telefones),0,0,'L');
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(13,$l,utf8_decode('E-mail:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(53,$l,utf8_decode($Email),0,1,'L');
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(64,$l,utf8_decode('Inscrição no INSS ou nº PIS / PASEP:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(45,$l,utf8_decode($INSS),0,1,'L');
+   
   
-    }
+   
+   $pdf->SetX($x);
+   $pdf->Cell(180,5,'','B',1,'C');
+   
+   $pdf->Ln();
+    
+   
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(10,10,'(B)',0,0,'L');
+   $pdf->SetFont('Arial','B', 12);
+   $pdf->Cell(160,10,'PROPOSTA',0,0,'C');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(10,10,$ano."-".$id_ped,0,1,'R');
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(15,$l,'Objeto:',0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(165,$l,utf8_decode($Objeto));
+  
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(27,$l,utf8_decode('Data / Período:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(153,$l,utf8_decode($Periodo));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(82,$l,utf8_decode('Tempo Aproximado de Duração do Espetáculo:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(98,$l,utf8_decode($Duracao));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(27,$l,utf8_decode('Carga Horária:'),0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(180,$l,$CargaHoraria);
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(12,$l,'Local:',0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(168,$l,utf8_decode($Local));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(12,$l,'Valor:',0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(168,$l,utf8_decode($ValorGlobal));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(40,$l,'Forma de Pagamento:',0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(140,$l,utf8_decode($FormaPagamento));
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','B', 10);
+   $pdf->Cell(25,$l,'Justificativa:',0,0,'L');
+   $pdf->SetFont('Arial','', 10);
+   $pdf->MultiCell(155,$l,utf8_decode($Justificativa));
 
 
-}
+//RODAPÉ PERSONALIZADO
+   $pdf->SetXY($x,265);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(50,$l,'Rubrica do Contratato','T',0,'C');
+   $pdf->Cell(10,$l,'',0,0,'C');
+   $pdf->Cell(50,$l,'Fiscal','T',0,'C');
+   $pdf->Cell(10,$l,'',0,0,'C');
+   $pdf->Cell(50,$l,'Suplente','T',0,'C');
+   
 
-//CONECTE SE AO BANCO DE DADOS SE PRECISAR 
-include("../conectar.php"); // A MINHA CONEXÃO FICOU EM CONFIG.PHP
+//	QUEBRA DE PÁGINA
+$pdf->AddPage('','');
 
-$pdf=new PDF('P','mm','A4'); //CRIA UM NOVO ARQUIVO PDF NO TAMANHO A4
-$pdf->AddPage(); // ADICIONA UMA PAGINA
-$pdf->AliasNbPages(); // SELECIONA O NUMERO TOTAL DE PAGINAS, USADO NO RODAPE
-$pdf->SetFont('Arial','',8);
-$y = 59; // AQUI EU COLOCO O Y INICIAL DOS DADOS 
+$pdf->SetXY( $x , 35 );// SetXY - DEFINE O X (largura) E O Y (altura) NA PÁGINA
 
-$sql = "select * from tabela"; //SELECAO DOS DADOS QUE IRÃO PRO PDF
-$result = mysql_query($sql);
-$l=5; // ALTURA DA LINHA
-while($row = mysql_fetch_array($result)) {
-// ENQUANTO OS DADOS VÃO PASSANDO, O FPDF VAI INSERINDO OS DADOS NA PAGINA
+$pdf->SetX($x);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(10,5,'(C)',0,0,'L');
+   $pdf->SetFont('Arial','B', 12);
+   $pdf->Cell(170,5,'PENALIDADES',0,1,'C');
+   
+   $pdf->Ln();
 
-    $dados1 = $row["0"];
-    $dados2 = utf8_decode($row["1"]); // NESTE CASO, EU DECODIFIQUEI OS DADOS, POIS É UM CAMPO DE     TEXTO.
-    $dados3 = $row["2"];
-    $dados4 = $row["3"];
-    $dados5 = $row["4"];
-    $dados6 = $row["5"];
-    $dados7 = $row["6"];
+$pdf->SetX($x);
+$pdf->PrintChapter('txt/proposta_artistico_pf.txt');
 
-    $l = 5 * contaLinhas($dados2,48); 
-    // Eu criei a função "contaLinhas" para contar quantas linhas um campo pode conter se tiver largura = 48
+    
+   
+   	$pdf->SetX($x);
+   	$pdf->MultiCell( 180, 6,
+      utf8_decode(
+      "DECLARO ESTAR CIENTE DA PENALIDADE PREVISTA NO CAMPO (C).  \n".
+      "TODAS AS INFORMAÇÕES PRECEDENTES SÃO FIRMADAS SOB AS PENAS DA LEI."),'T'
+   );
 
+   $pdf->Ln();
 
-    if($y + $l >= 230){           // 230 É O TAMANHO MAXIMO ANTES DO RODAPE
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(180,$l,"Data: _________ / _________ / "."$ano".".",0,0,'L');
+   
+   $pdf->Ln();
+   $pdf->Ln();
+   $pdf->Ln();
+   $pdf->Ln();
+   
+   $pdf->SetX($x);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(40,$l,'',0,0,'L');
+   $pdf->Cell(90,$l,'ASSINATURA','T',0,'C');
+   $pdf->Cell(40,$l,'',0,0,'L');
 
-        $pdf->AddPage();   // SE ULTRAPASSADO, É ADICIONADO UMA PÁGINA
-        $y=59;             // E O Y INICIAL É RESETADO
-
-    }
-
-    //DADOS
-    $pdf->SetY($y);
-    $pdf->SetX(10);
-    $pdf->Rect(10,$y,70,$l);
-    $pdf->MultiCell(70,6,$dados2,0,2); // ESTA É A CELULA QUE PODE TER DADOS EM MAIS DE UMA LINHA
-    $pdf->SetFont('Arial','',6);
-    $pdf->SetY($y);
-    $pdf->SetX(20);
-    $pdf->Rect(20,$y,31,$l);
-    $pdf->MultiCell(31,6,$dados1,0,2);
-    $pdf->SetY($y);
-    $pdf->SetX(51);
-    $pdf->Rect(51,$y,10,$l);
-    $pdf->MultiCell(10,5,$dados3,0,2);
-    $pdf->SetY($y);
-    $pdf->SetX(121);
-    $pdf->Rect(121,$y,12,$l);
-    $pdf->MultiCell(12,6,$dados4,0,2,'C');
-    $pdf->SetY($y);
-    $pdf->SetX(133);
-    $pdf->Rect(133,$y,12,$l);
-    $pdf->MultiCell(12,6,$dados5,0,2,'C');
-    $pdf->SetY($y);
-    $pdf->SetX(145);
-    $pdf->Rect(145,$y,40,$l);
-    $pdf->MultiCell(40,6,$dados6,0,2,'C');
-    $pdf->SetY($y);
-    $pdf->SetX(185);
-    $pdf->Rect(185,$y,15,$l);
-    $pdf->MultiCell(15,6,$dados7,0,2,'C');
-    $pdf->Ln();
-    $y += $l;
+   $pdf->Ln();
+   
+   //RODAPÉ PERSONALIZADO
+   $pdf->SetXY($x,269);
+   $pdf->SetFont('Arial','', 10);
+   $pdf->Cell(80,$l,'Carimbo e Assinatura do(a) Fiscal do Contrato','T',0,'C');
+   $pdf->Cell(10,$l,'',0,0,'C');
+   $pdf->Cell(80,$l,'Carimbo e Assinatura do(a) Suplente do Fiscal','T',0,'C');
 
 
-}
+$pdf->Output();
 
-mysql_close(); // FECHA A CONEXÃO COM MYSQL
-$pdf->Output(); // IMPRIME O PDF NA TELA
-Header('Pragma: public'); // ESTA FUNÇÃO É USADA PELO FPDF PARA PUBLICAR NO IE
+
 ?>

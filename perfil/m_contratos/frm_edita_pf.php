@@ -245,6 +245,7 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
                	<div class="col-md-offset-2 col-md-6">
                 <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_arquivos&idPessoa=<?php echo $ultimo; ?>&tipoPessoa=1" method="post">
                     <input type="hidden" name="cadastrarFisica" value="<?php echo $fisica['Id_PessoaFisica'] ?>" />
+                   <input type="hidden" name="fisica" value="<?php echo $fisica['Id_PessoaFisica'] ?>" />
                     <?php if(isset($id_pedido)){ ?>
                    <input type="hidden" name="idPedido" value="<?php echo $id_pedido ?>" />
                    <?php } ?>

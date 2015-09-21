@@ -1,10 +1,13 @@
-<?php 
-   
+﻿<?php 
+
    // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
-	require_once('../include/lib/fpdf/fpdf.php');
+	require_once("../include/lib/fpdf/fpdf.php");
 	
    //require '../include/';
-   
+   require_once("../funcoes/funcoesConecta.php");
+   require_once("../funcoes/funcoesGerais.php");
+   require_once("../funcoes/funcoesSiscontrat.php");
+
    //CONEXÃO COM BANCO DE DADOS 
    $conexao = bancoMysqli();
    
@@ -15,10 +18,10 @@ class PDF extends FPDF
 function Header()
 {
     // Logo
-    $this->Image('img/logo_dec.JPG',20,20,40);
+    $this->Image('../visual/img/logo_dec.JPG',20,20,40);
     // Move to the right
     $this->Cell(80);
-    $this->Image('img/logo_smc.jpg',170,10);
+    $this->Image('../visual/img/logo_smc.jpg',170,10);
     // Line break
     $this->Ln(20);
 }
@@ -67,7 +70,7 @@ $id_ped=$_GET['id'];
 
 $linha_tabelas = siscontrat($id_ped);
 
-$codPed = $linha_tabelas["IdPedido"];
+$codPed = $id_ped;
 $objeto = $linha_tabelas["Objeto"];
 $local = $linha_tabelas["Local"];
 $valor = $linha_tabelas["ValorGlobal"];
@@ -81,6 +84,9 @@ $suplente = $linha_tabelas["Suplente"];
 $parecer = $linha_tabelas["ParecerTecnico"];
 $observacao = $linha_tabelas["Observacao"];
 $dataAtual = date("d/m/Y");
+$data_entrega_empenho = exibirDataBr($linha_tabelas['EntregaNE']);
+$data_emissao_empenho = exibirDataBr($linha_tabelas['EmissaoNE']);
+
 
 $linha_tabelas_pessoa = siscontratDocs($linha_tabelas['IdProponente'],1);
 
@@ -226,7 +232,7 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->Cell(80,$l,'ASSINATURA','T',0,'C');
      
    
-   
+ob_start ();   // Limpa o cachê antes de gerar o arquivo.
 $pdf->Output();
 
 

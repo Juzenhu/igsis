@@ -126,6 +126,8 @@ function siscontrat($idPedido){
 			"NotaEmpenho" => "",
 			"Horario" => "", //SPCultura
 			"IdProponente" => $pedido['idPessoa'],
+			"idRepresentante01" => $pedido['idRepresentante01'],
+			"idRepresentante02" => $pedido['idRepresentante02'],
 			"IdExecutante" => $pedido['IdExecutante'],
 			"CargaHoraria" => "",
 			"NumeroProcesso" => $pedido['NumeroProcesso'],
@@ -176,7 +178,7 @@ function siscontratDocs($idPessoa,$tipo){
 				"Telefones" => $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'],
 				"INSS" => $x['InscricaoINSS'] ,
 				"Email" => $x['Email'] ,	
-				"Func" => $x['Funcao'],			
+				"Funcao" => $x['Funcao'],			
 				"Representante01" => "",
 				"Representante02" => ""
 
@@ -197,7 +199,7 @@ function siscontratDocs($idPessoa,$tipo){
 				"EstadoCivil" => "" ,
 				"DataNascimento" => "" ,
 				"LocalNascimento" => "" ,
-				"Naturalidade" => "" ,
+				"Nacionalidade" => "" ,
 				"DRT" =>"" ,
 				"PIS" => "" ,
 				"Observacao" => $x['Observacao'] ,
@@ -308,8 +310,11 @@ function listaArquivosPessoaSiscontrat($idPessoa,$tipo,$pedido){
 				</table>";	
 }
 	
+function buscaSiscontrat($busca,$tipo){
 
 
+
+}
 
 
 ?>

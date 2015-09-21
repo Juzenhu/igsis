@@ -4,6 +4,37 @@ $idPessoa = $_REQUEST['idPessoa'];
 $tipoPessoa = $_REQUEST['tipoPessoa'];
 $idPedido = $_REQUEST['idPedido'];
 $mensagem = $idPessoa." - ".$tipoPessoa." - ".$idPedido;
+
+
+
+if(isset($_POST['executante'])){ 
+	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_executante&id_pf=$idPessoa' />
+			<input type='hidden' name='executante' value='1'>
+	";
+	
+}
+
+if(isset($_POST['representante'])){ 
+	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_representantelegal&id_rep=$idPessoa' />
+				<input type='hidden' name='representante' value='1'>
+";
+}
+
+if(isset($_POST['fisica'])){
+	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_pf&id_pf=$idPessoa' />
+				<input type='hidden' name='fisica' value='1'>
+";
+}
+
+if(isset($_POST['juridica'])){
+	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_pj&id_pj=$idPessoa' />
+				<input type='hidden' name='juridica' value='1'>
+";
+}
+
+
+
+
 if(isset($_POST["enviar"])){
 
 $sql_arquivos = "SELECT * FROM igsis_upload_docs";
@@ -111,19 +142,20 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
 </div>
 <br />
 <div class="center">
-<form method="POST" action="?perfil=contratos&p=frm_edita_pf&id_pf=<?php echo $idPessoa; ?>" >
+
+
+
+<?php echo $form ?>
+
     <input type="hidden" name="idPessoa" value="<?php echo $idPessoa; ?>"  />
     <input type="hidden" name="tipoPessoa" value="<?php echo $tipoPessoa; ?>"  />
-<?php if(isset($idPedido) AND $idPedido != ""){ ?>
-    <input type="hidden" name="idPedido" value="<?php echo $idPedido; ?>"  />
-<?php } ?>    
     <input type="submit" class="btn btn-theme btn-block" value='Voltar ao Cadastro de Pessoa'>
 </form>
 </div>
 <br />
-<?php if(isset($idPedido) AND $idPedido != ""){ ?>
+<?php if(isset($_SESSION['idPedido']) AND $_SESSION['idPedido'] != ""){ ?>
 <div class="center">
-<form method="POST" action="?perfil=contratos&p=frm_edita_pedidocontratacaopf&id_ped=<?php echo $idPedido; ?>" >
+<form method="POST" action="?perfil=contratos&p=frm_edita_pedidocontratacaopf&id_ped=<?php echo $_SESSION['idPedido']; ?>" >
     <input type="hidden" name="idPessoa" value="<?php echo $idPessoa; ?>"  />
     <input type="hidden" name="tipoPessoa" value="<?php echo $tipoPessoa; ?>"  />
     <input type="hidden" name="idPedido" value="<?php echo $idPedido; ?>"  />
@@ -158,3 +190,4 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
 
 		</div>
 	</section>
+    <?php var_dump($_SESSION); ?>

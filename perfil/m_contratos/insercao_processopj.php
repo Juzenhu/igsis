@@ -1,9 +1,14 @@
-<?php
-require("../conectar.php");
 
-$link1="#";
-$link2="#";
-$link3="#";
+
+<?php
+
+include 'includes/menu.php';
+$conexao = bancoMysqli();
+$server = $_SERVER['SERVER_NAME'];
+$link0="http://$server/igsis/pdf/";
+$link1=$link0."rlt_reserva_padrao_pf.php";
+$link2=$link0."rlt_reserva_fepac_pf.php";
+$link3=$link0."rlt_reserva_cooperativa_pf.php";
 
 
 $processo=$_POST['NumeroProcesso'];
@@ -11,9 +16,12 @@ $processo=$_POST['NumeroProcesso'];
 $id_ped=$_GET['id'];
 $idContrato=$_GET['idContrato'];
 
-$incluir = "UPDATE contrato_pj 
+$incluir = "UPDATE igsis_pedido_contratacao 
 			SET NumeroProcesso = '$processo' 
-			WHERE Id_contratoPJ = '$idContrato' ";
+			WHERE idPedidoContratacao = '$id_ped' ";
+
+//PREPARANDO A VARIAVEL DO UPDATE
+$stmt = mysqli_prepare($conexao,$incluir);
 
 //PREPARANDO A VARIAVEL DO UPDATE
 $stmt = mysqli_prepare($conexao,$incluir);
@@ -30,3 +38,4 @@ if( mysqli_stmt_execute($stmt))
 	 <br /></center>";
 };
 ?>
+
