@@ -532,17 +532,16 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
    <a href="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido']; ?>"><input type="image" alt="Voltar ao pedido" value="submit" class="btn btn-theme btn-block"></a> 
 					</div>
 				  </div>
-                                  <div class="form-group">
+                  
+                  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-                    <br />
+                  	  <br />
 					</div>
 				  </div>		
-                
+
                 <!-- Botão para verificar arquivos da pessoa -->
-				  <div class="form-group">
-                <!-- Botão para verificar arquivos da pessoa -->
-				  <div class="form-group">
-               	<div class="col-md-offset-2 col-md-6">
+			  <div class="form-group">
+               	<div class="col-md-offset-2 col-md-8">
                 <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_arquivos&idPessoa=<?php echo $ultimo; ?>&tipoPessoa=1" method="post">
                     <input type="hidden" name="cadastrarFisica" value="<?php echo $fisica['Id_PessoaFisica'] ?>" />
                     <?php if(isset($id_pedido)){ ?>
@@ -554,15 +553,24 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
 					 <input type="image" alt="Anexos" value="submit" class="btn btn-theme btn-block">
 				</form>
 					</div>
-					<div class=" col-md-6">
-                    <?php if(isset($id_pedido)){ ?>
+                </div>
+          
+                <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                  	  <br />
+					</div>
+				  </div>	
+    <?php if(isset($id_pedido)){ ?>
+                          
+                <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
                     
                      <a href="?perfil=contratos&p=frm_edita_executante&id_pf="><input type="image" alt="Mudar o executante" value="submit" class="btn btn-theme btn-block"></a>
+					</div>
+				</div>
                    <?php } ?>
 
-					</div>
-				  </div>
-    
+  
 	  			</div>
 			
 				

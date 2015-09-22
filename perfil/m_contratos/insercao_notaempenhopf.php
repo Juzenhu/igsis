@@ -3,7 +3,7 @@ $conexao = bancoMysqli();
 include 'includes/menu.php';
 $server = $_SERVER['SERVER_NAME'];
 
-$link1="http://$server/igsis/perfil/m_contratos/rlt_recibo_ne_pf.php";
+$link1="http://$server/igsis/visual/pdf/rlt_recibo_ne_pf.php";
 
 
 $numeroNE=$_POST['NumeroNotaEmpenho'];

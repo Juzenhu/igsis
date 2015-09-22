@@ -1,5 +1,5 @@
-
 <?php
+$_SESSION['idPedido'] = ""; //zera a session pedido
 // não precisa chamar a funcao porque o index contrato já chama.
 $linha_tabela_lista = siscontratLista(2,5,10,1,"DESC"); //esse gera uma array com os pedidos
 

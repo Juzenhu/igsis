@@ -1,4 +1,6 @@
-
+<?php
+var_dump($_SESSION);
+?>
 
 	<footer>
 		<div class="container">

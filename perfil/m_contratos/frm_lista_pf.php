@@ -1,5 +1,7 @@
 <?php
 
+$_SESSION['idPedido'] = "";
+
 $con = bancoMysqli();
 $sql_lista = "SELECT * FROM sis_pessoa_fisica ORDER BY Nome";
 $query_lista = mysqli_query($con,$sql_lista);
@@ -8,7 +10,7 @@ $link="?perfil=contratos&p=frm_edita_pf&";
 
 ?>
 	
-<?php //include 'includes/menu.php';?>
+    	<?php include 'includes/menu.php';?>
 		
 	  	  
 	 <!-- inicio_list -->

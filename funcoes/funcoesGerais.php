@@ -1786,6 +1786,7 @@ function busca($busca,$tipo){
 		while($evento = mysqli_fetch_array($query)){
 			$x['fisica'][$i]['Nome'] = $evento['Nome'];
 			$x['fisica'][$i]['IdPessoa'] = $evento['Id_PessoaFisica'];
+			$x['fisica'][$i]['CPF'] = $evento['CPF'];
 			$i++;
 		}	
 	}
@@ -1798,8 +1799,9 @@ function busca($busca,$tipo){
 		if($num_pj > 0){
 		$i = 0;
 		while($evento = mysqli_fetch_array($query)){
-			$x['juridica'][$i]['Nome'] = $evento['Nome'];
+			$x['juridica'][$i]['Nome'] = $evento['RazaoSocial'];
 			$x['juridica'][$i]['IdPessoa'] = $evento['Id_PessoaJuridica'];
+			$x['juridica'][$i]['CNPJ'] = $evento['CNPJ'];
 			$i++;
 		}	
 	}

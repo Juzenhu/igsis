@@ -1,5 +1,5 @@
 <?php 
-   
+  
    // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
 	require_once("../include/lib/fpdf/fpdf.php");
 	
@@ -10,17 +10,16 @@
 
    //CONEXÃO COM BANCO DE DADOS 
    $conexao = bancoMysqli();
-   
+
 
 class PDF extends FPDF
 {
 // Page header
 function Header()
 {
-	session_start();
-	$inst = recuperaDados("ig_instituicao",$_SESSION['idInstituicao'],"idInstituicao");
-	$logo = "../visual/img/".$inst['logo']; 
-    // Logo
+	session_start(); 
+	$inst = recuperaDados("ig_instituicao",$_SESSION['idInstituicao'],"idInstituicao");	
+	$logo = "../visual/img/".$inst['logo']; // Logo
     $this->Image($logo,20,20,40);
     // Move to the right
     $this->Cell(80);

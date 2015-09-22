@@ -308,6 +308,12 @@ $representante = recuperaDados("sis_representante_legal",$_GET['id_rep'],"Id_Rep
 				</form>
 					</div>
                     </div>
+                 <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                  	  <br />
+					</div>
+				  </div>	
+                    
 					<div class="form-group">
                	<div class="col-md-offset-2 col-md-8">
                     <?php if(isset($id_pedido)){ ?>
@@ -331,16 +337,4 @@ $representante = recuperaDados("sis_representante_legal",$_GET['id_rep'],"Id_Rep
 break;
 } // fecha a switch
 ?>
-
-
-
-
-
- 
- 
-
-
-
-<?php var_dump($_SESSION); ?>
-<?php var_dump($_POST); ?>
 

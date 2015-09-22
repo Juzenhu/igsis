@@ -271,7 +271,7 @@ function listaPedidoContratacao($idEvento){
 }	
 
 
-function listaArquivosPessoaSiscontrat($idPessoa,$tipo,$pedido){
+function listaArquivosPessoaSiscontrat($idPessoa,$tipo,$pedido,$form){
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM igsis_arquivos_pessoa WHERE idPessoa = '$idPessoa' AND idTipoPessoa = '$tipo' AND publicado = '1'";
 	$query = mysqli_query($con,$sql);
@@ -294,7 +294,8 @@ function listaArquivosPessoaSiscontrat($idPessoa,$tipo,$pedido){
 			<form method='POST' action='?perfil=contratos&p=frm_arquivos&id=".$idPessoa."&tipo=".$tipo."'>
 			<input type='hidden' name='idPessoa' value='".$idPessoa."' />
 			<input type='hidden' name='tipoPessoa' value='".$tipo."' />
-			<input type='hidden' name='idPedido' value='".$pedido."' />
+			<input type='hidden' name='$form' value='1' />
+			
 			<input type='hidden' name='apagar' value='".$campo['idArquivosPessoa']."' />
 			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
 			echo "</tr>";		

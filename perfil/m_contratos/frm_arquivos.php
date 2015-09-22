@@ -2,15 +2,12 @@
 $con = bancoMysqli();
 $idPessoa = $_REQUEST['idPessoa'];
 $tipoPessoa = $_REQUEST['tipoPessoa'];
-$idPedido = $_REQUEST['idPedido'];
-$mensagem = $idPessoa." - ".$tipoPessoa." - ".$idPedido;
-
-
 
 if(isset($_POST['executante'])){ 
 	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_executante&id_pf=$idPessoa' />
 			<input type='hidden' name='executante' value='1'>
 	";
+	$p = "executante";
 	
 }
 
@@ -18,20 +15,25 @@ if(isset($_POST['representante'])){
 	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_representantelegal&id_rep=$idPessoa' />
 				<input type='hidden' name='representante' value='1'>
 ";
+	$p = "representante";
+
 }
 
 if(isset($_POST['fisica'])){
 	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_pf&id_pf=$idPessoa' />
 				<input type='hidden' name='fisica' value='1'>
 ";
+	$p = "fisica";
+
 }
 
 if(isset($_POST['juridica'])){
 	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_pj&id_pj=$idPessoa' />
 				<input type='hidden' name='juridica' value='1'>
 ";
-}
+	$p = "juridica";
 
+}
 
 
 
@@ -86,19 +88,7 @@ if(isset($_POST['apagar'])){
 $campo = recuperaPessoa($_REQUEST['idPessoa'],$_REQUEST['tipoPessoa']); 
 
 ?>
-
-	<div class="menu-area">
-			<div id="dl-menu" class="dl-menuwrapper">
-						<button class="dl-trigger">Open Menu</button>
-						<ul class="dl-menu">
-							<li>
-								<a href="?perfil=contratos&p=frm_edita_pf&id_pf="><< Voltar a Pessoa Física</a>
-							</li>
-							<li><a href="../index.php"><< Voltar a Pedido de Contratação</a></li>
-        					<li><a href="?perfil=contratos&p=frm_lista_pedidocontratacaopf"><< Voltar a lista Pedido PF</a></li>
-						</ul>
-			</div>
-	</div>	
+<?php include 'includes/menu.php';?>
 
     
     	 <section id="enviar" class="home-section bg-white">
@@ -135,7 +125,7 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
     <br>
     <input type="hidden" name="idPessoa" value="<?php echo $idPessoa; ?>"  />
     <input type="hidden" name="tipoPessoa" value="<?php echo $tipoPessoa; ?>"  />
-    <input type="hidden" name="idPedido" value="<?php echo $idPedido; ?>"  />
+	<input type='hidden' name='<?php echo $p; ?>' value='1' />
     <input type="hidden" name="enviar" value="1"  />
     <input type="submit" class="btn btn-theme btn-lg btn-block" value='Enviar'>
 </form>
@@ -153,12 +143,11 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
 </form>
 </div>
 <br />
-<?php if(isset($_SESSION['idPedido']) AND $_SESSION['idPedido'] != ""){ ?>
+<?php if($_SESSION['idPedido'] != ""){ ?>
 <div class="center">
 <form method="POST" action="?perfil=contratos&p=frm_edita_pedidocontratacaopf&id_ped=<?php echo $_SESSION['idPedido']; ?>" >
     <input type="hidden" name="idPessoa" value="<?php echo $idPessoa; ?>"  />
     <input type="hidden" name="tipoPessoa" value="<?php echo $tipoPessoa; ?>"  />
-    <input type="hidden" name="idPedido" value="<?php echo $idPedido; ?>"  />
     <input type="submit" class="btn btn-theme btn-block" value='Voltar ao Pedido de Contratação'>
 </form>
 </div>
@@ -182,7 +171,7 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
 <h5>Se na lista abaixo, o seu arquivo começar com "http://", por favor, clique, grave em seu computador, faça o upload novamente e apague a ocorrência citada.</h5>
 					</div>
 			<div class="table-responsive list_info">
-                         <?php listaArquivosPessoaSiscontrat($idPessoa,$tipoPessoa,$idPedido); ?>
+                         <?php listaArquivosPessoaSiscontrat($idPessoa,$tipoPessoa,$_SESSION['idPedido'],$p); ?>
 			</div>
 				  </div>
 			  </div>  
@@ -190,4 +179,3 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
 
 		</div>
 	</section>
-    <?php var_dump($_SESSION); ?>

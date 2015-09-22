@@ -41,4 +41,3 @@ $mensagem = "Foram encontradas ".$resultado['numReg']." eventos com o termo ".$_
 
             </div>
 	</section>
-<?php var_dump($resultado); ?>

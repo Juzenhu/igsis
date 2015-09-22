@@ -1,17 +1,5 @@
 <?php 
 
-/*
-Campos para edição:
-+ valor
-+ Forma de pagamento
-+ Verba
-+ Justificativa
-+ Fiscal
-+ Suplente
-+ Parecer Técnico
-
-*/
-
 $con = bancoMysqli();
 
 $_SESSION['idPedido'] = $_GET['id_ped'];
@@ -157,7 +145,7 @@ if(isset($_POST['cadastraExecutante'])){
 if(isset($_POST['Valor'])){ // atualiza o pedido
 	$pedido = $_GET['id_ped'];
 	$valor = dinheiroDeBr($_POST['Valor']); 
-	$valor_individual = dinheiroDeBr($_POST['ValorIndividual']);
+	//$valor_individual = dinheiroDeBr($_POST['ValorIndividual']);
 	$forma_pagamento = addslashes($_POST['FormaPagamento']);
 	$verba = $_POST['Verba'];
 	$justificativa = addslashes($_POST['Justificativa']);
@@ -167,7 +155,6 @@ if(isset($_POST['Valor'])){ // atualiza o pedido
 
 	$sql_atualiza_pedido = "UPDATE igsis_pedido_contratacao SET
 		valor = '$valor',
-		valorIndividual = '$valor_individual',
 		formaPagamento = '$forma_pagamento',
 		  `parecerArtistico` = '$parecer',
 		   `justificativa` = '$justificativa', 
@@ -439,8 +426,3 @@ $res02 = siscontratDocs($ped['idRepresentante02'],3);
 
 	  	</div>
 	  </section>    
-<?php 
-var_dump($pedido);
-var_dump($_SESSION);
-var_dump($evento);
-?>

@@ -1,7 +1,8 @@
 <?php
 
-$id_ped=$_GET['id_ped'];
-//$idContrato=$_GET['idContrato'];
+$_SESSION['idPedido'] = $_GET['id_ped'];
+$id_ped = $_GET['id_ped'];
+$pedido = recuperaDados("igsis_pedido_contratacao",$id_ped,"idPedidoContratacao");
 
 ?>	
     	<?php include 'includes/menu.php';?>
@@ -27,7 +28,7 @@ $id_ped=$_GET['id_ped'];
 				 
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-					  <input type="text" class="form-control" id="NumeroProcesso" name="NumeroProcesso" placeholder="Número do Processo">
+					  <input type="text" class="form-control" id="NumeroProcesso" name="NumeroProcesso" placeholder="Número do Processo"  value="<?php echo $pedido['NumeroProcesso']; ?>" /> 
 					</div>
 				  </div>
 					

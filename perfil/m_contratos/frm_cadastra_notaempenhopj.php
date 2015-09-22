@@ -1,7 +1,6 @@
 <?php
 
-$id_ped=$_GET['id_ped'];
-//$idContrato=$_GET['idContrato'];
+$_SESSION['idPedido'] = $_GET['id_ped'];
 
 ?>	
     	<?php include 'includes/menu.php';?>

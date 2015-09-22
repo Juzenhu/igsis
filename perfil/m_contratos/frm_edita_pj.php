@@ -4,6 +4,7 @@ $id_pj = $_GET['id_pj'];
 if(isset($_POST['idPedido'])){
 	$_SESSION['idPedido'] = $_POST['idPedido'];
 }
+$idPedido = $_SESSION["idPedido"];
 
 if(isset($_POST['editaJuridica'])){
 		$idJuridica = $_POST['editaJuridica'];
@@ -37,6 +38,8 @@ $pj = recuperaDados("sis_pessoa_juridica",$_GET['id_pj'],"Id_PessoaJuridica");
 
 	
 	?>
+    
+     	<?php include 'includes/menu.php';?>   
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
@@ -134,42 +137,35 @@ $pj = recuperaDados("sis_pessoa_juridica",$_GET['id_pj'],"Id_PessoaJuridica");
                      <input type="hidden" name="editaJuridica" value="<?php echo $pj['Id_PessoaJuridica'] ?>" />
                      <input type="hidden" name="idPedidoContratacao" value="<?php echo $_SESSION['idPedido']; ?>" />
 					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
-					</div>
-				  </div>
 				</form>
-	
-	  			</div>
-
-					<div class="form-group">
-                    <div class="col-md-offset-2 col-md-8">
-                    	<br />
-                </div>
-                    	<br />
-					</div>
-
-
+                	</div>
+				  </div>
+				
 				  <div class="form-group">
-               	<div class="col-md-offset-2 col-md-8">
-                <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_arquivos&idPessoa=<?php echo $pj['Id_PessoaJuridica']; ?>&tipoPessoa=2" method="post">
+					<div class="col-md-offset-2 col-md-8">
+                   <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_arquivos&idPessoa=<?php echo $pj['Id_PessoaJuridica']; ?>&tipoPessoa=2" method="post">
                     <input type="hidden" name="cadastrarFisica" value="<?php echo $pj['Id_PessoaJuridica'] ?>" />
-                    <?php if(isset($id_pedido)){ ?>
-                   <input type="hidden" name="idPedido" value="<?php echo $_SESSION['idPedido']; ?>" />
-                   <?php } ?>
+                   
+                   <input type="hidden" name="juridica" value="1" />
+                
 
                     <input type="hidden" name="Sucesso" id="Sucesso" />
 					 <input type="image" alt="Anexos" value="submit" class="btn btn-theme btn-block">
-				</form>
-	
+				</form>         
+            </div>
+    
 	  			</div>
-				
-	  		</div>
-            					<div class="form-group">
+		
+
+
+
+           					<div class="form-group">
                     <div class="col-md-offset-2 col-md-8">
                     	<br />
                 </div>
                     	<br />
 					</div>
-
+					 <?php if(isset($_SESSION['idPedido']) OR $_SESSION['idPedido'] == "" ){ ?>
 							  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido'];?>" method="post">
@@ -179,11 +175,10 @@ $pj = recuperaDados("sis_pessoa_juridica",$_GET['id_pj'],"Id_PessoaJuridica");
 					</div>
 				  </div>
 				</form>
-
+				<?php } ?>
 
 			
 
 	  	</div>
 	  </section>  
 
-<?php var_dump($pj); ?>

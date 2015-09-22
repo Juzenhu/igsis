@@ -1,5 +1,7 @@
 <?php
 
+$_SESSION['idPedido'] = $_GET['id_ped'];
+
 if(isset($_POST['Valor'])){ // atualiza o pedido
 	$con = bancoMysqli();
 	$ped = $_GET['id_ped'];
@@ -200,4 +202,3 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$_GET['id_ped'],"idPedidoCont
 
 	  	</div>
 	  </section>  
-<?php var_dump($_POST); ?>
