@@ -12,13 +12,14 @@
    //CONEXÃO COM BANCO DE DADOS 
    $conexao = bancoMysqli();  
    
+session_start();
 
 class PDF extends FPDF
 {
 // Page header
 function Header()
 {
-	session_start();
+
 	$inst = recuperaDados("ig_instituicao",$_SESSION['idInstituicao'],"idInstituicao");
 	$logo = "../visual/img/".$inst['logo']; 
     // Logo

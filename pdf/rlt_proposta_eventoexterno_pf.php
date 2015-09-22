@@ -1,4 +1,5 @@
 <?php 
+	session_start();
    
    // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
 	require_once("../include/lib/fpdf/fpdf.php");
@@ -17,7 +18,7 @@ class PDF extends FPDF
 // Page header
 function Header()
 {
-	session_start();
+
 	$inst = recuperaDados("ig_instituicao",$_SESSION['idInstituicao'],"idInstituicao");
 	$logo = "../visual/img/".$inst['logo']; 
     // Logo
