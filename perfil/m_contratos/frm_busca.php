@@ -5,6 +5,7 @@ $mensagem = "Foram encontradas ".$resultado['numReg']." pessoas com o termo ".$_
 }
 
 ?>
+    	<?php include 'includes/menu.php';?>
 	 <section id="services" class="home-section bg-white">
 		<div class="container">
 			  <div class="row">

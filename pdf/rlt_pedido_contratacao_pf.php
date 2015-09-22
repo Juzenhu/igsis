@@ -10,15 +10,19 @@
 
    //CONEXÃO COM BANCO DE DADOS 
    $conexao = bancoMysqli();
-   
+
+
 
 class PDF extends FPDF
 {
 // Page header
 function Header()
 {
+	session_start();
+	$inst = recuperaDados("ig_instituicao",$_SESSION['idInstituicao'],"idInstituicao");
+	$logo = "../visual/img/".$inst['logo']; 
     // Logo
-    $this->Image('../visual/img/logo_dec.JPG',20,20,40);
+    $this->Image($logo,20,20,40);
     // Move to the right
     $this->Cell(80);
     $this->Image('../visual/img/logo_smc.jpg',170,10);
