@@ -727,6 +727,107 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
 
 <?php
 switch($campo['ig_tipo_evento_idTipoEvento']){
+
+case 4:
+case 5: ?>
+
+<?php 
+$oficina = recuperaDados("ig_oficinas",$_SESSION['idEvento'],"idEvento");
+
+
+?>
+
+
+				<h3>Oficinas, Palestras e Debates</h3>
+                <h4><? if(isset($mensagem)){echo $mensagem;} ?><? echo $ver['numero'] ?></h4>
+
+				  <div class="form-group">
+                  					<div class="col-md-offset-2 col-md-6"><strong>Certificado:</strong><br/>
+										  <select class="form-control" id="tipoDocumento" name="certificado" >
+					   <option value="0" <?php if($oficina['certificado'] == 0){ echo "selected"; }  ?> >Não</option>
+					   <option value="1" <?php if($oficina['certificado'] == 1){ echo "selected"; }  ?> >Sim</option>
+
+					   
+					  </select>
+					</div>				  
+					<div class=" col-md-6"><strong>Vagas:</strong><br/>
+					  <input type="text" class="form-control" id="Estado" name="vagas" placeholder="" value = "<?php echo $oficina['vagas'] ?>">
+					</div>
+
+				  </div>
+
+       		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Público-alvo*</label>
+            		<textarea name="publico" class="form-control" rows="10" placeholder=""><?php echo $oficina['publico'] ?></textarea>
+            	</div> 
+            </div>
+			<div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Material Requisitado:</strong><br/>
+					  <input type="text" class="form-control" id="RazaoSocial" name="material" placeholder="" value = "<?php echo $oficina['material'] ?>" >
+					</div>
+				  </div>
+			  <div class="form-group">
+                  					<div class="col-md-offset-2 col-md-6"><strong>Forma de inscrição:</strong><br/>
+					  <select class="form-control" id="tipoDocumento" name="forma_inscricao" >
+					   <option value="1" <?php if($oficina['inscricao'] == 1){ echo "selected"; }  ?> >Sem necessidade</option>
+					   <option value="2" <?php if($oficina['inscricao'] == 2){ echo "selected"; }  ?>>Pelo site - ficha de inscrição</option>
+					   <option value="3" <?php if($oficina['inscricao'] == 3){ echo "selected"; }  ?>>Pelo site - por email</option>
+					   <option value="4" <?php if($oficina['inscricao'] == 4){ echo "selected"; }  ?>>Pessoalmente</option>
+					   
+					  </select>
+					</div>				  
+					<div class=" col-md-6"><strong>Início de inscrição:</strong><br/>
+					  <input type="text" class="form-control" id="datepicker01" name="inicio_inscricao" placeholder="">
+					</div>
+
+				  </div>
+				    <div class="form-group">
+                  					<div class="col-md-offset-2 col-md-6"><strong>Encerramento de inscrição:</strong><br/>
+					  <input type="text" class="form-control" id="datepicker02" name="encerra_inscricao" placeholder="">
+					</div>				  
+					<div class=" col-md-6"><strong>Divulgação de inscrição:</strong><br/>
+					  <input type="text" class="form-control" id="datepicker03" name="divulga_inscricao" placeholder="">
+					</div>
+
+				  </div>
+						    <div class="form-group">
+                  					<div class="col-md-offset-2 col-md-6"><strong>Valor hora/aula:</strong><br/>
+					  <input type="text" class="form-control" id="Valor" name="hora_aula" placeholder="">
+					</div>				  
+					<div class=" col-md-6"><strong>Venda de material:</strong><br/>
+										  <select class="form-control" id="tipoDocumento" name="venda" >
+					   <option value="0" <?php if($oficina['venda'] == 0){ echo "selected"; }  ?> >Não</option>
+					   <option value="1" <?php if($oficina['venda'] == 1){ echo "selected"; }  ?> >Sim</option>
+
+					   
+					  </select>
+					</div>
+
+				  </div>
+				         		 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Discrimine o material (CD, DVD, impresso, camiseta, etc)</label>
+            		<textarea name="material_venda" class="form-control" rows="10" placeholder=""></textarea>
+            	</div> 
+            </div>
+				  <div class="form-group">
+	            <div class="col-md-offset-2 col-md-8">
+                	<input type="hidden" name="atualizar" value="1" />
+    		        <input type="submit" class="btn btn-theme btn-lg btn-block" value="Gravar">
+            	</div>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<?php
+
+break; 	
+	
+	
+	
 case 2: // Artes Visuais
 	$idTabela = "ig_artes_visuais";
 	$idCampo = "idEvento";
@@ -867,7 +968,7 @@ $artes = recuperaDados($idTabela,$_SESSION['idEvento'],$idCampo);
 
 <?php 
 break;
-case 11:
+case 11: // Musica
 case 12:
 	$idTabela = "ig_musica";
 	$idCampo = "ig_evento_idEvento";
