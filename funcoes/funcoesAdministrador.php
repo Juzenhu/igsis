@@ -1,21 +1,22 @@
 <?php 
 	//Verifica erro na string
-	//$mysqli = new mysqli("localhost", "root", "lic54eca","igsis_beta");
-	//if (!$mysqli->query($sql_inserir)) {
-    //printf("Errormessage: %s\n", $mysqli->error);
+	//$mysqlii = new mysqlii("localhost", "root", "lic54eca","igsis_beta");
+	//if (!$mysqlii->query($sql_inserir)) {
+    //printf("Errormessage: %s\n", $mysqlii->error);
 	//}
 
 // funções da aba ADICIONAR USUÁRIO
 
 function acessoPerfilUser($tabela,$select,$instituicao){ //gera os options de um select
-	if($instituicao != ""){
+		$con = bancoMysqli();
+		if($instituicao != ""){
 		$sql = "SELECT * FROM $tabela WHERE idInstituicao = $instituicao OR idInstituicao = 999";
 	}else{
 		$sql = "SELECT * FROM ig_papelusuario WHERE idPapelUsuario >= '3'";
 	}
 	
-	$query = mysql_query($sql);
-	while($option = mysql_fetch_row($query)){
+	$query = mysqli_query($con,$sql);
+	while($option = mysqli_fetch_row($query)){
 		if($option[0] == $select){
 			echo "<option value='".$option[0]."' selected >".$option[1]."</option>";	
 		}else{
@@ -31,8 +32,8 @@ function instituicaoLocal($tabela,$select,$instituicao){ //gera os options de um
 		$sql = "SELECT * FROM $tabela";   // editar para só adicionar instituicao do LOCAL
 	}
 	
-	$query = mysql_query($sql);
-	while($option = mysql_fetch_row($query)){
+	$query = mysqli_query($sql);
+	while($option = mysqli_fetch_row($query)){
 		if($option[0] == $select){
 			echo "<option value='".$option[0]."' selected >".$option[1]."</option>";	
 		}else{
@@ -42,25 +43,28 @@ function instituicaoLocal($tabela,$select,$instituicao){ //gera os options de um
 }
 
 function listaUsuarioAdministrador($idUsuario){ 
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_usuario WHERE idInstituicao = '$idUsuario' AND publicado = '1'";
-	$query = mysql_query($sql);
-	echo "<table class='table table-condensed'>
-					<thead>
-						<tr class='list_menu'>
+	$query = mysqli_query($con,$sql);
+	echo "	
+	<table class='table table-condensed'>	<div class='col-md-offset-2 col-md-8'>
+					<thead>						<tr class='list_menu'> 
 							<td>Nome Completo</td>
 							<td>Nome Usuário</td>
   							<td>Email</td>
+							<td></td>
 							<td width='10%'></td>
 							<td width='10%'></td>
-						</tr>
+						 </tr>	
 					</thead>
+					</div>
 					<tbody>";
-	while($campo = mysql_fetch_array($query)){
+	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
 			
-			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
-			echo "<td class='list_description'>".recuperaIdDado("ig_usuario",$campo['ig_usuario_idUsuario'])."</td>";
-			echo "<td class='list_description'></td>";
+			//echo "<td class='list_description'>".$campo['nomeCompleto']."</td>";
+		//echo "<td class='list_description'>".recuperaIdDado("ig_usuario",$campo['ig_usuario_idUsuario'])."</td>";
+			//echo "<td class='list_description'></td>";
 			echo "<td class='list_description'>".$campo['nomeCompleto']."</td>";
 			echo "<td class='list_description'>".$campo['nomeUsuario']."</td>";
 			echo "<td class='list_description'>".$campo['email']."</td>";
@@ -69,7 +73,7 @@ function listaUsuarioAdministrador($idUsuario){
 			<td class='list_description'>
 			<form method='POST' action='?perfil=administrador&p=novoUser'>
 			<input type='hidden' name='carregar' value='".$campo['idUsuario']."' />
-			<input type ='submit' class='btn btn-theme btn-block' value='recuperar'></td></form>"	;
+			<input type ='submit' class='btn btn-theme btn-block' value='Editar'></td></form>"	;
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=administrador&p=users'>
@@ -84,13 +88,14 @@ function listaUsuarioAdministrador($idUsuario){
 // FUNÇÕES DA ABA ESPAÇO
 
 function geraEspaco($tabela,$select,$instituicao,$publicado){ //gera os options de um select  (( tirei o idInstituição)
-		if($publicado = "1"){
+	$con = bancoMysqli();
+	if($publicado = "1"){
 		$sql = "SELECT * FROM $tabela WHERE publicado = $publicado OR publicado = 1";
 	}else{
 		$sql = "SELECT * FROM ig_espaco";
 	}
-		$query = mysql_query($sql);
-	while($option = mysql_fetch_row($query)){
+		$query = mysqli_query($con,$sql);
+	while($option = mysqli_fetch_row($query)){
 		if($option[0] == $select) {
 			echo "<option value='".$option[0]."' selected >".$option[3]."</option>";	
 		}else{
@@ -99,26 +104,27 @@ function geraEspaco($tabela,$select,$instituicao,$publicado){ //gera os options 
 	}
 }
 function espacoExistente ($idUsuario) {
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_espaco WHERE idEspaco AND publicado = 1";
-	  $query = mysql_query($sql); 
-	  	echo "<table class='table table-condensed'>
-					<thead>
-						<tr class='list_menu'>
+	  $query = mysqli_query($con,$sql); 
+	  	echo " 
+		<table class='table table-condensed'>	<div class='col-md-offset-2 col-md-8'>
+					<thead>						<tr class='list_menu'> 
 							<td>Nome do Espaço</td>
   							<td></td>
 							<td width='10%'></td>
 							<td width='10%'></td>
-						</tr>
-					</thead>	
+					 </tr>	
+					</thead>
+					</div>
 					<tbody>";
-					echo "<tr>";
-		while($campo = mysql_fetch_array($query)){
+					
+				echo "<tr>";
+					
+		while($campo = mysqli_fetch_array($query)){
 			echo "<td class='list_description'>".$campo['espaco']."</td>";
-			//echo "<td class='list_description'>".$campo['descricao']."</td>";
-			echo "<td class='list_description'></td>";
-			
 			echo "
-			<td class='list_description'>
+				<td class='list_description'>
 			<form method='POST' action='?perfil=administrador&p=espacos'>
 			<input type='hidden' name='apagar' value='".$campo['idEspaco']."' />
 			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
@@ -129,8 +135,9 @@ function espacoExistente ($idUsuario) {
 }
 
 function listaEventosAdministrador($idUsuario){ 
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 0";
-	$query = mysql_query($sql);
+	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
@@ -142,10 +149,10 @@ function listaEventosAdministrador($idUsuario){
 						</tr>
 					</thead>
 					<tbody>";
-	while($campo = mysql_fetch_array($query)){
+	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
 			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
-			echo "<td class='list_description'>".recuperaIdDado("ig_tipo_evento",$campo['ig_tipo_evento_idTipoEvento'])."</td>";
+		//	echo "<td class='list_description'>"("ig_tipo_evento",$campo['ig_tipo_evento_idTipoEvento'])."</td>";
 			echo "<td class='list_description'></td>";
 			echo "
 			<td class='list_description'>
@@ -167,8 +174,9 @@ function listaEventosAdministrador($idUsuario){
 
 
 function listaLogAdministrador($idUsuario){ 
+	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_log WHERE idLog";
-	$query = mysql_query($sql);
+	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
@@ -183,9 +191,9 @@ function listaLogAdministrador($idUsuario){
 						</tr>
 					</thead>
 					<tbody>";
-	while($campo = mysql_fetch_array($query)){
+	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
-			echo "<td class='list_description'>".recuperaIdDado("ig_usuario",$campo['ig_usuario_idUsuario'])."</td>";
+			//echo "<td class='list_description'>".recuperaIdDado("ig_usuario",$campo['ig_usuario_idUsuario'])."</td>";
 			echo "<td class='list_description'>".$campo['enderecoIP']."</td>";
 			echo "<td class='list_description'>".$campo['dataLog']."</td>";
 			echo "<td class='list_description'>".$campo['descricao']."</td>";
@@ -194,15 +202,14 @@ function listaLogAdministrador($idUsuario){
 			<td class='list_description'>
 			<form method='POST' action='?perfil='>
 			<input type='hidden' name='carregar' value='".$campo['idLog']."' />
-			<input type ='submit' class='btn btn-theme btn-block' value='carregar'></td></form>" 
-			;
+			<input type ='submit' class='btn btn-theme btn-block' value='carregar'></td></form>" ;
 			
-			echo "
+		/*	echo "
 			<td width='15%' class='list_description'>
 			<form method='POST' action='?perfil='>
 			<input type='hidden' name='apagar' value='".$campo['idLog']."' />
 			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
-			echo "</tr>";		
+			echo "</tr>";		*/
 	}
 					
 					
