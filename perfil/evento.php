@@ -728,18 +728,111 @@ $campo = recuperaEvento($_SESSION['idEvento']); //carrega os dados do evento em 
 <?php
 switch($campo['ig_tipo_evento_idTipoEvento']){
 
-case 4:
+case 4: //palestras, debates e oficinas
 case 5: ?>
 
 <?php 
-$oficina = recuperaDados("ig_oficinas",$_SESSION['idEvento'],"idEvento");
 
+if(isset($_POST['atualizar'])){
+	
+	$certificado = $_POST['certificado'];
+	$vagas = $_POST['vagas'];
+	$publico = addslashes($_POST['publico']);
+	$material = $_POST['material'];
+	$forma_inscricao = $_POST['forma_inscricao'];
+	$hora_aula = $_POST['hora_aula'];
+	$venda = $_POST['venda'];
+	$material_venda = addslashes($_POST['material_venda']);
+	$idEvento = $_SESSION['idEvento'];
+	$carga_horaria = $_POST['carga_horaria'];
+	
+	if($_POST['inicio_inscricao'] != ''){
+		$inicio_inscricao = exibirDataMysql($_POST['inicio_inscricao']);
+	}else{
+		$inicio_inscricao = '0000-00-00';
+	}
+	
+	if($_POST['encerra_inscricao'] != ''){	
+		$encerra_inscricao = exibirDataMysql($_POST['encerra_inscricao']);
+	}else{
+		$encerra_inscricao = '0000-00-00';
+	}
+
+	if($_POST['divulga_inscricao'] != ''){	
+		$divulga_inscricao = exibirDataMysql($_POST['divulga_inscricao']);
+	}else{
+		$divulga_inscricao = '0000-00-00';
+	}
+		
+
+	
+	
+	
+	
+	$verifica_oficinas =  verificaExiste("ig_oficinas","idEvento",$_SESSION['idEvento'],"");
+	if($verifica_oficinas['numero'] == 0){
+		$sql_insere_oficinas = "INSERT INTO `ig_oficinas` (`idOficinas`, `idEvento`, `certificado`, `vagas`, `publico`, `material`, `inscricao`, `valorHora`, `venda`, `divulgacao`, `cargaHoraria`) VALUES (NULL, '$idEvento', '$certificado', '$vagas', '$publico', '$material', '$forma_inscricao', '$hora_aula', '$venda', '$divulga_inscricao', '$carga_horaria');";
+		$query_insere_oficinas = mysqli_query($con,$sql_insere_oficinas);
+		if($query_insere_oficinas){
+			$sql_insere_ocorrencia_inscricao = "INSERT INTO `ig_ocorrencia` (`idOcorrencia`, `idTipoOcorrencia`, `ig_comunicao_idCom`, `local`, `idEvento`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`, `domingo`, `dataInicio`, `dataFinal`, `horaInicio`, `horaFinal`, `timezone`, `diaInteiro`, `diaEspecial`, `libras`, `audiodescricao`, `valorIngresso`, `retiradaIngresso`, `localOutros`, `lotacao`, `reservados`, `duracao`, `precoPopular`, `frequencia`, `publicado`, `idSubEvento`, `idCinema`) VALUES (NULL, '1', NULL, NULL, '$idEvento', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$inicio_inscricao', '$encerra_inscricao', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL);";
+			$query_insere_ocorrencia_inscricao = mysqli_query($con,$sql_insere_ocorrencia_inscricao);
+			if($query_insere_ocorrencia_inscricao){
+				$mensagem = "Dados inseridos com sucesso!";	
+			}else{
+				$mensagem = "Erro(1)";	
+			}
+			
+		}else{
+			$mensagem =  "Erro (2)";
+		}
+	}else{
+		$sql_atualiza_oficinas = "UPDATE ig_oficinas SET
+		  `certificado` = '$certificado',
+		   `vagas` = '$vagas',
+		    `publico` =  '$publico',
+		    `material` =  '$material',
+			 `inscricao` = '$forma_inscricao',
+			  `valorHora` = '$hora_aula',
+			   `venda` = '$venda',
+   			   `cargaHoraria` = '$carga_horaria',
+			    `divulgacao` = '$divulga_inscricao'
+				WHERE idEvento = '$idEvento'";	
+		$query_atualiza_oficinas = mysqli_query($con,$sql_atualiza_oficinas);
+		
+		if($query_atualiza_oficinas){
+			$sql_atualiza_ocorrencia_oficinas = "UPDATE ig_ocorrencia SET
+			`dataInicio` = '$inicio_inscricao',
+			`dataFinal` = '$encerra_inscricao',
+			`publicado` = '1'
+			WHERE idEvento = '$idEvento';
+			";
+			verificaMysql($sql_atualiza_ocorrencia_oficinas);
+			$query_atualiza_ocorrencia_oficinas = mysqli_query($con,$sql_atualiza_ocorrencia_oficinas);
+			if($query_atualiza_ocorrencia_oficinas){
+				$mensagem = "Atualizado com sucesso!";	
+			}else{
+				$mensagem = "Erro (4)";	
+			}
+			
+			 
+		}else{
+			$mensagem = "Erro (3)";	
+		} 
+		
+		//atualiza novos dados de oficina		
+	}
+	
+}
+
+
+$oficina = recuperaDados("ig_oficinas",$_SESSION['idEvento'],"idEvento");
+$data_oficinas = recuperaDados("ig_ocorrencia",$_SESSION['idEvento'],"idEvento");
 
 ?>
 
 
 				<h3>Oficinas, Palestras e Debates</h3>
-                <h4><? if(isset($mensagem)){echo $mensagem;} ?><? echo $ver['numero'] ?></h4>
+                <h4><? if(isset($mensagem)){echo $mensagem;} ?></h4>
 
 				  <div class="form-group">
                   					<div class="col-md-offset-2 col-md-6"><strong>Certificado:</strong><br/>
@@ -778,22 +871,22 @@ $oficina = recuperaDados("ig_oficinas",$_SESSION['idEvento'],"idEvento");
 					  </select>
 					</div>				  
 					<div class=" col-md-6"><strong>Início de inscrição:</strong><br/>
-					  <input type="text" class="form-control" id="datepicker01" name="inicio_inscricao" placeholder="">
+					  <input type="text" class="form-control" id="datepicker01" name="inicio_inscricao" placeholder="" value = "<?php echo exibirDataBr($data_oficinas['dataInicio']) ?>">
 					</div>
 
 				  </div>
 				    <div class="form-group">
                   					<div class="col-md-offset-2 col-md-6"><strong>Encerramento de inscrição:</strong><br/>
-					  <input type="text" class="form-control" id="datepicker02" name="encerra_inscricao" placeholder="">
+					  <input type="text" class="form-control" id="datepicker02" name="encerra_inscricao" placeholder="" value = "<?php echo exibirDataBr($data_oficinas['dataFinal']) ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>Divulgação de inscrição:</strong><br/>
-					  <input type="text" class="form-control" id="datepicker03" name="divulga_inscricao" placeholder="">
+					  <input type="text" class="form-control" id="datepicker03" name="divulga_inscricao" placeholder="" value = "<?php echo exibirDataBr($oficina['divulgacao']) ?>">
 					</div>
 
 				  </div>
 						    <div class="form-group">
                   					<div class="col-md-offset-2 col-md-6"><strong>Valor hora/aula:</strong><br/>
-					  <input type="text" class="form-control" id="Valor" name="hora_aula" placeholder="">
+					  <input type="text" class="form-control" id="Valor" name="hora_aula" placeholder="" value = "<?php echo $oficina['valorHora'] ?>">
 					</div>				  
 					<div class=" col-md-6"><strong>Venda de material:</strong><br/>
 										  <select class="form-control" id="tipoDocumento" name="venda" >
@@ -804,6 +897,11 @@ $oficina = recuperaDados("ig_oficinas",$_SESSION['idEvento'],"idEvento");
 					  </select>
 					</div>
 
+				  </div>
+                  			<div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Carga Horária (em horas):</strong><br/>
+					  <input type="text" class="form-control" id="RazaoSocial" name="carga_horaria" placeholder="" value = "<?php echo $oficina['cargaHoraria'] ?>" >
+					</div>
 				  </div>
 				         		 <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
@@ -821,7 +919,7 @@ $oficina = recuperaDados("ig_oficinas",$_SESSION['idEvento'],"idEvento");
         </div>
     </div>
 </section>
-
+<?php var_dump($_POST); ?>
 <?php
 
 break; 	
