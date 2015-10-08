@@ -1247,7 +1247,6 @@ function retornaPeriodo($id){ //retorna o período
 		}
 	}
 	
-
 	if($data_inicio == $dataFinal){
 		return exibirDataBr($data_inicio);
 	}else{
@@ -1718,8 +1717,7 @@ function retornaDatas($id){ //retorna o período
 	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00')){
 		$dataFinal01 = $data['dataFinal'];	
 	}else{
-		return "Não há ocorrências. <br />
-		Por favor, insira pelo menos uma ocorrência.";	
+		return $x = 0;
 	}
 	$query_anterior02 = mysqli_query($con,$sql_posterior02);
 	$data = mysqli_fetch_array($query_anterior02);
@@ -1815,6 +1813,49 @@ function busca($busca,$tipo){
 
 	}
 }	
+
+function resumoOcorrenciasDoc($idEvento){
+	$con = bancoMysqli();
+	
+	//Eventos únicos
+	$sql_unico = "SELECT * FROM ig_ocorrencias WHERE idEvento = '$idEvento' AND publicado = '1' AND dataFinal = '0000-00-00'";
+	$query_unico = mysqli_query($con,$sql_unico);
+	
+	//Temporadas
+	
+
+}
+
+
+function listaOcorrenciasInstituicao($idInstituicao){
+	$con = bancoMysqli();
+	//Recupera todos os espaços da instituição
+	
+	$sql_sala = "SELECT * FROM ig_local WHERE idInstituicao = '$idInstituicao'";
+	$query_sala = mysqli_query($con,$sql_sala);
+	while($sala = mysqli_fetch_array($query_sala)){
+		$idLocal = $sala['idLocal'];
+		$sql_ocorrencia = "SELECT DISTINCT idEvento FROM ig_ocorrencia WHERE local = '$idLocal' and publicado = '1'";
+		$query_ocorrencia = mysqli_query($con,$sql_ocorrencia);
+		$i = 0;
+		while($ocorrencia = mysqli_fetch_array($query_ocorrencia)){
+			$x[$i] = $ocorrencia['idEvento'];
+			$i++;
+						
+		}
+	}
+	
+	return $x;		
+
+}
+
+function retornaPessoa($tipo){
+	if($tipo == 1){
+		return "Pessoa física";	
+	}else{
+		return "Pessoa jurídica";
+	}
+}
 
 
 ?>

@@ -24,17 +24,21 @@ while($pedido = mysqli_fetch_array(mysqli_query($conectar,$sql))){
 */
 
 
-function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem){
+function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem,$estado){
 	$con = bancoMysqli();
-
+	if($estado == "todos"){
+		$est = "";	
+	}else{
+		$est = " AND estado = '$estado' ";
+	}
 	
-	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND publicado = '1' AND instituicao = '$instituicao' ORDER BY idPedidoContratacao $ordem ";
+	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND publicado = '1' AND instituicao = '$instituicao' $est ORDER BY idPedidoContratacao $ordem ";
 	$query_lista_total = mysqli_query($con,$sql_lista_total);
 	$total_registros = mysqli_num_rows($query_lista_total);
 	$pag = $pagina - 1;
 	$registro_inicial = $num_registro * $pag;
 	$total_paginas = $total_registros / $num_registro; // gera o número de páginas
-	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND publicado = '1' AND instituicao = '$instituicao' ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
+	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND publicado = '1' AND instituicao = '$instituicao' AND estado = '$estado' ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
 		$query_lista_pagina = mysqli_query($con,$sql_lista_pagina);
 	//$x = $sql_lista_pagina;
 	$i = 0;
@@ -78,7 +82,9 @@ function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem){
 			"NotaEmpenho" => $pedido['NumeroNotaEmpenho'],
 			"EmissaoNE" => $pedido['DataEmissaoNotaEmpenho'],
 			"EntregaNE" => $pedido['DataEntregaNotaEmpenho'],
-			"Status" => ""
+			"Assinatura" => "",
+			"Cargo" => "",
+			"Status" => $pedido['estado']
 		);
 		
 		$i++;
@@ -101,6 +107,7 @@ function siscontrat($idPedido){
 		$proponente = recuperaPessoa($pedido['idPessoa'],$pedido['tipoPessoa']);
 		$fiscal = recuperaUsuario($evento['idResponsavel']);
 		$suplente = recuperaUsuario($evento['suplente']);
+		$assinatura = recuperaDados("sis_assinatura",$pedido['instituicao'],"idInstituicao");
 		
 		
 		$x = array(
@@ -134,7 +141,10 @@ function siscontrat($idPedido){
 			"NotaEmpenho" => $pedido['NumeroNotaEmpenho'],
 			"EmissaoNE" => $pedido['DataEmissaoNotaEmpenho'],
 			"EntregaNE" => $pedido['DataEntregaNotaEmpenho'],
-			"Status" => ""	
+			"Assinatura" => $assinatura['Assinatura'],
+			"Cargo" => $assinatura['Cargo'],
+
+			"Status" => $pedido['estado']	
 			);
 		
 		
@@ -317,5 +327,25 @@ function buscaSiscontrat($busca,$tipo){
 
 }
 
+function analiseSiscontrat($idPedido){
+
+$pedido = recuperaDados("igsis_pedido_contratacao",$idPedido,"idPedidoContratacao");
+
+if(($pedido['NumeroNotaEmpenho'] != NULL)OR 
+	($pedido['NumeroNotaEmpenho'] != "")){
+		$status = "Nota de Empenho gerada";		
+}else{
+	if(($pedido['NumeroProcesso'] != NULL) OR
+	($pedido['NumeroProcesso'] != "")){
+		$status = "Numero de Processo gerado";
+	}else{
+		
+	}	
+}
+
+
+
+	
+}
 
 ?>

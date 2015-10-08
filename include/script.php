@@ -14,8 +14,11 @@
     $(function() {
     $('#valor').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
   });
+    $(function() {
+    $('#valor01').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
+  });
       $(function() {
-    $('#valor_indivisual').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
+    $('#valor_individual').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
   });
 
   $(function() {
