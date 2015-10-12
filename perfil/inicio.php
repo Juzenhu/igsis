@@ -31,6 +31,10 @@ if(isset($_GET['secao'])){
 <?php switch($secao){
 	
 case "inicio":
+$con = bancoMysqli();
+$idInstituicao = $_SESSION['idInstituicao'];
+$sql_blog = "SELECT * FROM igsis_weblog WHERE (idInstituicao = '$idInstituicao' OR idInstituicao = '3' OR idInstituicao = '4') AND publicado = '1' ORDER BY idInicio DESC LIMIT 0,10";
+$query_blog = mysqli_query($con,$sql_blog);
 
 ?>	
 
@@ -39,16 +43,15 @@ case "inicio":
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h2>Bem-vindo à IGSIS!</h2>
-					<p>Aqui inicia o processo interno para a realização de seu evento.</p>
-<p>Este sistema é desenvolvido pela colaboração de diversas áreas, incluindo a sua.</p>
-<p>A nova IGSIS é um diálogo interdisciplinar resultando na montagem de um grande quebra-cabeça:</p> <p>Um CCSP melhor.</p>
-<p>Compartilhe sua opinião conosco. Envie para igccsp2015@gmail.com</p>
-<p>Toda sugestão será bem-vinda</p>
-<p>&nbsp;</p>
-<p>Equipe IGSIS / DEC / CCSPLab / Julho de 2015</p>
-<p>igccsp2015@gmail.com</p>
-<p><?php print_r($_SESSION) ?></p>
+					 <h2>Atualizações</h2>
+<?php  
+while($blog = mysqli_fetch_array($query_blog)){
+?>	
+<h4><?php echo $blog['titulo'];  ?></h4>
+<div class="left"><?php echo $blog['mensagem']; ?></div>
+
+
+<?php } ?>
 
 					</div>
 				  </div>
