@@ -70,7 +70,8 @@ case 'inicio':
             <div class="col-md-offset-2 col-md-8">
 	            <a href="?perfil=evento&p=basica&inserir=novo" class="btn btn-theme btn-lg btn-block">Inserir um novo evento</a>
 	            <a href="?perfil=evento&p=carregar" class="btn btn-theme btn-lg btn-block">Carregar um evento gravado</a>
-  	            <a href="?perfil=evento&p=enviadas" class="btn btn-theme btn-lg btn-block">Acompanhar andamento de pedidos enviados</a>
+  	            <a href="?perfil=evento&p=enviadas" class="btn btn-theme btn-lg btn-block">Acompanhar andamento de eventos enviados</a>
+   	            <a href="?perfil=evento&p=pedidos" class="btn btn-theme btn-lg btn-block">Acompanhar andamento de pedidos de contratação</a>
             </div>
           </div>
         </div>
@@ -160,10 +161,6 @@ if(isset($_POST['apagar'])){
 	</section> <!--/#list_items-->
 
 
-<?php 
-break; 
-case "enviadas":
-?>
 <?php break;
 case "basica":
 if(isset($_POST['carregar'])){
@@ -2541,9 +2538,142 @@ $mensagem = "Foram encontradas ".$resultado['numReg']." eventos com o termo ".$_
 
             </div>
 	</section>
-<?php var_dump($resultado); ?>
+<?php //var_dump($resultado); ?>
 <?php break; ?>
+<?php case "enviadas": ?>
+	<div class="menu-area">
+			<div id="dl-menu" class="dl-menuwrapper">
+						<button class="dl-trigger">Open Menu</button>
+						<ul class="dl-menu">
+							<li><a href="?perfil=inicio">Início</a> </li>
+							<li><a href="#lista">Quadro geral</a></li>
+                            <li><a href="#lista">Inserir novo pedido</a>
+                          		<ul class="dl-submenu">
+                                 <li><a href="#">Evento</a>
+                                    <ul class="dl-submenu">
+                                        <li selected><a href="?perfil=evento&p=basica">Apresentação básica</a></li>
+                                        <li><a href="#">Detalhamento</a></li>
+                                        <li><a href="#">Ocorrências</a></li>
+                                        <li><a href="#">Conteúdo</a></li>
+                                        <li><a href="#">Serviços internos</a></li>
+                                        <li><a href="#">Especificidades de área</a></li>
+                                        <li><a href="#">Previsão de serviços externos</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#enviar">Contratado</a> 
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Inserir contratado</a></li>
+                                        <li><a href="#">Lista de contratados</a></li>
+                                    </ul>
+                                </li>    
+                                <li><a href="#enviar">Anexar arquivos</a> </li>
+                                <?php if($_SESSION['cinema'] == 1){ ?>
+                                <li><a href="#enviar">Módulo Cinema</a> 
+    							<?php } ?>
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Inserir novo filme</a></li>
+                                        <li><a href="#">Lista de filmes</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#enviar">Enviar</a> </li>
+							</ul>
+                            </li>
+  							<li><a href="#lista">Carregar evento em aberto</a></li> 
+                            <li><a href="#lista">Pedidos enviados</a>   
 
+    
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Relatório de alterações</a></li>
+                                        <li><a href="#">Enviar alteraçãos</a></li>
+                                        <li><a href="#">Enviar anexo</a></li>
+                                    </ul>
+                                </li>                      
+                        </ul>
+					</div><!-- /dl-menuwrapper -->
+	</div>	
+	<section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>IGSIS enviadas</h2>
+					<h4>Selecione o evento para carregar.</h4>
+                    <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
+					</div>
+				  </div>
+			  </div>  
+
+			<div class="table-responsive list_info">
+                         <?php listaEventosEnviados($_SESSION['perfil']); ?>
+			</div>
+		</div>
+	</section> <!--/#list_items-->
+<?php break; ?>
+<?php
+case "pedidos":
+require "../funcoes/funcoesSiscontrat.php";
+$_SESSION['idPedido'] = ""; //zera a session pedido
+
+// não precisa chamar a funcao porque o index contrato já chama.
+$linha_tabela_lista = siscontratListaEvento("todos",5,10,1,"DESC","todos",$_SESSION['idUsuario']); //esse gera uma array com os pedidos
+$url = urlAtual();
+$link = "http://".$_SERVER['HTTP_HOST']."/igsis/pdf/pedido_pdf.php";
+//$link="frm_edita_pedidocontratacaopj.php";
+?>
+
+    <section id="list_items" class="home-section bg-white">
+		<div class="container">
+              			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Pedidos enviados</h2>
+					<h4>Selecione o evento para carregar.</h4>
+                    <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
+					</div>
+				  </div>
+			  </div>  
+			
+			<div class="table-responsive list_info">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
+					<thead>
+						<tr class="list_menu">
+							<td>Codigo do Pedido</td>
+							<td>Proponente</td>
+							<td>Objeto</td>
+							<td>Valor(em Reais)</td>
+							<td>Periodo</td>
+							<td>Status</td>
+						</tr>
+					</thead>
+					<tbody>
+<?php
+$data=date('Y');
+for($i = 0; $i < count($linha_tabela_lista); $i++)
+ {
+	$linha_tabela_pedido_contratacaopf = siscontratDocs($linha_tabela_lista[$i]['IdProponente'],$linha_tabela_lista[$i]['TipoPessoa']);	 
+	echo "<tr><td class='lista'> <a href='".$link."?id=".$linha_tabela_lista[$i]['idPedido']."&tipo=".$linha_tabela_lista[$i]['TipoPessoa']."' target='_blank'>".$linha_tabela_lista[$i]['idPedido']."</a></td>";
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['Nome'].					'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Objeto'].						'</td> ';
+	echo '<td class="list_description">'.dinheiroParaBr($linha_tabela_lista[$i]['ValorGlobal']).				'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Periodo'].						'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Status'].						'</td> </tr>';
+	}
+
+?>
+	
+					
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+<!--fim_list-->
+
+<?php 
+var_dump($_SERVER['HTTP_HOST']);
+?>
+
+<?php break; ?>
 <?php } 
 // fim eventos ?>
  

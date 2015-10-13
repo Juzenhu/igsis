@@ -10,8 +10,7 @@ ccsplab.org - centro cultural são paulo
 //Imprime erros com o banco
 
 
-@ini_set('display_errors', '1');
-error_reporting(E_ALL);
+
 
 if(isset($_POST['usuario'])){
 	include "funcoes/funcoesGerais.php";

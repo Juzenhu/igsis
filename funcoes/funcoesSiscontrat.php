@@ -32,13 +32,20 @@ function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem,$
 		$est = " AND estado = '$estado' ";
 	}
 	
-	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND publicado = '1' AND instituicao = '$instituicao' $est ORDER BY idPedidoContratacao $ordem ";
+	if($tipoPessoa == "todos"){
+		$tipo = "";	
+	}else{
+		$tipo = " AND tipoPessoa = '$tipoPessoa' ";
+	}
+	
+	
+	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao WHERE publicado = '1' $tipo  AND instituicao = '$instituicao' $est ORDER BY idPedidoContratacao $ordem ";
 	$query_lista_total = mysqli_query($con,$sql_lista_total);
 	$total_registros = mysqli_num_rows($query_lista_total);
 	$pag = $pagina - 1;
 	$registro_inicial = $num_registro * $pag;
 	$total_paginas = $total_registros / $num_registro; // gera o número de páginas
-	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao WHERE tipoPessoa = '$tipoPessoa' AND publicado = '1' AND instituicao = '$instituicao' AND estado = '$estado' ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
+	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao WHERE  publicado = '1' $tipo AND instituicao = '$instituicao' AND estado = '$estado' ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
 		$query_lista_pagina = mysqli_query($con,$sql_lista_pagina);
 	//$x = $sql_lista_pagina;
 	$i = 0;
@@ -344,8 +351,83 @@ if(($pedido['NumeroNotaEmpenho'] != NULL)OR
 }
 
 
+}
+
+function siscontratListaEvento($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem,$estado,$idUsuario){
+	$con = bancoMysqli();
+	if($estado == "todos"){
+		$est = "";	
+	}else{
+		$est = " AND estado = '$estado' ";
+	}
+	
+	if($tipoPessoa == "todos"){
+		$tipo = "";	
+	}else{
+		$tipo = " AND tipoPessoa = '$tipoPessoa' ";
+	}
 
 	
+	
+	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao,ig_evento WHERE igsis_pedido_contratacao.idEvento = ig_evento.idEvento AND igsis_pedido_contratacao.publicado = '1' AND ig_evento.publicado = '1' $tipo AND instituicao = '$instituicao' $est ORDER BY igsis_pedido_contratacao.idPedidoContratacao $ordem ";
+	$query_lista_total = mysqli_query($con,$sql_lista_total);
+	$total_registros = mysqli_num_rows($query_lista_total);
+	$pag = $pagina - 1;
+	$registro_inicial = $num_registro * $pag;
+	$total_paginas = $total_registros / $num_registro; // gera o número de páginas
+	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao,ig_evento WHERE igsis_pedido_contratacao.idEvento = ig_evento.idEvento AND igsis_pedido_contratacao.publicado = '1' AND ig_evento.publicado = '1' $tipo AND instituicao = '$instituicao' $est ORDER BY igsis_pedido_contratacao.idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
+		$query_lista_pagina = mysqli_query($con,$sql_lista_pagina);
+	//$x = $sql_lista_pagina;
+	$i = 0;
+	while($pedido = mysqli_fetch_array($query_lista_pagina)){
+		$evento = recuperaDados("ig_evento",$pedido['idEvento'],"idEvento"); //$tabela,$idEvento,$campo
+		$usuario = recuperaDados("ig_usuario",$evento['idUsuario'],"idUsuario");
+		$instituicao = recuperaDados("ig_instituicao",$usuario['idInstituicao'],"idInstituicao");
+		$local = listaLocais($pedido['idEvento']);
+		$periodo = retornaPeriodo($pedido['idEvento']);
+		$duracao = retornaDuracao($pedido['idEvento']);
+		$pessoa = recuperaPessoa($pedido['idPessoa'],$tipoPessoa);
+		$fiscal = recuperaUsuario($evento['idResponsavel']);
+		$suplente = recuperaUsuario($evento['suplente']);
+		$protocolo = ""; //recuperaDados("sis_protocolo",$pedido['idEvento'],"idEvento");
+				
+		$x[$i] = array(
+		    "idPedido" => $pedido['idPedidoContratacao'],
+			"idEvento" => $pedido['idEvento'], 
+			"idSetor" => $usuario['idInstituicao'],
+			"Setor" => $instituicao['instituicao']  ,
+			"TipoPessoa" => $pedido['tipoPessoa'],
+			"CategoriaContratacao" => $evento['ig_modalidade_IdModalidade'] , //precisa ver se retorna o id
+			"Objeto" => retornaTipo($evento['ig_tipo_evento_idTipoEvento'])." - ".$evento['nomeEvento'] ,
+			"Local" => substr($local,1) , //retira a virgula no começo da string
+			"ValorGlobal" => $pedido['valor'],
+			"ValorIndividual" => $pedido['valorIndividual'],
+			"FormaPagamento" => $pedido['formaPagamento'],
+			"Periodo" => $periodo, 
+			"Duracao" => $duracao, 
+			"Verba" => $pedido['idVerba'] ,
+			"Justificativa" => $evento['justificativa'] ,
+			"ParecerTecnico" => $evento['parecerArtistico'],
+			"DataCadastro" => $evento['dataEnvio'],
+			"Fiscal" => $fiscal['nomeCompleto'] ,
+			"Suplente" => $suplente['nomeCompleto'],
+			"Observacao"=> $pedido['observacao'], //verificar
+			"Horario" => "", //SPCultura
+			"IdProponente" => $pedido['idPessoa'],
+			"ProtocoloSIS" => '', //$protocolo['idProtocolo'],
+			"NumeroProcesso" => $pedido['NumeroProcesso'],
+			"NotaEmpenho" => $pedido['NumeroNotaEmpenho'],
+			"EmissaoNE" => $pedido['DataEmissaoNotaEmpenho'],
+			"EntregaNE" => $pedido['DataEntregaNotaEmpenho'],
+			"Assinatura" => "",
+			"Cargo" => "",
+			"Status" => $pedido['estado']
+		);
+		
+		$i++;
+	}
+	return $x;
 }
+
 
 ?>

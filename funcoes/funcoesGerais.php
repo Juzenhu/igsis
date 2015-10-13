@@ -1215,6 +1215,7 @@ function retornaDuracao($idEvento){
 	
 }
 
+/*
 function retornaPeriodo($id){ //retorna o período
 	$con = bancoMysqli();
 	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
@@ -1254,6 +1255,48 @@ function retornaPeriodo($id){ //retorna o período
 	}
 	
 }
+*/
+function retornaPeriodo($id){ //retorna o período
+	$con = bancoMysqli();
+	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
+	$query_anterior = mysqli_query($con,$sql_anterior);
+	$data = mysqli_fetch_array($query_anterior);
+	$data_inicio = $data['dataInicio'];
+	
+	$sql_posterior01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataFinal DESC LIMIT 0,1"; //quando existe data final
+	$sql_posterior02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$id' AND publicado = '1' ORDER BY dataInicio DESC LIMIT 0,1"; //quando há muitas datas únicas
+	
+	$query_anterior01 = mysqli_query($con,$sql_posterior01);
+	$data = mysqli_fetch_array($query_anterior01);
+	$num = mysqli_num_rows($query_anterior01);
+	
+	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00') AND ($data['dataFinal'] != NULL)){  //se existe uma data final e que é diferente de NULO
+		$dataFinal01 = $data['dataFinal'];	
+	}
+
+	$query_anterior02 = mysqli_query($con,$sql_posterior02); //recupera a data única mais tarde
+	$data = mysqli_fetch_array($query_anterior02);
+	$dataFinal02 = $data['dataInicio'];
+	
+		
+	if(isset($dataFinal01)){ //se existe uma temporada, compara com a última data única
+		if($dataFinal01 > $dataFinal02){
+			$dataFinal = $dataFinal01;
+		}else{
+			$dataFinal = $dataFinal02;
+		}
+	}else{
+		$dataFinal = $dataFinal02;		
+	}
+	
+	if($data_inicio == $dataFinal){ 
+		return exibirDataBr($data_inicio);
+	}else{
+		return "de ".exibirDataBr($data_inicio)." a ".exibirDataBr($dataFinal);
+	}
+	
+}
+
 //Comunicação
 
 function saudacaoCom(){
@@ -1857,5 +1900,80 @@ function retornaPessoa($tipo){
 	}
 }
 
+function retornaModulos($perfil){
+	// recupera quais módulos o usuário tem acesso
+	$sql = "SELECT * FROM ig_papelusuario WHERE idPapelUsuario = $perfil"; 
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	$campoFetch = mysqli_fetch_array($query);
+	$nome = "";
+	while($fieldinfo = mysqli_fetch_field($query)){
+		if(($campoFetch[$fieldinfo->name] == 1) AND ($fieldinfo->name != 'idPapelUsuario')){
+			$descricao = recuperaModulo($fieldinfo->name);
+			$nome = $nome.", ".$descricao['nome'];
+		}
+	}
+	return substr($nome,1);		
+	
+	
+}
+
+function recuperaUsuarioCompleto($idUsuario){ //retorna dados do usuário
+	$recupera = recuperaDados('ig_usuario',$idUsuario,'idUsuario');
+	if($recupera){
+		$instituicao = recuperaDados("ig_instituicao",$recupera['idInstituicao'],"idInstituicao");
+		$perfil = recuperaDados("ig_papelusuario",$recupera['ig_papelusuario_idPapelUsuario'],"idPapelUsuario");
+		$modulos = retornaModulos($recupera['ig_papelusuario_idPapelUsuario']);
+		if($recupera['receberNotificacao'] == 1){
+			$notificacao = "Habilitado";	
+		}else{
+			$notificacao = "Não habilitado";	
+		}
+		
+		$x = array(
+		    "nomeCompleto" => $recupera['nomeCompleto'],
+		    "email" => $recupera['email'],
+		    "perfil" => $perfil['nomePapelUsuario'],
+			"modulos" => $modulos,
+			"notificacao" => $notificacao,			
+			"instituicao" => $instituicao['instituicao']
+		);
+		return $x;
+		
+	}else{
+		return NULL;
+	}
+		
+}
+
+function listaEventosEnviados($idUsuario){
+
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 1 AND dataEnvio IS NOT NULL";
+	$query = mysqli_query($con,$sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>IGSIS</td>
+							<td>Nome do evento</td>
+							<td>Tipo de evento</td>
+  							<td>Data/Período</td>
+							<td width='10%'>Pedidos de Contratação</td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysqli_fetch_array($query)){
+			echo "<tr>";
+			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
+			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
+			echo "<td class='list_description'>".retornaTipo($campo['ig_tipo_evento_idTipoEvento'])."</td>";
+			echo "<td class='list_description'>".retornaPeriodo($campo['idEvento'])."</td>";
+			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
+			echo "</tr>";		
+	}
+	echo "					</tbody>
+				</table>";	
+}
 
 ?>
