@@ -19,7 +19,7 @@ if(isset($_POST['representante'])){
 
 }
 
-if(isset($_POST['fisica'])){
+if(isset($_POST['fisica'])OR ($_GET['tipoPessoa'] == 1)){
 	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_pf&id_pf=$idPessoa' />
 				<input type='hidden' name='fisica' value='1'>
 ";
@@ -27,7 +27,7 @@ if(isset($_POST['fisica'])){
 
 }
 
-if(isset($_POST['juridica'])){
+if(isset($_POST['juridica']) OR ($_GET['tipoPessoa'] == 2)){
 	$form = "<form method='POST' action='?perfil=contratos&p=frm_edita_pj&id_pj=$idPessoa' />
 				<input type='hidden' name='juridica' value='1'>
 ";
@@ -101,6 +101,7 @@ $campo = recuperaPessoa($_REQUEST['idPessoa'],$_REQUEST['tipoPessoa']);
 					 <h3>Envio de Arquivos</h3>
                      <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
 <p>Nesta página, você envia documentos digitalizados. O tamanho máximo do arquivo deve ser 60MB.</p>
+<p><b>Um nome de arquivo não pode conter nenhum dos seguintes caracteres: \ / | < > * : “ & ‘ @ { } [ ] , $ = ! – # ( ) % . + ~ ou qualquer tipo de acentuação: ^ ´ ` ' ¨ Ç </b></p>
 
 
 <br />
@@ -135,20 +136,28 @@ while($arq = mysqli_fetch_array($query_arquivos)){ ?>
 
 
 
-<?php echo $form ?>
+<?php echo $form ?>	
 
     <input type="hidden" name="idPessoa" value="<?php echo $idPessoa; ?>"  />
     <input type="hidden" name="tipoPessoa" value="<?php echo $tipoPessoa; ?>"  />
+    
     <input type="submit" class="btn btn-theme btn-block" value='Voltar ao Cadastro de Pessoa'>
 </form>
 </div>
 <br />
 <?php if($_SESSION['idPedido'] != ""){ ?>
 <div class="center">
+<?php 
+if($_GET['tipoPessoa'] == 1){
+?>
 <form method="POST" action="?perfil=contratos&p=frm_edita_pedidocontratacaopf&id_ped=<?php echo $_SESSION['idPedido']; ?>" >
+<?php }else{ ?>
+<form method="POST" action="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido']; ?>" >
+
+<?php } ?>
     <input type="hidden" name="idPessoa" value="<?php echo $idPessoa; ?>"  />
     <input type="hidden" name="tipoPessoa" value="<?php echo $tipoPessoa; ?>"  />
-    <input type="submit" class="btn btn-theme btn-block" value='Voltar ao Pedido de Contratação'>
+    <input type="submit" class="btn btn-theme btn-block" value='Voltar ao Pedido'>
 </form>
 </div>
 <?php } ?>

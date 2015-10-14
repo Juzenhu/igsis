@@ -135,7 +135,7 @@ case "pesquisar":
 			echo "<td class='list_description'>".$descricao['CPF']."</td>";
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=".$_SESSION['idPedido']."'>
+			<form method='POST' action='?perfil=contratos&p=frm_cadastra_propostapj&id_ped=".$_SESSION['idPedido']."'>
 			<input type='hidden' name='insereRepresentante' value='".$descricao['Id_RepresentanteLegal']."'>
 			<input type='hidden' name='numero' value='".$_GET['num']."'>
 			<input type ='submit' class='btn btn-theme btn-md btn-block' value='inserir'></td></form>"	;
@@ -166,28 +166,28 @@ case "pesquisar":
 	  		<div class="row">
 	  			<div class="col-md-offset-1 col-md-10">
 
-				<form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido'] ?>" method="post">
+				<form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_cadastra_propostapj&id_ped=<?php echo $_SESSION['idPedido'] ?>" method="post">
 				  
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-8">
+					<div class="col-md-offset-2 col-md-8"><strong>Representante legal: *</strong><br/>
 					  <input type="text" class="form-control" id="RepresentanteLegal" name="RepresentanteLegal" placeholder="Representante Legal">
 					</div>
 				  </div>
                   
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-6">
+					<div class="col-md-offset-2 col-md-6"><strong>RG: *</strong><br/>
 					  <input type="text" class="form-control" id="RG" name="RG" placeholder="RG">
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-6"><strong>CPF: *</strong><br/>
 					  <input type="text" readonly class="form-control" id="cpf" name="CPF" value="<?php echo $busca ?>" placeholder="CPF">
 					</div>
 				  </div>
                   
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-6">
+					<div class="col-md-offset-2 col-md-6"><strong>Nacionalidade: *</strong><br/>
 					  <input type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Nacionalidade">
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-6"><strong>Estado Civil: *</strong><br/>
 					  <select class="form-control" name="IdEstadoCivil" id="IdEstadoCivil"><option>Estado Civil</option>
                       <?php
 					  geraOpcao("sis_estado_civil","","");
@@ -202,7 +202,7 @@ case "pesquisar":
                     <input type="hidden" name="cadastraRepresentante" value="1" />
 
                     <input type="hidden" name="numero" value="<?php echo $_GET['num']; ?>" />
-					 <input type="image" name="enviar" alt="CADASTRAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" name="enviar" value="CADASTRAR" class="btn btn-theme btn-lg btn-block">
 					</div>
                     
 				  </div>
@@ -244,25 +244,25 @@ $representante = recuperaDados("sis_representante_legal",$_GET['id_rep'],"Id_Rep
 				<form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_representantelegal&num=<?php echo $_GET['num'] ?>&id_rep=<?php echo $_GET['id_rep'] ?>" method="post">
 				  
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-8">
+					<div class="col-md-offset-2 col-md-8"><strong>Representante Legal: *</strong>
 					  <input type="text" class="form-control" id="RepresentanteLegal" name="RepresentanteLegal" placeholder="Representante Legal" value="<?php echo $representante['RepresentanteLegal']; ?>">
 					</div>
 				  </div>
                   
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-6">
+					<div class="col-md-offset-2 col-md-6"><strong>RG: *</strong>
 					  <input type="text" class="form-control" id="RG" name="RG" placeholder="RG" value="<?php echo $representante['RG']; ?>">
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-6"><strong>CPF: *</strong>
 					  <input type="text" class="form-control" id="cpf" name="CPF" placeholder="CPF" value="<?php echo $representante['CPF']; ?>">
 					</div>
 				  </div>
                   
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-6">
+					<div class="col-md-offset-2 col-md-6"><strong>Nacionalidade: *</strong>
 					  <input type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Nacionalidade" value="<?php echo $representante['Nacionalidade']; ?>">
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-6"><strong>Estado Civil: *</strong>
 					  <select class="form-control" name="IdEstadoCivil" id="IdEstadoCivil"><option>Estado Civil</option>
                       <?php
 					  geraOpcao("sis_estado_civil",$representante['IdEstadoCivil'],"");
@@ -275,15 +275,15 @@ $representante = recuperaDados("sis_representante_legal",$_GET['id_rep'],"Id_Rep
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     <input type="hidden" name="atualizarRepresentante" value="1" />
-					 <input type="image" name="enviar" alt="Atualizar" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" name="enviar" value="Atualizar" class="btn btn-theme btn-lg btn-block">
 					</div>
                     
 				  </div>
 				</form>
 	
-                      <div class="form-group">
+                  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-   <a href="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido']; ?>"><input type="image" alt="Voltar ao pedido" value="submit" class="btn btn-theme btn-block"></a> 
+   <a href="?perfil=contratos&p=frm_cadastra_propostapj&id_ped=<?php echo $_SESSION['idPedido']; ?>"><input type="submit" value="Voltar ao pedido" class="btn btn-theme btn-block"></a> 
 					</div>
 				  </div>
                                   <div class="form-group">
@@ -304,7 +304,7 @@ $representante = recuperaDados("sis_representante_legal",$_GET['id_rep'],"Id_Rep
                    <?php } ?>
 
                     <input type="hidden" name="Sucesso" id="Sucesso" />
-					 <input type="image" alt="Anexos" value="submit" class="btn btn-theme btn-block">
+					 <input type="submit" value="Anexos" class="btn btn-theme btn-block">
 				</form>
 					</div>
                     </div>
@@ -318,7 +318,7 @@ $representante = recuperaDados("sis_representante_legal",$_GET['id_rep'],"Id_Rep
                	<div class="col-md-offset-2 col-md-8">
                     <?php if(isset($id_pedido)){ ?>
                     
-                     <a href="?perfil=contratos&p=frm_edita_representantelegal&num=<?php $_GET['num'] ?>&id_pf="><input type="image" alt="Mudar o executante" value="submit" class="btn btn-theme btn-block"></a>
+                     <a href="?perfil=contratos&p=frm_edita_representantelegal&num=<?php $_GET['num'] ?>&id_pf="><input type="submit" value="Mudar o executante" class="btn btn-theme btn-block"></a>
                    <?php } ?>
 
 					</div>

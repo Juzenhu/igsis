@@ -13,6 +13,7 @@ if(isset($_POST['Valor'])){ // atualiza o pedido
 	$fiscal = $_POST['Fiscal'];
 	$suplente  = $_POST['Suplente'];
 	$parecer = addslashes($_POST['ParecerTecnico']);
+	$observacao = addslashes($_POST['Observacao']);
 
 	$sql_atualiza_pedido = "UPDATE igsis_pedido_contratacao SET
 		valor = '$valor',
@@ -20,6 +21,7 @@ if(isset($_POST['Valor'])){ // atualiza o pedido
 		formaPagamento = '$forma_pagamento',
 		idVerba = '$verba',
 		justificativa = '$justificativa',
+		observacao = '$observacao',
 		parecerArtistico = '$parecer'
 		WHERE idPedidoContratacao = '$ped'";
 	$query_atualiza_pedido = mysqli_query($con,$sql_atualiza_pedido);
@@ -60,7 +62,7 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$_GET['id_ped'],"idPedidoCont
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
-					<h2>PEDIDO DE CONTRTAÇÃO DE PESSOA FÍSICA</h2>
+					<h2>PROPOSTA DE PESSOA FÍSICA</h2>
                     <h4><?php if(isset($mensagem)){ echo $mensagem; } ?></h4>
                      </div>
 
@@ -113,13 +115,10 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$_GET['id_ped'],"idPedidoCont
 					 <input type='text' readonly name="LocalEspetaculo" class='form-control' value="<?php echo $linha_tabelas['Local'];?>">
 					</div>
 				  </div>
-                  <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_pedidocontratacaopf&id_ped=<?php echo $id_ped; ?>" method="post">
+                  <form class="form-horizontal" role="form" action="?perfil=contratos&p=update_pedidocontratacaopf&id_ped=<?php echo $id_ped; ?>" method="post">
                   <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Valor Global:</strong><br/>
+					<div class="col-md-offset-2 col-md-8"><strong>Valor:</strong><br/>
 					  <input type='text' name="Valor" class='form-control' id='valor' value='<?php echo dinheiroParaBr($linha_tabelas['ValorGlobal']);?>'>
-					</div>
-					<div class="col-md-6"><strong>Valor Individual:</strong><br/>
-					  <input type='text' name="ValorIndividual" class='form-control' id='valor' value='<?php echo dinheiroParaBr($linha_tabelas['ValorIndividual']);?>'>
 					</div>
 				  </div>
                   <div class="form-group">
@@ -182,7 +181,7 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$_GET['id_ped'],"idPedidoCont
 				  </div>
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Data do Cadastro:</strong><br/>
-					   <input type='text' name="DataAtual" class='form-control' value="<?php echo $linha_tabelas['DataCadastro'];?>">
+					   <input type='text' readonly name="DataAtual" class='form-control' value="<?php echo exibirDataBr($linha_tabelas['DataCadastro']);?>">
 					</div>
 				  </div>
                   
@@ -193,7 +192,14 @@ $pedido = recuperaDados("igsis_pedido_contratacao",$_GET['id_ped'],"idPedidoCont
                     
 				  </div>
 				</form>
-	
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+			 <a href="?perfil=contratos&p=evento&id_ped=<?php echo $pedido['idEvento'];  ?>" class="btn btn-theme btn-block" target="_blank" >Abrir detalhes do evento</a>	
+
+					</div>
+                    
+				  </div>
+
 	  			</div>
 			
 				

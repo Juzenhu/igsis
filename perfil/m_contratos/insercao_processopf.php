@@ -1,5 +1,3 @@
-
-
 <?php
 
 include 'includes/menu.php';
@@ -9,14 +7,17 @@ $link0="http://$server/igsis/pdf/";
 $link1=$link0."rlt_pedido_reserva_padrao_pf.php";
 $link2=$link0."rlt_pedido_reserva_fepac_pf.php";
 $link3=$link0."rlt_pedido_reserva_cooperativa_pf.php";
+$link4=$link0."rlt_pedido_reserva_vocacional_pf.php";
 
-
+$assinatura = $_POST['Id_Assinatura'];
 $processo=$_POST['NumeroProcesso'];
 
 $id_ped=$_GET['id'];
 
 $incluir = "UPDATE igsis_pedido_contratacao 
-			SET NumeroProcesso = '$processo' 
+			SET NumeroProcesso = '$processo',
+				idAssinatura = '$assinatura',
+				estado = 'Processo'			
 			WHERE idPedidoContratacao = '$id_ped' ";
 
 //PREPARANDO A VARIAVEL DO UPDATE
@@ -33,6 +34,7 @@ if( mysqli_stmt_execute($stmt))
 	 <a href='$link1?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Padrão</a>
 	 <a href='$link2?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>FEPAC</a>
 	 <a href='$link3?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Cooperativa</a>
+	 <a href='$link4?id=$id_ped' class='btn btn-theme btn-lg btn-block' target='_blank'>Vocacional</a>
 	 <br /></center>";
 };
 ?>

@@ -1620,35 +1620,19 @@ function listaOcorrenciasFilmes($idCinema){ //lista ocorrencias de determinado f
 
 function periodoMostra($idEvento){
 	$con = bancoMysqli();
-	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' AND idTipoOcorrencia = '5' ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
+	$sql_anterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' AND idTipoOcorrencia = '5' AND idCinema IS NOT NULL ORDER BY dataInicio ASC LIMIT 0,1"; //a data inicial mais antecedente
 	$query_anterior = mysqli_query($con,$sql_anterior);
 	$data = mysqli_fetch_array($query_anterior);
 	$data_inicio = $data['dataInicio'];
 	
-	$sql_posterior01 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' ORDER BY dataFinal DESC LIMIT 0,1"; //quando existe data final
-	$sql_posterior02 = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' ORDER BY dataInicio DESC LIMIT 0,1"; //quando há muitas datas únicas
+	$sql_posterior = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' AND idTipoOcorrencia = '5' AND idCinema IS NOT NULL ORDER BY dataInicio DESC LIMIT 0,1"; //quando há muitas datas únicas
 	
-	$query_anterior01 = mysqli_query($con,$sql_posterior01);
-	$data = mysqli_fetch_array($query_anterior01);
-	$num = mysqli_num_rows($query_anterior01);
-	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00')){
-		$dataFinal01 = $data['dataFinal'];	
-	}else{
-		return "Não há ocorrências. <br />
-		Por favor, insira pelo menos uma ocorrência.";	
-	}
-	$query_anterior02 = mysqli_query($con,$sql_posterior02);
-	$data = mysqli_fetch_array($query_anterior02);
-	$dataFinal02 = $data['dataInicio'];
+	$query_anterior = mysqli_query($con,$sql_posterior);
+	$data = mysqli_fetch_array($query_anterior);
+	$dataFinal = $data['dataInicio'];	
+
 	
 		
-	if(isset($dataFinal01)){
-		if($dataFinal01 > $dataFinal02){
-			$dataFinal = $dataFinal01;
-		}else{
-			$dataFinal = $dataFinal02;
-		}
-	}
 	
 
 	if($data_inicio == $dataFinal){
@@ -1685,6 +1669,14 @@ function retornaVerba($tipo){
 function listaServicosInternos($idEvento){
 	$evento = recuperaDados("ig_evento",$idEvento,"idEvento");
 	$interno = recuperaDados("ig_producao",$idEvento,"ig_evento_idEvento");
+	$produtor = recuperaDados("ig_produtor",$evento['ig_produtor_idProdutor'],"idProdutor");
+	
+	if($produtor){
+		 echo "Produtor responsável: <strong>".$produtor['nome']."</strong><br />";	
+		 echo "E-mail: <strong>".$produtor['email']."</strong><br />";	
+		 echo "Telefone: <strong>".$produtor['telefone']."</strong><br />";	
+		echo "<br />"; 
+	}
 	if($interno){
 		if(($interno['carros'] != '') AND ($interno['carros'] != NULL)){ echo "Carros: ".$interno['carros']."<br />";}	
 		if(($interno['equipe'] != '') AND ($interno['equipe'] != NULL)){ echo "Equipe: ".$interno['equipe']."<br />";}	
@@ -1964,16 +1956,29 @@ function listaEventosEnviados($idUsuario){
 					</thead>
 					<tbody>";
 	while($campo = mysqli_fetch_array($query)){
+		$protocolo = recuperaDados("ig_protocolo",$campo['idEvento'],"ig_evento_idEvento");
 			echo "<tr>";
-			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
+			echo "<td class='list_description'>".$protocolo['idProtocolo']."</td>";
 			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
 			echo "<td class='list_description'>".retornaTipo($campo['ig_tipo_evento_idTipoEvento'])."</td>";
 			echo "<td class='list_description'>".retornaPeriodo($campo['idEvento'])."</td>";
-			echo "<td class='list_description'>".$campo['nomeEvento']."</td>";
+			echo "<td class='list_description'>".substr(retornaPedidos($campo['idEvento']),7)."</td>";
 			echo "</tr>";		
 	}
 	echo "					</tbody>
 				</table>";	
+}
+
+function retornaPedidos($idEvento){
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM sis_protocolo, igsis_pedido_contratacao WHERE sis_protocolo.idPedido = igsis_pedido_contratacao.idPedidoContratacao AND igsis_pedido_contratacao.idEvento = '$idEvento'";
+	$query = mysqli_query($con,$sql);
+	$protos = "";
+	while($protocolo = mysqli_fetch_array($query)){
+		$protos = ",<br />".$protocolo['idProtocolo']; 	
+	}
+	return $protos;
+	
 }
 
 ?>

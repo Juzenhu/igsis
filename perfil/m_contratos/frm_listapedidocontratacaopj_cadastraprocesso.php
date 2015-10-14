@@ -1,7 +1,7 @@
 <?php
 
 // não precisa chamar a funcao porque o index contrato já chama.
-$linha_tabela_lista = siscontratLista(2,5,10,1,"DESC"); //esse gera uma array com os pedidos
+$linha_tabela_lista = siscontratLista(2,$_SESSION['idInstituicao'],10,1,"DESC","Proposta"); //esse gera uma array com os pedidos
 
 $link="index.php?perfil=contratos&p=frm_cadastra_processopj&id_ped=";
 

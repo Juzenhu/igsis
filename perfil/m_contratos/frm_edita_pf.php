@@ -149,12 +149,12 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
 					<div class="col-md-offset-2 col-md-6"><strong>Nacionalidade:</strong><br/>
 					   <input type="text" class="form-control" id="Nacionalidade" name="Nacionalidade" placeholder="Nacionalidade" value="<?php echo $fisica['Nacionalidade']; ?>">
 					</div>				  
-					<div class=" col-md-6"><strong>CEP:</strong><br/>
+					<div class=" col-md-6"><strong>CEP *:</strong><br/>
 					 					  <input type="text" class="form-control" id="CEP" name="CEP" placeholder="CEP" value="<?php echo $fisica['CEP']; ?>">
 					</div>
 				  </div>
 				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-8"><strong>Endereço *:</strong><br/>
+					<div class="col-md-offset-2 col-md-8"><strong>Endereço:</strong><br/>
 					  <input type="text" class="form-control" id="Endereco" name="Endereco" placeholder="Endereço">
 					</div>
 				  </div>
@@ -173,16 +173,16 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
 					</div>
 				  </div>		
                   				  <div class="form-group">
-					<div class="col-md-offset-2 col-md-6"><strong>Cidade *:</strong><br/>
+					<div class="col-md-offset-2 col-md-6"><strong>Cidade:</strong><br/>
 										  <input type="text" class="form-control" id="Cidade" name="Cidade" placeholder="Cidade">
 
 					</div>				  
-					<div class=" col-md-6"><strong>Estado *:</strong><br/>
+					<div class=" col-md-6"><strong>Estado:</strong><br/>
 					  <input type="text" class="form-control" id="Estado" name="Estado" placeholder="Estado">
 					</div>
 				  </div>		  
 				  <div class="form-group">
-                  					<div class="col-md-offset-2 col-md-6"><strong>E-mail *:</strong><br/>
+                  					<div class="col-md-offset-2 col-md-6"><strong>E-mail:</strong><br/>
 					<input type="text" class="form-control" id="Email" name="Email" placeholder="E-mail" value="<?php echo $fisica['Email']; ?>" >
 					</div>				  
 
@@ -235,13 +235,13 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
                    <input type="hidden" name="idPedido" value="<?php echo $id_pedido ?>" />
                    <?php } ?>
                     <input type="hidden" name="Sucesso" id="Sucesso" />
-					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" value="GRAVAR" class="btn btn-theme btn-lg btn-block">
 					</div>
 				  </div>
 				</form>
                 
                 <!-- Botão para verificar arquivos da pessoa -->
-				  <div class="form-group">
+			<div class="form-group">
                	<div class="col-md-offset-2 col-md-6">
                 <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_arquivos&idPessoa=<?php echo $ultimo; ?>&tipoPessoa=1" method="post">
                     <input type="hidden" name="cadastrarFisica" value="<?php echo $fisica['Id_PessoaFisica'] ?>" />
@@ -251,12 +251,12 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
                    <?php } ?>
 
                     <input type="hidden" name="Sucesso" id="Sucesso" />
-					 <input type="image" alt="Anexos" value="submit" class="btn btn-theme btn-block">
+					 <input type="submit" value="Anexos" class="btn btn-theme btn-block">
 				</form>
 					</div>
 					<div class=" col-md-6">
                     <?php if(isset($id_pedido)){ ?>
-                     <a href="?perfil=contratos&p=frm_edita_pedidocontratacaopf&id_ped=<?php echo $id_pedido ?>"><input type="image" alt="Voltar ao pedido de contratação" value="submit" class="btn btn-theme btn-block"></a>
+                     <a href="?perfil=contratos&p=frm_edita_pedidocontratacaopf&id_ped=<?php echo $id_pedido ?>"><input type="submit" value="Voltar ao pedido" class="btn btn-theme btn-block"></a>
                    <?php } ?>
 
 					</div>

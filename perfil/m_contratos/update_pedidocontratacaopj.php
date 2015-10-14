@@ -1,61 +1,37 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-      </head>
-  <body>
-
 <?php
-require("../conectar.php");
+
 include 'includes/menu.php';
+$conexao = bancoMysqli();
+$server = "http://".$_SERVER['SERVER_NAME']."/igsis/";
+$http = $server."/pdf/";
 
-$link1="rlt_pedido_contratacao_pj.php";
+$link1=$http."rlt_pedido_contratacao_pj.php";
 
-$categoria=$_POST['Categoria'];
-$objeto=$_POST['Objeto'];
-$local=$_POST['LocalEspetaculo'];
-$valor=$_POST['Valor'];
-$formaPagamento=$_POST['FormaPagamento'];
-$periodo=$_POST['Periodo'];
-$duracao=$_POST['Duracao'];
-$cargaHoraria=$_POST['CargaHoraria'];
-$verba=$_POST['Verba'];
-$justificativa=$_POST['Justificativa'];
-$parecer=$_POST['ParecerTecnico'];
-$fiscal=$_POST['Fiscal'];
-$suplente=$_POST['Suplente'];
-$observacao=$_POST['Observacao'];
-$dataAtual=$_POST['DataAtual'];
-$idUsuario=1;
-$id_ped=$_GET['id_ped'];
+$id_ped = $_GET['id_ped'];
+	$valor = $_POST['Valor']; 
+	$valor_individual = $_POST['ValorIndividual'];
+	$forma_pagamento = $_POST['FormaPagamento'];
+	$verba = $_POST['Verba'];
+	$justificativa = $_POST['Justificativa'];
+	$fiscal = $_POST['Fiscal'];
+	$suplente  = $_POST['Suplente'];
+	$parecer = $_POST['ParecerTecnico'];
+	$observacao = $_POST['Observacao'];
+	$idUsuario = $_SESSION['idUsuario'];
 
-$update = "UPDATE sis_pedido_contratacao_pj 
-			SET 
-			IdCategoria = '$categoria',
-			Objeto = '$objeto',
-			LocalEspetaculo = '$local',
-			Valor = '$valor',
-			FormaPagamento = '$formaPagamento',
-			Periodo = '$periodo',
-			Duracao = '$duracao',
-			CargaHoraria = '$cargaHoraria',
-			IdVerba = '$verba',
-			Justificativa = '$justificativa',
-			Fiscal = '$fiscal',
-			Suplente = '$suplente',
-			ParecerTecnico = '$parecer',
-			Observacao = '$observacao',
-			DataAtual = '$dataAtual'
-			WHERE Id_PedidoContratacaoPJ = '$id_ped' ";
-
-$stmt = mysqli_prepare($conexao,$update);
+	$sql_atualiza_pedido = "UPDATE igsis_pedido_contratacao SET
+		valor = '$valor',
+		valorIndividual = '$valor_individual',
+		formaPagamento = '$forma_pagamento',
+		idVerba = '$verba',
+		justificativa = '$justificativa',
+		observacao = '$observacao',
+		parecerArtistico = '$parecer',
+		IdUsuarioContratos = '$idUsuario',
+		estado = 'Proposta'
+		WHERE idPedidoContratacao = '$id_ped'";
+	
+	$stmt = mysqli_prepare($conexao,$sql_atualiza_pedido);
 
  if(mysqli_stmt_execute($stmt))
 	  echo "<p>&nbsp;</p><h4><center>Pedido alterado com sucesso</h4><br>";

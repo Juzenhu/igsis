@@ -280,7 +280,7 @@ case "pesquisar":
 					<div class="col-md-offset-2 col-md-8">
                     <input type="hidden" name="cadastraExecutante" value="1" />
                     <input type="hidden" name="Sucesso" id="Sucesso" />
-					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" value="GRAVAR" class="btn btn-theme btn-lg btn-block">
 					</div>
 				  </div>
 				</form>
@@ -522,14 +522,14 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
                    <input type="hidden" name="idPedido" value="<?php echo $id_pedido ?>" />
                    <?php } ?>
                     <input type="hidden" name="Sucesso" id="Sucesso" />
-					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					 <input type="submit" value="GRAVAR" class="btn btn-theme btn-lg btn-block">
 					</div>
 				  </div>
 				</form>
 
                   <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
-   <a href="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido']; ?>"><input type="image" alt="Voltar ao pedido" value="submit" class="btn btn-theme btn-block"></a> 
+   <a href="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido']; ?>"><input type="submit" value="Voltar ao Pedido" class="btn btn-theme btn-block"></a> 
 					</div>
 				  </div>
                   
@@ -550,7 +550,7 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
                    <?php } ?>
 
                     <input type="hidden" name="Sucesso" id="Sucesso" />
-					 <input type="image" alt="Anexos" value="submit" class="btn btn-theme btn-block">
+					 <input type="submit" value="Anexos" class="btn btn-theme btn-block">
 				</form>
 					</div>
                 </div>
@@ -565,7 +565,7 @@ $fisica = recuperaDados("sis_pessoa_fisica",$ultimo,"Id_PessoaFisica");
                 <div class="form-group">
 					<div class="col-md-offset-2 col-md-8">
                     
-                     <a href="?perfil=contratos&p=frm_edita_executante&id_pf="><input type="image" alt="Mudar o executante" value="submit" class="btn btn-theme btn-block"></a>
+                     <a href="?perfil=contratos&p=frm_edita_executante&id_pf="><input type="submit" value="Mudar o executante" class="btn btn-theme btn-block"></a>
 					</div>
 				</div>
                    <?php } ?>

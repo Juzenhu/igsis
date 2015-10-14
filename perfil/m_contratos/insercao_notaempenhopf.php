@@ -1,9 +1,10 @@
 <?php
-$conexao = bancoMysqli();
 include 'includes/menu.php';
-$server = $_SERVER['SERVER_NAME'];
+$conexao = bancoMysqli();
+$server = "http://".$_SERVER['SERVER_NAME']."/igsis/";
+$http = $server."/pdf/";
 
-$link1="http://$server/igsis/visual/pdf/rlt_recibo_ne_pf.php";
+$link1=$http."rlt_recibo_ne_pf.php";
 
 
 $numeroNE=$_POST['NumeroNotaEmpenho'];
@@ -11,12 +12,12 @@ $emissaoNE= $_POST['DataEmissaoNotaEmpenho'];
 $entregaNE= $_POST['DataEntregaNotaEmpenho'];
 
 $id_ped=$_GET['id'];
-//$idContrato=$_GET['idContrato'];
 
 $update1 = "UPDATE igsis_pedido_contratacao SET 
 			NumeroNotaEmpenho = '$numeroNE',
 			DataEmissaoNotaEmpenho = '$emissaoNE',
-			DataEntregaNotaEmpenho = '$entregaNE'
+			DataEntregaNotaEmpenho = '$entregaNE',
+			estado = 'Nota Empenho'
 			WHERE idPedidoContratacao = '$id_ped' ";
 
 $stmt1 = mysqli_prepare($conexao,$update1);

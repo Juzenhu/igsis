@@ -1,24 +1,12 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-  </head>
-  <body>
 
 <?php
-require ("../conectar.php");
 
-$consulta_tabela_representante_legal = mysqli_query ($conexao,"SELECT * FROM representante_legal ORDER BY RepresentanteLegal");
+$conexao = bancoMysqli(); // conecta no banco
+
+$consulta_tabela_representante_legal = mysqli_query ($conexao,"SELECT * FROM sis_representante_legal ORDER BY RepresentanteLegal");
 $linha_tabela_representante_legal = mysqli_fetch_assoc($consulta_tabela_representante_legal);
 
-$link="frm_edita_representantelegal.php";
+$link="index.php?perfil=contratos&p=frm_edita_representantelegal";
 
 ?>
 	
@@ -56,9 +44,3 @@ $link="frm_edita_representantelegal.php";
 		</div>
 	</section>
 <!--fim_list-->
-
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-  	
-</html>

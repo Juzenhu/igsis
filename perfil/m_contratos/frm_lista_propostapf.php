@@ -1,56 +1,16 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>IGSIS</title>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- css -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/style.css" rel="stylesheet" media="screen">
-	<link href="../color/default.css" rel="stylesheet" media="screen">
-	<script src="../js/modernizr.custom.js"></script>
-  </head>
-  <body>
-
 <?php
-require ("../conectar.php");
-$sql__tabela_pedido_contratacaopf = "SELECT
-											sis_pedido_contratacao_pf.Id_PedidoContratacaoPF, 
-											sis_pessoa_fisica.Nome,
-											sis_pedido_contratacao_pf.Objeto,
-											sis_pedido_contratacao_pf.LocalEspetaculo,
-											sis_pedido_contratacao_pf.Periodo,
-											sis_contrato_pf.NumeroProcesso,
-											sis_contrato_pf.Id_ContratoPF,
-											sis_setor.Setor
-										FROM
-											sis_pessoa_fisica 
-										INNER JOIN sis_pedido_contratacao_pf 
-										ON 
-											(sis_pedido_contratacao_pf.IdPessoaFisica = 
-											 sis_pessoa_fisica.Id_PessoaFisica)
-                                        INNER JOIN sis_contrato_pf
-										ON 
-                                        (sis_pedido_contratacao_pf.Id_PedidoContratacaoPF =
-											sis_contrato_pf.IdPedidoContratacaoPF)
-										INNER JOIN sis_setor
-										ON
-											(sis_pedido_contratacao_pf.IdSetor =
-											sis_setor.Id_Setor)
-											";
-											 
-$consulta_tabela_pedido_contratacaopf= mysqli_query($conexao, $sql__tabela_pedido_contratacaopf);
-$linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf);
 
-$link="frm_edita_propostapf.php";
+$linha_tabela_lista = siscontratLista(1,$_SESSION['idInstituicao'],10,1,"DESC","todos"); //esse gera uma array com os pedidos
+
+//$tipoPessoa,$instituicao,$num_registro,$pagina,$ordem,$estado
+
+$link="index.php?perfil=contratos&p=frm_edita_propostapf&id_ped=";
 
 ?>
-
 	
-<?php include 'includes/menu.php';?>
-		
+<?php include 'includes/menu.php';?>	
 	  	  
-<!-- inicio_list -->
+	 <!-- inicio_list -->
 	<section id="list_items">
 		<div class="container">
 			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
@@ -63,37 +23,31 @@ $link="frm_edita_propostapf.php";
 							<td>Objeto</td>
 							<td>Local</td>
 							<td>Periodo</td>
-                            <td>Setor</td>
                             <td>Processo</td>
+                            <td>Status</td>
 						</tr>
 					</thead>
 					<tbody>
-<?php        
- $data=date('Y');
- do 
+<?php
+$data=date('Y');
+for($i = 0; $i < count($linha_tabela_lista); $i++)
  {
- echo "<tr><td> <a href='$link?idContrato=$linha_tabela_pedido_contratacaopf[Id_ContratoPF]'>$data-$linha_tabela_pedido_contratacaopf[Id_PedidoContratacaoPF]</a></td>";
- echo '<td>'.$linha_tabela_pedido_contratacaopf['Nome'].         '</td> ';
- echo '<td>'.$linha_tabela_pedido_contratacaopf['Objeto'].         '</td> ';
- echo '<td>'.$linha_tabela_pedido_contratacaopf['LocalEspetaculo'].      '</td> ';
- echo '<td>'.$linha_tabela_pedido_contratacaopf['Periodo'].      '</td> ';
- echo '<td>'.$linha_tabela_pedido_contratacaopf['Setor'].      '</td> ';
- echo '<td>'.$linha_tabela_pedido_contratacaopf['NumeroProcesso'].        '</td></tr>';
- }
- while($linha_tabela_pedido_contratacaopf = mysqli_fetch_assoc($consulta_tabela_pedido_contratacaopf));
-?>
+	$linha_tabela_pedido_contratacaopf = recuperaDados("sis_pessoa_fisica",$linha_tabela_lista[$i]['IdProponente'],"Id_PessoaFisica");	 
+	echo "<tr><td class='lista'> <a href='".$link.$linha_tabela_lista[$i]['idPedido']."'>".$linha_tabela_lista[$i]['idPedido']."</a></td>";
+	echo '<td class="list_description">'.$linha_tabela_pedido_contratacaopf['Nome'].'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Objeto'].'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Local'].'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Periodo'].'</td> ';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['NumeroProcesso'].'</td>';
+	echo '<td class="list_description">'.$linha_tabela_lista[$i]['Status'].'</td> </tr>';
+	}
 
+?>
+	
 					
 					</tbody>
 				</table>
 			</div>
 		</div>
-	</section> 
+	</section>
 <!--fim_list-->
-
-
-<!--footer -->
-<?php include 'includes/footer.html';?>
-	
-  	
-</html>

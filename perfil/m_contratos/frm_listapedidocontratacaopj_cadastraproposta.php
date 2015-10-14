@@ -1,21 +1,20 @@
 <?php
 
 // não precisa chamar a funcao porque o index contrato já chama.
-$linha_tabela_lista = siscontratLista(2,5,10,1,"DESC"); //esse gera uma array com os pedidos
+$linha_tabela_lista = siscontratLista(2,$_SESSION['idInstituicao'],10,1,"DESC","publicado"); //esse gera uma array com os pedidos
 
 $link="index.php?perfil=contratos&p=frm_cadastra_propostapj&id_ped=";
 
-//$link="frm_edita_pedidocontratacaopj.php";
 ?>
 	
 <?php include 'includes/menu.php';?>	
-	  	  
+
 	 <!-- inicio_list -->
 	<section id="list_items">
 		<div class="container">
 			 <div class="sub-title">PEDIDO DE CONTRATAÇÃO DE PESSOA FÍSICA</div>
 			<div class="table-responsive list_info">
-				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
+				<table class="table table-condensed">
 					<thead>
 						<tr class="list_menu">
 							<td>Codigo do Pedido</td>
