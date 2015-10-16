@@ -68,6 +68,16 @@ if(isset($_POST['usuario'])){
 					</div>
 				  </div>
 				</form>
+				<br />
+                <br />
+				<br />
+                
+
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					<p>Dúvidas? Envie e-mail para: <strong>sistema.igsis@gmail.com</strong></p>
+					</div>
+				  </div>
 	
 	  			</div>
 			

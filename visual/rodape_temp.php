@@ -4,7 +4,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<p><img src="images/logos.png"</p>
+					<p>Informações Gerais CCSP + Siscontrat DEC / Secretaria Municipal de Cultura / Prefeitura de São Paulo</p>
 				</div>
 			</div>		
 		</div>	

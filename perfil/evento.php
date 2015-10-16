@@ -2,6 +2,8 @@
 
 <?php
 $con = bancoMysqli();
+
+		
 if(isset($_GET['p'])){
 	$p = $_GET['p'];	
 }else{
@@ -24,7 +26,7 @@ case 'inicio':
             <div class="col-md-offset-2 col-md-8">
 	            <a href="?perfil=evento&p=basica&inserir=novo" class="btn btn-theme btn-lg btn-block">Inserir um novo evento</a>
 	            <a href="?perfil=evento&p=carregar" class="btn btn-theme btn-lg btn-block">Carregar um evento gravado</a>
-  	            <a href="?perfil=evento&p=enviadas" class="btn btn-theme btn-lg btn-block">Acompanhar andamento de eventos enviados</a>
+  	            <a href="?perfil=evento&p=enviados" class="btn btn-theme btn-lg btn-block">Acompanhar andamento de eventos enviados</a>
    	            <a href="?perfil=evento&p=pedidos" class="btn btn-theme btn-lg btn-block">Acompanhar andamento de pedidos de contratação</a>
             </div>
           </div>
@@ -64,7 +66,7 @@ include "../include/menuEventoInicial.php";
 			  </div>  
 
 			<div class="table-responsive list_info">
-                         <?php listaEventosGravados($_SESSION['perfil']); ?>
+                         <?php listaEventosGravados($_SESSION['idUsuario']); ?>
 			</div>
 		</div>
 	</section> <!--/#list_items-->
@@ -910,6 +912,7 @@ case 14:
 case 15:
 case 16:
 case 17:
+case 9:
 	$idTabela = "ig_teatro_danca";
 	$idCampo = "ig_evento_idEvento";
 	$idDado = $_SESSION['idEvento'];
@@ -1361,12 +1364,17 @@ include "../include/menuEvento.php";
 if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	
 	$dataInicio = exibirDataMysql($_POST['dataInicio']);
+	
 	if(isset($_POST['dataFinal'])){
 		if($_POST['dataFinal'] != ""){
 			$dataFinal = exibirDataMysql($_POST['dataFinal']);
+		}else{
+			$dataFinal = '0000-00-00';
 		}
-		
+	}else{
+		$dataFinal = NULL;
 	}
+	
 	if(($dataFinal == "") OR ($dataFinal == '0000-00-00')) {
 		$tipoOcorrencia = 3; // Tipo de Ocorrência data única
 	}else{
@@ -2324,12 +2332,12 @@ if($campos['total'] > 0){
 <?php //print_r($evento);
 if($ocorrencia > 0){
 	echo "Há ocorrências cadastradas.";	
+	prazoContratos($_SESSION['idEvento']);
 }else{
 	echo "Não há ocorrências cadastradas.";
 }
 
 ?></p>
-<p><?php prazoContratos($_SESSION['idEvento']); ?></p>
 
             </div>
 <?php
@@ -2477,7 +2485,7 @@ $mensagem = "Foram encontradas ".$resultado['numReg']." eventos com o termo ".$_
 			  </div>  
 
 			<div class="table-responsive list_info">
-                         <?php listaEventosEnviados($_SESSION['perfil']); ?>
+                         <?php listaEventosEnviados($_SESSION['idUsuario']); ?>
 			</div>
 		</div>
 	</section> <!--/#list_items-->

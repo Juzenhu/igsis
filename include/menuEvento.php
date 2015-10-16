@@ -31,7 +31,6 @@
                                 <li><a href="?perfil=cinema">Módulo Cinema</a> 
     						<?php } ?>
                             <li><a href="?perfil=evento&p=arquivos">Anexar arquivos</a></li>
-                            <li><a href="?perfil=contratados">Contratados</a></li>
                             <li><a href="#">Ocorrências</a>
                              		<ul class="dl-submenu">
                                     	<li><a href="?perfil=evento&p=ocorrencias&action=listar">Listar ocorrências</a>
@@ -44,11 +43,14 @@
                                         <?php } ?>
                                     </ul>
                             </li>
+                            <li><a href="?perfil=contratados">Contratados</a></li>
+
                             <li><a href="?perfil=evento&p=enviar">Enviar</a> </li>
  							<li><a href="#">Outras opções</a> 
     
                                     <ul class="dl-submenu">
-                                        <li><a href="?perfil=inicio">Voltar a página inicial</a></li>
+                                        <li><a href="?secao=perfil">Carregar módulos</a></li>
+                                       <li><a href="?perfil=inicio">Voltar a página inicial</a></li>
                                         <li><a href="../include/logoff.php">Sair do sistema</a></li>
                                     </ul>
                                 </li>

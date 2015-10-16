@@ -523,7 +523,7 @@ function retornaInstituicao($local){
 }
 
 function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
-	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = 1 AND idTipoOcorrencia NOT LIKE '5' ORDER BY dataInicio";
+	$sql = "SELECT * FROM ig_ocorrencia WHERE idEvento = '$idEvento' AND publicado = '1' AND idTipoOcorrencia <> '5' ORDER BY dataInicio";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
@@ -808,6 +808,7 @@ function descricaoEspecificidades($idEvento,$tipo){
 	case 15:
 	case 16:
 	case 17:
+	case 9:
 	
 	$artes = recuperaDados("ig_teatro_danca",$idEvento,"ig_evento_idEvento");
 	if($artes['estreia'] == 0){
@@ -1270,7 +1271,7 @@ function retornaPeriodo($id){ //retorna o período
 	$data = mysqli_fetch_array($query_anterior01);
 	$num = mysqli_num_rows($query_anterior01);
 	
-	if(($num > 0) AND ($data['dataFinal'] != '0000-00-00') AND ($data['dataFinal'] != NULL)){  //se existe uma data final e que é diferente de NULO
+	if(($data['dataFinal'] != '0000-00-00') OR ($data['dataFinal'] != NULL)){  //se existe uma data final e que é diferente de NULO
 		$dataFinal01 = $data['dataFinal'];	
 	}
 
@@ -1927,7 +1928,7 @@ function recuperaUsuarioCompleto($idUsuario){ //retorna dados do usuário
 		    "email" => $recupera['email'],
 		    "perfil" => $perfil['nomePapelUsuario'],
 			"modulos" => $modulos,
-			"notificacao" => $notificacao,			
+			"notificacao" => $notificacao,		
 			"instituicao" => $instituicao['instituicao']
 		);
 		return $x;
@@ -1941,16 +1942,16 @@ function recuperaUsuarioCompleto($idUsuario){ //retorna dados do usuário
 function listaEventosEnviados($idUsuario){
 
 	$con = bancoMysqli();
-	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 1 AND dataEnvio IS NOT NULL";
+	$sql = "SELECT * FROM ig_evento WHERE (idUsuario = $idUsuario OR idResponsavel = $idUsuario OR suplente = $idUsuario) AND publicado = 1 AND dataEnvio IS NOT NULL";
 	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
 						<tr class='list_menu'>
-							<td>IGSIS</td>
+							<td>Cod. Evento</td>
 							<td>Nome do evento</td>
 							<td>Tipo de evento</td>
   							<td>Data/Período</td>
-							<td width='10%'>Pedidos de Contratação</td>
+							<td width='10%'>Cod. Pedido Contratação</td>
 							<td width='10%'></td>
 						</tr>
 					</thead>

@@ -22,6 +22,12 @@
 
 
 <?php
+if(isset($_SESSION['idEvento'])){
+	unset($_SESSION['idEvento']);	
+}
+
+
+
 if(isset($_GET['secao'])){
 	$secao = $_GET['secao'];
 }else{
@@ -77,8 +83,8 @@ case "perfil";
       			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h2>Perfil</h2>
-					<p>Selecione o perfil de trabalho.</p>
+					 <h2>Módulos</h2>
+					<p>Selecione o módulo de trabalho.</p>
 					</div>
 				  </div>
 			  </div>  
@@ -87,7 +93,7 @@ case "perfil";
 				<table class="table table-condensed">
 					<thead>
 						<tr class="list_menu">
-							<td>Perfil</td>
+							<td>Módulo</td>
 							<td>Descrição</td>
 							<td width="20%"></td>
 						</tr>

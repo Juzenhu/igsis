@@ -373,6 +373,7 @@ case "ocorrencias" :
 if(isset($_POST['dataInicio'])){ //carrega as variaveis vindas do POST
 	
 	$dataInicio = exibirDataMysql($_POST['dataInicio']);
+	
 	if(isset($_POST['dataFinal'])){
 		if($_POST['dataFinal'] != ""){
 			$dataFinal = exibirDataMysql($_POST['dataFinal']);
