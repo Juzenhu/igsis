@@ -49,9 +49,8 @@ function listaUsuarioAdministrador($idUsuario){
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_usuario WHERE idInstituicao = '$idUsuario' AND publicado = '1'";
 	$query = mysqli_query($con,$sql);
-	echo "	
-	<div class='table-resposive list_info'>
-	<table class='table table-condensed'>	<div class='col-md-offset-2 col-md-8'>
+	echo"<table class='table table-condensed'>
+	
 					<thead>					
 					<tr class='list_menu'> 
 						
@@ -63,23 +62,18 @@ function listaUsuarioAdministrador($idUsuario){
 							<td width='10%'></td>
 						 </tr>	
 					</thead>
-					</div>
-					
 					<tbody>";
 	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
-			
-			//echo "<td class='list_description'>".$campo['nomeCompleto']."</td>";
-		//echo "<td class='list_description'>".recuperaIdDado("ig_usuario",$campo['ig_usuario_idUsuario'])."</td>";
-			//echo "<td class='list_description'></td>";
+			//echo "<td class='list_description'>".recuperaIdDado("ig_usuario",$campo['ig_usuario_idUsuario'])."</td>";
 			echo "<td class='list_description'>".$campo['nomeCompleto']."</td>";
 			echo "<td class='list_description'>".$campo['nomeUsuario']."</td>";
 			echo "<td class='list_description'>".$campo['email']."</td>";
 			echo "<td class='list_description'></td>";
 			echo "
 			<td class='list_description'>
-			<form method='POST' action='?perfil=administrador&p=novoUser'>
-			<input type='hidden' name='carregar' value='".$campo['idUsuario']."' />
+			<form method='POST' action='?perfil=administrador&p=editarUser'>
+			<input type='hidden' name='editarUser' value='".$campo['idUsuario']."' />
 			<input type ='submit' class='btn btn-theme btn-block' value='Editar'></td></form>"	;
 			echo "
 			<td class='list_description'>
@@ -89,7 +83,7 @@ function listaUsuarioAdministrador($idUsuario){
 			echo "</tr>";		
 	}
 			echo " </tbody>
-				</table></div>"; 
+				</table>"; 
 } 
 
 // FUNÇÕES DA ABA ESPAÇO
@@ -107,6 +101,22 @@ function geraEspaco($tabela,$select,$instituicao,$publicado){ //gera os options 
 			echo "<option value='".$option[0]."' selected >".$option[3]."</option>";	
 		}else{
 			echo "<option value='".$option[0]."'>".$option[3]."</option>";	
+		}
+	}
+}
+function geraProjetoEspecial($tabela,$select,$publicado,$instituicao){ //gera os options de um select  (( tirei o idInstituição)
+	$con = bancoMysqli();
+	if($publicado = "1"){
+		$sql = "SELECT * FROM $tabela WHERE publicado = $publicado OR publicado = 1";
+	}else{
+		$sql = "SELECT * FROM ig_projeto_especial";
+	}
+		$query = mysqli_query($con,$sql);
+	while($option = mysqli_fetch_row($query)){
+		if($option[0] == $select) {
+			echo "<option value='".$option[0]."' selected >".$option[1]."</option>";	
+		}else{
+			echo "<option value='".$option[0]."'>".$option[1]."</option>";	
 		}
 	}
 }
@@ -134,6 +144,37 @@ function espacoExistente ($idUsuario) {
 				<td class='list_description'>
 			<form method='POST' action='?perfil=administrador&p=espacos'>
 			<input type='hidden' name='apagar' value='".$campo['idEspaco']."' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
+			echo "</tr>";		
+	  }
+	  echo "	</tbody>
+				</table>";
+}
+
+function projetoEspecialExistente ($idUsuario) {
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM ig_projeto_especial WHERE idProjetoEspecial AND publicado = 1";
+	  $query = mysqli_query($con,$sql); 
+	  	echo " 
+		<table class='table table-condensed'>	<div class='col-md-offset-2 col-md-8'>
+					<thead>						<tr class='list_menu'> 
+							<td>Nome do projeto especial</td>
+  							<td></td>
+							<td width='10%'></td>
+							<td width='10%'></td>
+					 </tr>	
+					</thead>
+					</div>
+					<tbody>";
+					
+				echo "<tr>";
+					
+		while($campo = mysqli_fetch_array($query)){
+			echo "<td class='list_description'>".$campo['projetoEspecial']."</td>";
+					echo "
+				<td class='list_description'>
+			<form method='POST' action='?perfil=administrador&p=listaprojetoespecial'>
+			<input type='hidden' name='apagar' value='".$campo['idProjetoEspecial']."' />
 			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
 			echo "</tr>";		
 	  }
@@ -178,7 +219,47 @@ function listaEventosAdministrador($idUsuario){
 				</table>";
 }
 
-
+function listaAlteracoes($idUsuario){ 
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM ig_alteracao WHERE idAlteracao AND publicado = 0";
+	$query = mysqli_query($con,$sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td>Cod. Protocolo</td>
+							<td>Usuário</td>
+							<td>Assunto</td>
+							<td>Data da Alteração</td>
+  							<td></td>
+							<td width='10%'></td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysqli_fetch_array($query)){
+			echo "<tr>";
+			echo "<td class='list_description'>".$campo['protocolo']."</td>";
+			echo "<td class='list_description'>".$campo['usuario']."</td>";
+			echo "<td class='list_description'>".$campo['assunto']."</td>";
+			echo "<td class='list_description'>".$campo['dataAlteracao']."</td>";
+		//	echo "<td class='list_description'>"("ig_tipo_evento",$campo['ig_tipo_evento_idTipoEvento'])."</td>";
+			echo "<td class='list_description'></td>";
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=evento&p=basica'>
+			<input type='hidden' name='carregar' value='".$campo['idAlteracao']."' />
+			<input type ='submit' class='btn btn-theme btn-block' value='recuperar'></td></form>"	;
+			
+			echo "
+			<td class='list_description'>
+			<form method='POST' action='?perfil=administrador&p=eventos'>
+			<input type='hidden' name='apagar' value='".$campo['idAlteracao']."' />
+			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+	echo "					</tbody>
+				</table>";
+}
 
 function listaLogAdministrador($idUsuario){ 
 	$con = bancoMysqli();
@@ -239,9 +320,8 @@ function menuLog ($idUsuario) {
 <?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
 							<ul class="dl-submenu">
 							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
-							<li><a href="?perfil=administrador&p=novoUser"> Adicionar Usuário</a></li>
 							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
-							<li><a href="?perfil=administrador&p=novoEspaco"> Inserir Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
 							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
 							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
@@ -267,10 +347,10 @@ function menuEventos ($idUsuario) {
 <?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
 							<ul class="dl-submenu">
 							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
-							<li><a href="?perfil=administrador&p=novoUser"> Adicionar Usuário</a></li>
 							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
-							<li><a href="?perfil=administrador&p=novoEspaco"> Inserir Espaço</a></li>
 							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
+							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
 							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
 							</li> </ul> <!-- Fim Menu administrativo!--> 
@@ -294,10 +374,10 @@ function menuEspacos ($idUsuario) {
 							<li><a href="?secao=perfil">Perfil de acesso</a></li>
 <?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
 							<ul class="dl-submenu">
-							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
-							<li><a href="?perfil=administrador&p=novoUser"> Adicionar Usuário</a></li>
+							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li> 
 							<li><a href="?perfil=administrador& p=users"> Listar Usuários</a></li>
 							<li><a href="?perfil=administrador&p=novoEspaco"> Inserir Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
 							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
 							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
@@ -322,9 +402,63 @@ function menuNovoEspaco ($idUsuario) { ?>
 <?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
 							<ul class="dl-submenu">
 							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
-							<li><a href="?perfil=administrador&p=novoUser"> Adicionar Usuário</a></li>
 							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
 							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
+							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
+							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
+							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
+							</li> </ul> <!-- Fim Menu administrativo!--> 
+							<li><a href="?secao=ajuda">Ajuda</a></li>
+                            <li><a href="../include/logoff.php">Sair</a></li>
+							
+						</ul>
+					</div><!-- /dl-menuwrapper -->
+		</div><!-- fim Menu Área !-->
+		
+<?php }
+function menuNovoProjetoEspecial ($idUsuario) { 
+?>
+	<!-- Menu área !-->
+ 	<div class="menu-area">
+					<div id="dl-menu" class="dl-menuwrapper">
+						<button class="dl-trigger">Open Menu</button>
+						<ul class="dl-menu">
+							<li><a href="?secao=inicio">Início</a></li>
+							<li><a href="?secao=perfil">Perfil de acesso</a></li>
+<?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
+							<ul class="dl-submenu">
+							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
+							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
+							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
+							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
+							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
+							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
+							</li> </ul> <!-- Fim Menu administrativo!--> 
+							<li><a href="?secao=ajuda">Ajuda</a></li>
+                            <li><a href="../include/logoff.php">Sair</a></li>
+							
+						</ul>
+					</div><!-- /dl-menuwrapper -->
+		</div><!-- fim Menu Área !-->
+		
+<?php }
+function menuListaProjetoEspecial ($idUsuario) {
+?>
+	<!-- Menu área !-->
+ 	<div class="menu-area">
+					<div id="dl-menu" class="dl-menuwrapper">
+						<button class="dl-trigger">Open Menu</button>
+						<ul class="dl-menu">
+							<li><a href="?secao=inicio">Início</a></li>
+							<li><a href="?secao=perfil">Perfil de acesso</a></li>
+<?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
+							<ul class="dl-submenu">
+							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
+							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
+							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
+							<li><a href="?perfil=administrador&p=novoProjetoEspecial"> Adicionar novo Projeto Especial</a></li>
 							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
 							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
@@ -338,7 +472,6 @@ function menuNovoEspaco ($idUsuario) { ?>
 		
 <?php }
 
-
 function menuNovoUser ($idUsuario) { ?>
 	<!-- Menu área !-->
  	<div class="menu-area">
@@ -350,9 +483,9 @@ function menuNovoUser ($idUsuario) { ?>
 <?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
 							<ul class="dl-submenu">
 							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
-							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
-							<li><a href="?perfil=administrador&p=novoEspaco"> Inserir Espaço</a></li>
+							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>                                 
 							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
 							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
 							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
@@ -378,7 +511,7 @@ function menuUsers ($idUsuario) { ?>
 							<ul class="dl-submenu">
 							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
 							<li><a href="?perfil=administrador&p=novoUser"> Adicionar Usuário</a></li>
-							<li><a href="?perfil=administrador&p=novoEspaco"> Inserir Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
 							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
 							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
@@ -403,10 +536,9 @@ function menuInicio ($idUsuario) { ?>
 							<li><a href="?secao=perfil">Perfil de acesso</a></li>
 <?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
 							<ul class="dl-submenu">
-							<li><a href="?perfil=administrador&p=novoUser"> Adicionar Usuário</a></li>
 							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
-							<li><a href="?perfil=administrador&p=novoEspaco"> Inserir Espaço</a></li>
 							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
 							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
 							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
@@ -432,9 +564,8 @@ function menuAlteracoes ($idUsuario) {
 <?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
 							<ul class="dl-submenu">
 							<li><a href="?perfil=administrador">Voltar para Administrativo</a></li>
-							<li><a href="?perfil=administrador&p=novoUser"> Adicionar Usuário</a></li>
 							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
-							<li><a href="?perfil=administrador&p=novoEspaco"> Inserir Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
 							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
 							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
 							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
