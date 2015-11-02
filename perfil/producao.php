@@ -98,7 +98,7 @@ for($i = 0; $i < count($ocorrencia); $i++)
 			</div>
 		</div>
 	</section>
-
+<?php var_dump($ocorrencia); ?>
 
 <?php
 break;

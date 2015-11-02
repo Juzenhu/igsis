@@ -7,12 +7,14 @@ if(isset($_POST['finalizar'])){
 	$idEvento = $_SESSION['idEvento'];
 	$sql_atualiza_evento = "UPDATE ig_evento SET dataEnvio = '$datetime' WHERE idEvento = '$idEvento'";
 	$query_atualiza_evento = mysqli_query($con,$sql_atualiza_evento);
+	$sql_atualiza_pedido = "UPDATE `igsis`.`igsis_pedido_contratacao` SET `estado` = 'publicado' WHERE `igsis_pedido_contratacao`.`idPedidoContratacao` = '$idEvento'";
+	$query_atualiza_pedido = mysqli_query($con,$sql_atualiza_pedido);
 		if($query_atualiza_evento){
 			$sql_protocolo = "INSERT INTO `ig_protocolo` (`idProtocolo`, `ig_evento_idEvento`, `publicado`, `dataInsercao`) VALUES (NULL, '$idEvento', '1', '$datetime')";
 			$query_protocolo = mysqli_query($con,$sql_protocolo);
 			if($query_protocolo){
 				$protocolo = recuperaUltimo("ig_protocolo");
-				$mensagem = "O formulário de evento foi enviado com sucesso. O protocolo é IGSIS.E.".$protocolo." . <br />";
+				$mensagem = "O formulário de evento foi enviado com sucesso. O protocolo é IGSIS.".$protocolo." . <br />";
 				$sql_recupera_pedidos = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND publicado = '1'";
 				$query_recupera_pedidos = mysqli_query($con,$sql_recupera_pedidos);
 				$num_pedidos = mysqli_num_rows($query_recupera_pedidos);
@@ -62,7 +64,7 @@ $_SESSION['idEvento'] = NULL;
 			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
-					 <h3>Teste Array Siscontrat</h3>
+					 <h3>Envio confirmado!</h3>
                      
 <p><?php //var_dump($_SESSION); ?></p>
 <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>

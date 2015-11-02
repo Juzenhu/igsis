@@ -1,4 +1,5 @@
 ﻿<?php 
+   
 
    // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
 	require_once("../include/lib/fpdf/fpdf.php");
@@ -9,20 +10,20 @@
    require_once("../funcoes/funcoesSiscontrat.php");
 
    //CONEXÃO COM BANCO DE DADOS 
-   $conexao = bancoMysqli();
-
-
+   $conexao = bancoMysqli();  
+   
+session_start();
 
 class PDF extends FPDF
 {
 // Page header
 function Header()
 {
-	session_start();
+
 	$inst = recuperaDados("ig_instituicao",$_SESSION['idInstituicao'],"idInstituicao");
 	$logo = "../visual/img/".$inst['logo']; 
     // Logo
-    $this->Image($logo,20,20,40);
+    $this->Image($logo,20,20,50);
     // Move to the right
     $this->Cell(80);
     $this->Image('../visual/img/logo_smc.jpg',170,10);
@@ -30,80 +31,45 @@ function Header()
     $this->Ln(20);
 }
 
-// Page footer
-/*
-function Footer()
-{
-    // Position at 1.5 cm from bottom
-    $this->SetY(-15);
-    // Arial italic 8
-    $this->SetFont('Arial','I',8);
-    // Page number
-    $this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
 }
-*/
-
-//INSERIR ARQUIVOS
-
-function ChapterBody($file)
-{
-    // Read text file
-    $txt = file_get_contents($file);
-    // Arial 10
-    $this->SetFont('Arial','',10);
-    // Output justified text
-    $this->MultiCell(0,5,$txt);
-    // Line break
-    $this->Ln();
-}
-
-function PrintChapter($file)
-{
-    $this->ChapterBody($file);
-}
-
-}
-
-
-
-
 
 
 //CONSULTA 
 $id_ped=$_GET['id'];
 
-$linha_tabelas = siscontrat($id_ped);
-
-$codPed = $id_ped;
-$objeto = $linha_tabelas["Objeto"];
-$local = $linha_tabelas["Local"];
-$valor = $linha_tabelas["ValorGlobal"];
-$formaPagamento = $linha_tabelas["FormaPagamento"];
-$periodo = $linha_tabelas["Periodo"];
-$duracao = $linha_tabelas["Duracao"];
-$cargaHoraria = $linha_tabelas["CargaHoraria"];
-$justificativa = $linha_tabelas["Justificativa"];
-$fiscal = $linha_tabelas["Fiscal"];
-$suplente = $linha_tabelas["Suplente"];
-$parecer = $linha_tabelas["ParecerTecnico"];
-$observacao = $linha_tabelas["Observacao"];
-$dataAtual = date("d/m/Y");
-$data_entrega_empenho = exibirDataBr($linha_tabelas['EntregaNE']);
-$data_emissao_empenho = exibirDataBr($linha_tabelas['EmissaoNE']);
-
-
-$linha_tabelas_pessoa = siscontratDocs($linha_tabelas['IdProponente'],1);
-
-$nome = $linha_tabelas_pessoa["Nome"];
-$cpf = $linha_tabelas_pessoa["CPF"];
-$telefone1 = $linha_tabelas_pessoa["Telefones"];
-$telefone2 = $linha_tabelas_pessoa["Telefones"];
-$telefone3 = $linha_tabelas_pessoa["Telefones"];
-$email = $linha_tabelas_pessoa["Email"];
-
-$setor = $linha_tabelas["Setor"];
-
 $ano=date('Y');
+
+$pedido = siscontrat($id_ped);
+$pessoa = siscontratDocs($pedido['IdProponente'],1);
+
+$setor = $pedido["Setor"];
+$Objeto = $pedido["Objeto"];
+$Periodo = $pedido["Periodo"];
+$Duracao = $pedido["Duracao"];
+$CargaHoraria = $pedido["CargaHoraria"];
+$Local = $pedido["Local"];
+$ValorGlobal = dinheiroParaBr($pedido["ValorGlobal"]);
+$ValorPorExtenso = valorPorExtenso($pedido["ValorGlobal"]);
+$FormaPagamento = $pedido["FormaPagamento"];
+$Justificativa = $pedido["Justificativa"];
+$Fiscal = $pedido["Fiscal"];
+$Suplente = $pedido["Suplente"];
+$dataAtual = exibirDataBr($pedido["DataCadastro"]);
+
+$Nome = $pessoa["Nome"];
+$NomeArtistico = $pessoa["NomeArtistico"];
+$EstadoCivil = $pessoa["EstadoCivil"];
+$Nacionalidade = $pessoa["Nacionalidade"];
+$RG = $pessoa["RG"];
+$CPF = $pessoa["CPF"];
+$CCM = $pessoa["CCM"];
+$OMB = $pessoa["OMB"];
+$DRT = $pessoa["DRT"];
+$Funcao = $pessoa["Funcao"];
+$Endereco = $pessoa["Endereco"];
+$Telefones = $pessoa["Telefones"];
+$Email = $pessoa["Email"];
+$INSS = $pessoa["INSS"];
 
 
 
@@ -153,23 +119,23 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(12,$l,'Nome:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(168,$l,utf8_decode($nome));
+   $pdf->MultiCell(168,$l,utf8_decode($Nome));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(10,$l,utf8_decode('CPF:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(50,$l,utf8_decode($cpf),0,0,'L');
+   $pdf->Cell(50,$l,utf8_decode($CPF),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(17,$l,utf8_decode('Telefone:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(65,$l,utf8_decode($telefone1),0,1,'L');
+   $pdf->Cell(65,$l,utf8_decode($Telefones),0,1,'L');
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(13,$l,utf8_decode('E-mail:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(60,$l,utf8_decode($email),0,1,'L');
+   $pdf->Cell(60,$l,utf8_decode($Email),0,1,'L');
    
    $pdf->Ln();
    
@@ -177,49 +143,49 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,'Objeto:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(165,$l,utf8_decode($objeto));
+   $pdf->MultiCell(165,$l,utf8_decode($Objeto));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(27,$l,utf8_decode('Data / Período:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(153,$l,utf8_decode($periodo));
+   $pdf->MultiCell(153,$l,utf8_decode($Periodo));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(82,$l,utf8_decode('Tempo Aproximado de Duração do Espetáculo:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(98,$l,utf8_decode($duracao));
+   $pdf->MultiCell(98,$l,utf8_decode("$Duracao"." minutos"));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(27,$l,utf8_decode('Carga Horária:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(180,$l,$cargaHoraria);
+   $pdf->MultiCell(180,$l,$CargaHoraria);
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,'Local:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(165,$l,utf8_decode($local));
+   $pdf->MultiCell(165,$l,utf8_decode($Local));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,'Valor:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(165,$l,utf8_decode($valor));
+   $pdf->MultiCell(165,$l,utf8_decode("R$ "."$ValorGlobal"."  ("."$ValorPorExtenso". " )"));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(40,$l,'Forma de Pagamento:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(140,$l,utf8_decode($formaPagamento));
+   $pdf->MultiCell(140,$l,utf8_decode($FormaPagamento));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(25,$l,'Justificativa:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(155,$l,utf8_decode($justificativa));
+   $pdf->MultiCell(145,$l,utf8_decode($Justificativa));
    
    $pdf->Ln();
    $pdf->Ln();
@@ -228,7 +194,7 @@ $l=7; //DEFINE A ALTURA DA LINHA
     
 //RODAPÉ PERSONALIZADO
    
-   $pdf->SetXY($x,265);
+   $pdf->SetXY($x,269);
    $pdf->SetFont('Arial','', 12);
    $pdf->Cell(80,$l,"Data: "."$dataAtual",0,0,'C');
    $pdf->Cell(10,$l,'',0,0,'C');

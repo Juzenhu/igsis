@@ -8,68 +8,6 @@ $_SESSION['idPedido'] = $_GET['id_ped'];
 
 $ano=date('Y');
 
-if(isset($_POST['cadastraRepresentante'])){
-	$cpf = $_POST['CPF'];
-	$verificaCPF = verificaExiste("sis_representante_legal","CPF",$cpf,"");
-	if($verificaCPF['numero'] > 0){ //verifica se o cpf já existe
-		$mensagem = "O CPF já consta no sistema. Faça uma busca e insira diretamente.";
-	}else{ // o CPF não existe, inserir.
-	if($_POST['numero'] == 1){
-		$campo = "idRepresentante01";
-	}else{
-		$campo = "idRepresentante02";
-	}
-	$RepresentanteLegal = $_POST['RepresentanteLegal'];
-	$RG = $_POST['RG'];
-	$CPF = $_POST['CPF'];
-	$Nacionalidade = $_POST['Nacionalidade'];
-	$IdEstadoCivil = $_POST['IdEstadoCivil'];
-	$idUsuario = $_SESSION['idUsuario'];
- 	$sql_insert_representante = "INSERT INTO `sis_representante_legal` (`Id_RepresentanteLegal`, `RepresentanteLegal`, `RG`, `CPF`, `Nacionalidade`, `IdEstadoCivil`, `idEvento`) VALUES (NULL, '$RepresentanteLegal', '$RG', '$CPF', '$Nacionalidade', '$IdEstadoCivil', NULL);";
-		$query_insert_representante = mysqli_query($con,$sql_insert_representante);
-		if($query_insert_representante){
-			gravarLog($sql_insert_representante);
-			$sql_ultimo = "SELECT * FROM sis_representante_legal ORDER BY Id_ResponsavelLegal DESC LIMIT 0,1"; //recupera ultimo id
-			$id_evento = mysqli_query($con,$sql_ultimo);
-			$id = mysqli_fetch_array($id_evento);
-			$idRepresentante = $id['Id_RepresentanteLegal'];
-			$idPedido = $_SESSION['idPedido'];
-			
-			$sql_insert_pedido = "UPDATE `igsis_pedido_contratacao` SET `$campo` = '$idRepresentante' 
-	WHERE `idPedidoContratacao` = '$idPedido';";
-			$query_insert_pedido = mysqli_query($con,$sql_insert_pedido);
-			
-			if($query_insert_pedido){
-				gravarLog($sql_insert_pedido);
-				echo "<h1>Inserido com sucesso!</h1>";
-			}else{
-				echo "<h1>Erro ao inserir!</h1>";
-			}
-		}else{
-			echo "<h1>Erro ao inserir!</h1>";
-		}
-	}
-	
-}
-
-
-
-if(isset($_POST['insereRepresentante'])){ //insere IdExecutante
-	$id_representante = $_POST['insereRepresentante'];
-	if($_POST['numero'] == 1){
-		$campo = "idRepresentante01";
-	}else{
-		$campo = "idRepresentante02";
-	}
-	$idPedido = $_SESSION['idPedido'];
-	$sql_atualiza_representante = "UPDATE `igsis_pedido_contratacao` SET `$campo` = '$id_representante' 
-	WHERE `idPedidoContratacao` = '$idPedido';";
-	$query_atualiza_representante = mysqli_query($con,$sql_atualiza_representante);	
-	if($query_atualiza_representante){
-		$mensagem = "Representante legal $campo inserido com sucesso!";	
-	}
-}
-
 
 
 if(isset($_POST['insereExecutante'])){ //insere IdExecutante
@@ -145,7 +83,6 @@ if(isset($_POST['cadastraExecutante'])){
 if(isset($_POST['Valor'])){ // atualiza o pedido
 	$pedido = $_GET['id_ped'];
 	$valor = dinheiroDeBr($_POST['Valor']); 
-	//$valor_individual = dinheiroDeBr($_POST['ValorIndividual']);
 	$forma_pagamento = addslashes($_POST['FormaPagamento']);
 	$verba = $_POST['Verba'];
 	$justificativa = addslashes($_POST['Justificativa']);
@@ -261,7 +198,7 @@ $res02 = siscontratDocs($ped['idRepresentante02'],3);
 
 
 
-                                      <div class="form-group"> 
+                  <div class="form-group"> 
 					<div class="col-md-offset-2 col-md-8"><strong>Executante:</strong><br/>
 		  <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_executante&id_pf=<?php echo $pedido['IdExecutante']?>"  method="post">
 					  <input type='text' readonly class='form-control' name='Executante' id='Executante' value="<?php echo $executante['Nome'] ?>">                    	
@@ -287,52 +224,7 @@ $res02 = siscontratDocs($ped['idRepresentante02'],3);
                     	<br />
 					</div>
 
-                  <div class="form-group"> 
-					<div class="col-md-offset-2 col-md-8"><strong>Representante legal #01:</strong><br/>
-					  <input type='text' readonly class='form-control' name='RazaoSocial' id='RazaoSocial' value="<?php echo $res01['Nome']; ?>">                    	
-                    </div>
-                  </div>  
-                    <div class="form-group">
-					<div class="col-md-offset-2 col-md-8">
-					  <form class="form-horizontal" role="form"  method="post" action="?perfil=contratos&p=frm_edita_representantelegal&num=1&id_rep=<?php echo $ped['idRepresentante01']?>">
-                      <input type="hidden" name="idPedido" value="<?php echo $id_ped; ?>" />
-                     
-					 <input type="submit" class="btn btn-theme btn-med btn-block" value="Abrir Representante legal #01">
-                     </form>
-
-					</div>
-				  </div>
-					<div class="form-group">
-                    <div class="col-md-offset-2 col-md-8">
-                    <br />
-	                </div>
-					</div>
-
-
-
-                                      <div class="form-group"> 
-					<div class="col-md-offset-2 col-md-8"><strong>Representante legal #02:</strong><br/>
-					  <input type='text' readonly class='form-control' name='Executante' id='Executante' value="<?php echo $res02['Nome']; ?>">                    	
-                    </div>
-                  </div>  
-                    <div class="form-group">
-					<div class="col-md-offset-2 col-md-8">
-					  <form class="form-horizontal" role="form"  method="post" action="?perfil=contratos&p=frm_edita_representantelegal&num=2&id_rep=<?php echo $ped['idRepresentante02']?>">
-                      <input type="hidden" name="idPedido" value="<?php echo $id_ped; ?>" />
-                     
-					 <input type="submit" class="btn btn-theme btn-med btn-block" value="Abrir Representante legal #02">
-                     </form>
-
-					</div>
-				  </div>
-					<div class="form-group">
-                    <div class="col-md-offset-2 col-md-8">
-                    	<br />
-                </div>
-                    	<br />
-					</div>
-
-                    				
+                                      				
                   <div class="form-group">
                   <form class="form-horizontal" role="form" action="?perfil=contratos&p=frm_edita_pedidocontratacaopj&id_ped=<?php echo $_SESSION['idPedido']; ?>" method="post">
 					<div class="col-md-offset-2 col-md-8"><strong>Objeto: (se for necessário alterar este item, contacte o administrador local)</strong><br/>

@@ -1,190 +1,116 @@
 <?php 
    
-   // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
-   require('../lib/fpdf/fpdf.php');
+	session_start();
    
+   // INSTALAÇÃO DA CLASSE NA PASTA FPDF.
+   require_once("../include/lib/fpdf/fpdf.php");
+   require_once("../funcoes/funcoesConecta.php");
+   require_once("../funcoes/funcoesGerais.php");
+   require_once("../funcoes/funcoesSiscontrat.php");
+
    //CONEXÃO COM BANCO DE DADOS 
-   include("../conectar.php"); 
+   $conexao = bancoMysqli(); 
    
 
 class PDF extends FPDF
 {
-// Page header
-/*function Header()
-{
-    // Logo
-    $this->Image('../img/logo_dec.JPG',20,20,40);
-    // Move to the right
-    $this->Cell(80);
-    $this->Image('../img/logo_smc.jpg',170,10);
-    // Line break
-    $this->Ln(20);
-}
-*/
-// Page footer
-/*
-function Footer()
-{
-    // Position at 1.5 cm from bottom
-    $this->SetY(-15);
-    // Arial italic 8
-    $this->SetFont('Arial','I',8);
-    // Page number
-    $this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
-}
-*/
-
-//INSERIR ARQUIVOS
-
-function ChapterBody($file)
-{
-    // Read text file
-    $txt = file_get_contents($file);
-    // Arial 10
-    $this->SetFont('Arial','',10);
-    // Output justified text
-    $this->MultiCell(0,5,$txt);
-    // Line break
-    $this->Ln();
-}
-
-function PrintChapter($file)
-{
-    $this->ChapterBody($file);
-}
-
 }
 
 
 
-
-
-
-//CONSULTA 
+//CONSULTA  (copia inteira em todos os docs)
 $id_ped=$_GET['id'];
 
-
-
-$sql_query_tabela_pedcontpj ="
-						SELECT 	sis_pedido_contratacao_pj.Id_PedidoContratacaoPJ,
-								sis_pedido_contratacao_pj.Objeto,
-								sis_pedido_contratacao_pj.LocalEspetaculo,
-								sis_pedido_contratacao_pj.Valor,
-								sis_pedido_contratacao_pj.FormaPagamento,
-								sis_pedido_contratacao_pj.Periodo,
-								sis_pedido_contratacao_pj.Duracao,
-								sis_pedido_contratacao_pj.CargaHoraria,
-								sis_pedido_contratacao_pj.Justificativa,
-								sis_pedido_contratacao_pj.Fiscal,
-								sis_pedido_contratacao_pj.Suplente,
-								sis_pedido_contratacao_pj.ParecerTecnico,
-								sis_pedido_contratacao_pj.Observacao,
-								sis_categoria_contratacao.CategoriaContratacao
-						FROM sis_pedido_contratacao_pj
-						
-						INNER JOIN sis_categoria_contratacao
-							ON sis_pedido_contratacao_pj.IdCategoria = sis_categoria_contratacao.Id_CategoriaContratacao
-						
-						WHERE Id_PedidoContratacaoPJ = $id_ped
-					";
-					
-
-$consulta_tabela_pedcontpj = mysqli_query($conexao,$sql_query_tabela_pedcontpj);
-$linha_tabela_pedcontpj = mysqli_fetch_assoc ($consulta_tabela_pedcontpj);
-
-
-//VARIÁVEIS PARA PEDIDO CONTRATAÇÃO
-
-$codPed = $linha_tabela_pedcontpj["Id_PedidoContratacaoPJ"];
-$Objeto = $linha_tabela_pedcontpj["Objeto"];
-$Local = $linha_tabela_pedcontpj["LocalEspetaculo"];
-$ValorGlobal = $linha_tabela_pedcontpj["Valor"];
-$FormaPagamento = $linha_tabela_pedcontpj["FormaPagamento"];
-$Periodo = $linha_tabela_pedcontpj["Periodo"];
-$Duracao = $linha_tabela_pedcontpj["Duracao"];
-$CargaHoraria = $linha_tabela_pedcontpj["CargaHoraria"];
-$Justificativa = $linha_tabela_pedcontpj["Justificativa"];
-$fiscal = $linha_tabela_pedcontpj["Fiscal"];
-$suplente = $linha_tabela_pedcontpj["Suplente"];
-$parecer = $linha_tabela_pedcontpj["ParecerTecnico"];
-$observacao =$linha_tabela_pedcontpj["Observacao"];
-
-
-//CONSULTA PARA PJ
-
-$sql_query_tabelas_pj_pedcontratacao ="
-						SELECT 	sis_pedido_contratacao_pj.Id_PedidoContratacaoPJ,
-								sis_pessoa_juridica.RazaoSocial,
-								sis_pessoa_juridica.CNPJ,
-								sis_pessoa_juridica.CCM,
-								sis_pessoa_juridica.Telefone1,
-								sis_pessoa_juridica.Telefone2,
-								sis_pessoa_juridica.Telefone3,
-								sis_pessoa_juridica.Email
-						FROM sis_pedido_contratacao_pj		
-						INNER JOIN sis_pessoa_juridica
-							ON sis_pedido_contratacao_pj.IdPessoaJuridica = sis_pessoa_juridica.Id_PessoaJuridica
-						WHERE Id_PedidoContratacaoPJ = $id_ped
-					";
-					
-
-$consulta_tabelas_pj_pedcontratacao = mysqli_query($conexao,$sql_query_tabelas_pj_pedcontratacao);
-$linha_tabelas_pj_pedcontratacao = mysqli_fetch_assoc ($consulta_tabelas_pj_pedcontratacao);
-
-
-//VARIÁVEIS PARA PJ
-
-$Nome = $linha_tabelas_pj_pedcontratacao["RazaoSocial"];
-$CCMPJ = $linha_tabelas_pj_pedcontratacao["CCM"];
-$CNPJ = $linha_tabelas_pj_pedcontratacao["CNPJ"];
-$telefone1PJ = $linha_tabelas_pj_pedcontratacao["Telefone1"];
-$telefone2PJ = $linha_tabelas_pj_pedcontratacao["Telefone2"];
-$telefone3PJ = $linha_tabelas_pj_pedcontratacao["Telefone3"];
-$EmailPJ = $linha_tabelas_pj_pedcontratacao["Email"];
-
-
-//CONSULTA PARA PF
-
-$sql_query_tabelas_pf_pedcontratacao ="
-						SELECT 	sis_pedido_contratacao_pj.Id_PedidoContratacaoPJ,
-								sis_pessoa_fisica.*
-						FROM sis_pedido_contratacao_pj		
-						INNER JOIN sis_pessoa_fisica
-							ON sis_pedido_contratacao_pj.IdPessoaFisica = sis_pessoa_fisica.Id_PessoaFisica
-						WHERE Id_PedidoContratacaoPJ = $id_ped
-					";
-					
-
-$consulta_tabelas_pf_pedcontratacao = mysqli_query($conexao,$sql_query_tabelas_pf_pedcontratacao);
-$linha_tabelas_pf_pedcontratacao = mysqli_fetch_assoc ($consulta_tabelas_pf_pedcontratacao);
-
-
-
-//VARIÁVEIS PARA PF
-
-$Nome = $linha_tabelas_pf_pedcontratacao["Nome"];
-$NomeArtistico = $linha_tabelas_pf_pedcontratacao["NomeArtistico"];
-//$estadoCivil = $linha_tabelas_pf_pedcontratacao["EstadoCivil"];
-$Nacionalidade = $linha_tabelas_pf_pedcontratacao["Nacionalidade"];
-$RG = $linha_tabelas_pf_pedcontratacao["RG"];
-$CPF = $linha_tabelas_pf_pedcontratacao["CPF"];
-$CCM = $linha_tabelas_pf_pedcontratacao["CCM"];
-$OMB = $linha_tabelas_pf_pedcontratacao["OMB"];
-$DRT = $linha_tabelas_pf_pedcontratacao["DRT"];
-$Funcao = $linha_tabelas_pf_pedcontratacao["Funcao"];
-$numero = $linha_tabelas_pf_pedcontratacao["Numero"];
-$complemento = $linha_tabelas_pf_pedcontratacao["Complemento"];
-//$cep = $linha_tabelas_pf_pedcontratacao["CEP"];
-$telefone1 = $linha_tabelas_pf_pedcontratacao["Telefone1"];
-$telefone2 = $linha_tabelas_pf_pedcontratacao["Telefone2"];
-$telefone3 = $linha_tabelas_pf_pedcontratacao["Telefone3"];
-$Email = $linha_tabelas_pf_pedcontratacao["Email"];
-$INSS = $linha_tabelas_pf_pedcontratacao["InscricaoINSS"];
-
-
-
-
 $ano=date('Y');
+
+$pedido = siscontrat($id_ped);
+$pj = siscontratDocs($pedido['IdProponente'],2);
+$ex = siscontratDocs($pedido['IdExecutante'],1);
+$rep01 = siscontratDocs($pedido['idRepresentante01'],1);
+$rep02 = siscontratDocs($pedido['idRepresentante02'],1);
+
+$Objeto = $pedido["Objeto"];
+$Periodo = $pedido["Periodo"];
+$Duracao = $pedido["Duracao"];
+$CargaHoraria = $pedido["CargaHoraria"];
+$Local = $pedido["Local"];
+$ValorGlobal = dinheiroParaBr($pedido["ValorGlobal"]);
+$ValorPorExtenso = valorPorExtenso($pedido["ValorGlobal"]);
+$FormaPagamento = $pedido["FormaPagamento"];
+$Justificativa = $pedido["Justificativa"];
+$Fiscal = $pedido["Fiscal"];
+$Suplente = $pedido["Suplente"];
+
+//PessoaJuridica
+
+$pjRazaoSocial = $pj["Nome"];
+$pjNomeArtistico = $pj["NomeArtistico"];
+$pjEstadoCivil = $pj["EstadoCivil"];
+$pjNacionalidade = $pj["Nacionalidade"];
+$pjRG = $pj["RG"];
+$pjCPF = $pj["CPF"];
+$pjCCM = $pj["CCM"];
+$pjOMB = $pj["OMB"];
+$pjDRT = $pj["DRT"];
+$pjFuncao = $pj["Funcao"];
+$pjEndereco = $pj["Endereco"];
+$pjTelefones = $pj["Telefones"];
+$pjEmail = $pj["Email"];
+$pjINSS = $pj["INSS"];
+$pjCNPJ = $pj['CNPJ'];
+
+$codPed = "";
+
+// Executante
+
+$exNome = $ex["Nome"];
+$exNomeArtistico = $ex["NomeArtistico"];
+$exEstadoCivil = $ex["EstadoCivil"];
+$exNacionalidade = $ex["Nacionalidade"];
+$exRG = $ex["RG"];
+$exCPF = $ex["CPF"];
+$exCCM = $ex["CCM"];
+$exOMB = $ex["OMB"];
+$exDRT = $ex["DRT"];
+$exFuncao = $ex["Funcao"];
+$exEndereco = $ex["Endereco"];
+$exTelefones = $ex["Telefones"];
+$exEmail = $ex["Email"];
+$exINSS = $ex["INSS"];
+
+// Representante01
+
+$rep01Nome = $rep01["Nome"];
+$rep01NomeArtistico = $rep01["NomeArtistico"];
+$rep01EstadoCivil = $rep01["EstadoCivil"];
+$rep01Nacionalidade = $rep01["Nacionalidade"];
+$rep01RG = $rep01["RG"];
+$rep01CPF = $rep01["CPF"];
+$rep01CCM = $rep01["CCM"];
+$rep01OMB = $rep01["OMB"];
+$rep01DRT = $rep01["DRT"];
+$rep01Funcao = $rep01["Funcao"];
+$rep01Endereco = $rep01["Endereco"];
+$rep01Telefones = $rep01["Telefones"];
+$rep01Email = $rep01["Email"];
+$rep01INSS = $rep01["INSS"];
+
+// Representante02
+
+$rep02Nome = $rep02["Nome"];
+$rep02NomeArtistico = $rep02["NomeArtistico"];
+$rep02EstadoCivil = $rep02["EstadoCivil"];
+$rep02Nacionalidade = $rep02["Nacionalidade"];
+$rep02RG = $rep02["RG"];
+$rep02CPF = $rep02["CPF"];
+$rep02CCM = $rep02["CCM"];
+$rep02OMB = $rep02["OMB"];
+$rep02DRT = $rep02["DRT"];
+$rep02Funcao = $rep02["Funcao"];
+$rep02Endereco = $rep02["Endereco"];
+$rep02Telefones = $rep02["Telefones"];
+$rep02Email = $rep02["Email"];
+$rep02INSS = $rep02["INSS"];
 
 
 // GERANDO O PDF:
@@ -210,54 +136,35 @@ $l=10; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(25,$l,utf8_decode('Razão Social:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(155,$l,utf8_decode($Nome));
+   $pdf->MultiCell(155,$l,utf8_decode($pjRazaoSocial));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(13,$l,utf8_decode('CNPJ:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(60,$l,utf8_decode($CNPJ),0,0,'L');
+   $pdf->Cell(60,$l,utf8_decode($pjCNPJ),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(10,$l,utf8_decode('CCM:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(60,$l,utf8_decode($CCM),0,1,'L');
+   $pdf->Cell(60,$l,utf8_decode($pjCCM),0,1,'L');
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(20,$l,utf8_decode('Endereço:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(160,$l,utf8_decode("$Endereco, "."$numero"." - "."$complemento"));
+   $pdf->MultiCell(160,$l,utf8_decode($pjEndereco));
    
    $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(13,$l,utf8_decode('Bairro:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(60,$l,utf8_decode("variável bairro"),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(15,$l,utf8_decode('Cidade:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(60,$l,utf8_decode("variável cidade"),0,0,'L');
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(15,$l,utf8_decode('Estado:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(7,$l,utf8_decode("variável SP"),0,1,'L');
-   
-   $pdf->SetX($x);
-   $pdf->SetFont('Arial','B', 10);
-   $pdf->Cell(10,$l,utf8_decode('CEP:'),0,0,'L');
-   $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(30,$l,utf8_decode("00000-000"),0,0,'L');
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(17,$l,utf8_decode('Telefone:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(113,$l,utf8_decode($telefone1PJ." / ".$telefone2PJ." / ".$telefone3PJ),0,1,'L');
-   
+   $pdf->Cell(153,$l,utf8_decode($pjTelefones),0,1,'L');
      
    $pdf->Ln();
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','', 11);
-   $pdf->MultiCell(180,$l,utf8_decode('Declaro para o fim especial de contratação com a Prefeitura do Município de São Paulo que NÂO possuo Conta Corrente de Pessoa Jurídica no Banco do Brasil.'));
+   $pdf->MultiCell(180,$l,utf8_decode('Declaro para o fim especial de contratação com a Prefeitura do Município de São Paulo que NÃO possuo Conta Corrente de Pessoa Jurídica no Banco do Brasil.'));
    
    
    $pdf->Ln();
@@ -274,7 +181,7 @@ $l=10; //DEFINE A ALTURA DA LINHA
    $pdf->SetX($x);
    $pdf->Cell(45,$l,'',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(90,$l,utf8_decode('NOME DO REPRESENTANTE 01'),'T',0,'C');
+   $pdf->Cell(90,$l,utf8_decode($rep01Nome),'T',0,'C');
    $pdf->Cell(45,$l,'',0,0,'L');
    
    
@@ -286,7 +193,7 @@ $l=10; //DEFINE A ALTURA DA LINHA
    $pdf->SetX($x);
    $pdf->Cell(45,$l,'',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(90,$l,utf8_decode('NOME DO REPRESENTANTE 02'),'T',0,'C');
+   $pdf->Cell(90,$l,utf8_decode($rep02Nome),'T',0,'C');
    $pdf->Cell(45,$l,'',0,0,'L');
 
    $pdf->Ln();

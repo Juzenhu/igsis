@@ -17,7 +17,7 @@ class PDF extends FPDF
 function Header()
 {
 	$inst = recuperaDados("ig_instituicao",$_SESSION['idInstituicao'],"idInstituicao");	$logo = "img/".$inst['logo']; // Logo
-    $this->Image($logo,20,20,40);
+    $this->Image($logo,20,20,50);
     // Move to the right
     $this->Cell(80);
     $this->Image('../visual/img/logo_smc.jpg',170,10);
@@ -78,7 +78,7 @@ $Duracao = $pedido["Duracao"];
 $CargaHoraria = $pedido["CargaHoraria"];
 $Local = $pedido["Local"];
 $ValorGlobal = dinheiroParaBr($pedido["ValorGlobal"]);
-$ValorPorExtenso = valorPorExtenso($pedido["ValorGlobal"]); //VER COMO ESCREVER ISSO
+$ValorPorExtenso = valorPorExtenso($pedido["ValorGlobal"]);
 $FormaPagamento = $pedido["FormaPagamento"];
 $Justificativa = $pedido["Justificativa"];
 $Fiscal = $pedido["Fiscal"];
@@ -268,7 +268,7 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 12);
    $pdf->Cell(160,10,'PROPOSTA',0,0,'C');
    $pdf->SetFont('Arial','', 10);
-   $pdf->Cell(10,10,$ano."-".$codPed,0,1,'R');
+   $pdf->Cell(10,10,$ano."-".$id_ped,0,1,'R');
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
@@ -286,7 +286,7 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(82,$l,utf8_decode('Tempo Aproximado de Duração do Espetáculo:'),0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(98,$l,utf8_decode($Duracao));
+   $pdf->MultiCell(98,$l,utf8_decode("$Duracao"." minutos"));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);
@@ -304,7 +304,7 @@ $l=7; //DEFINE A ALTURA DA LINHA
    $pdf->SetFont('Arial','B', 10);
    $pdf->Cell(15,$l,'Valor:',0,0,'L');
    $pdf->SetFont('Arial','', 10);
-   $pdf->MultiCell(165,$l,utf8_decode($ValorGlobal));
+   $pdf->MultiCell(168,$l,utf8_decode("R$ $ValorGlobal"."  "."($ValorPorExtenso )"));
    
    $pdf->SetX($x);
    $pdf->SetFont('Arial','B', 10);

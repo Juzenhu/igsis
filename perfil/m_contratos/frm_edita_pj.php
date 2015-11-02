@@ -10,6 +10,74 @@ if(isset($_POST['idPedido'])){
 
 $con = bancoMysqli();
 
+
+
+
+//insere representante
+
+if(isset($_POST['cadastraRepresentante'])){
+	$cpf = $_POST['CPF'];
+	$verificaCPF = verificaExiste("sis_representante_legal","CPF",$cpf,"");
+	if($verificaCPF['numero'] > 0){ //verifica se o cpf já existe
+		$mensagem = "O CPF já consta no sistema. Faça uma busca e insira diretamente.";
+	}else{ // o CPF não existe, inserir.
+	if($_POST['numero'] == 1){
+		$campo = "idRepresentante01";
+	}else{
+		$campo = "idRepresentante02";
+	}
+	$RepresentanteLegal = $_POST['RepresentanteLegal'];
+	$RG = $_POST['RG'];
+	$CPF = $_POST['CPF'];
+	$Nacionalidade = $_POST['Nacionalidade'];
+	$IdEstadoCivil = $_POST['IdEstadoCivil'];
+	$idUsuario = $_SESSION['idUsuario'];
+ 	$sql_insert_representante = "INSERT INTO `sis_representante_legal` (`Id_RepresentanteLegal`, `RepresentanteLegal`, `RG`, `CPF`, `Nacionalidade`, `IdEstadoCivil`, `idEvento`) VALUES (NULL, '$RepresentanteLegal', '$RG', '$CPF', '$Nacionalidade', '$IdEstadoCivil', NULL);";
+		$query_insert_representante = mysqli_query($con,$sql_insert_representante);
+		if($query_insert_representante){
+			gravarLog($sql_insert_representante);
+			$sql_ultimo = "SELECT * FROM sis_representante_legal ORDER BY Id_ResponsavelLegal DESC LIMIT 0,1"; //recupera ultimo id
+			$id_evento = mysqli_query($con,$sql_ultimo);
+			$id = mysqli_fetch_array($id_evento);
+			$idRepresentante = $id['Id_RepresentanteLegal'];
+			$idPedido = $_SESSION['idPedido'];
+			
+			$sql_insert_pedido = "UPDATE `igsis_pessoa_juridica` SET `$campo` = '$idRepresentante' 
+	WHERE `Id_PessoaJuridica` = '$idJuridica';";
+			$query_insert_pedido = mysqli_query($con,$sql_insert_pedido);
+			
+			if($query_insert_pedido){
+				gravarLog($sql_insert_pedido);
+				echo "<h1>Inserido com sucesso!</h1>";
+			}else{
+				echo "<h1>Erro ao inserir!</h1>";
+			}
+		}else{
+			echo "<h1>Erro ao inserir!</h1>";
+		}
+	}
+}
+
+
+if(isset($_POST['insereRepresentante'])){ //insere IdExecutante
+	$id_representante = $_POST['insereRepresentante'];
+	if($_POST['numero'] == 1){
+		$campo = "idRepresentante01";
+	}else{
+		$campo = "idRepresentante02";
+	}
+	$idPedido = $_SESSION['idPedido'];
+	$sql_atualiza_representante = "UPDATE `igsis_pessoa_juridica` SET `$campo` = '$id_representante' 
+	WHERE `Id_PeddoaJuridica` = '$idJuridica';";
+	$query_atualiza_representante = mysqli_query($con,$sql_atualiza_representante);	
+	if($query_atualiza_representante){
+		$mensagem = "Representante legal $campo inserido com sucesso!";	
+	}
+}
+
+
+
+//insere pj
 	if(isset($_POST['editaJuridica'])){
 		$idJuridica = $_POST['editaJuridica'];
 		$RazaoSocial = $_POST['RazaoSocial'];
@@ -36,9 +104,9 @@ $con = bancoMysqli();
 }
 
 
-
-
 $pj = recuperaDados("sis_pessoa_juridica",$ultimo,"Id_PessoaJuridica");
+$res01 = siscontratDocs($pj['idRepresentante01'],3);
+$res02 = siscontratDocs($pj['idRepresentante02'],3);
 
 ?>
 
@@ -84,7 +152,7 @@ $pj = recuperaDados("sis_pessoa_juridica",$ultimo,"Id_PessoaJuridica");
 					  <input type="text" class="form-control" id="Endereco" name="Endereco" placeholder="Endereço">
 					</div>
 				  </div>
-                  				  <div class="form-group">
+                  <div class="form-group">
 					<div class="col-md-offset-2 col-md-6"><strong>Número *:</strong><br/>
 					  <input type="text" class="form-control" id="Numero" name="Numero" placeholder="Numero" value="<?php echo $pj['Numero']; ?>">
 					</div>				  
@@ -127,7 +195,41 @@ $pj = recuperaDados("sis_pessoa_juridica",$ultimo,"Id_PessoaJuridica");
 					  <input type="text" class="form-control" id="Telefone2" name="Telefone3" placeholder="Telefone"value="<?php echo $pj['Telefone3']; ?>" >
 					</div>
 				  </div>
-				  
+				 
+                 <div class="form-group"> 
+					<div class="col-md-offset-2 col-md-8"><strong>Representante legal #01:</strong><br/>
+					  <input type='text' readonly class='form-control' name='RazaoSocial' id='RazaoSocial' value="<?php echo $res01['Nome']; ?>">                    	
+                    </div>
+                  </div>  
+                    <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					  <form class="form-horizontal" role="form"  method="post" action="?perfil=contratos&p=frm_edita_representantelegal&num=1&id_rep=<?php echo $pj['idRepresentante01']?>">
+                      <input type="hidden" name="idPedido" value="<?php echo $ultimo; ?>" />
+					 <input type="submit" class="btn btn-theme btn-med btn-block" value="Abrir Representante legal #01">
+                     </form>
+					</div>
+				  </div>
+				  <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8"><br /></div>
+				  </div>
+                  <div class="form-group"> 
+					<div class="col-md-offset-2 col-md-8"><strong>Representante legal #02:</strong><br/>
+					  <input type='text' readonly class='form-control' name='Executante' id='Executante' value="<?php echo $res02['Nome']; ?>">                    	
+                    </div>
+                  </div>  
+                    <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+					  <form class="form-horizontal" role="form"  method="post" action="?perfil=contratos&p=frm_edita_representantelegal&num=2&id_rep=<?php echo $pj['idRepresentante02']?>">
+                      <input type="hidden" name="idPedido" value="<?php echo $ultimo; ?>" />
+					 <input type="submit" class="btn btn-theme btn-med btn-block" value="Abrir Representante legal #02">
+                     </form>
+					</div>
+				  </div>
+				<div class="form-group">
+                    <div class="col-md-offset-2 col-md-8"><br /></div>
+                    	<br />
+				</div>
+                                  
 				  <div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Observação:</strong><br/>
 					 <textarea name="Observacao" class="form-control" rows="10" placeholder=""></textarea>

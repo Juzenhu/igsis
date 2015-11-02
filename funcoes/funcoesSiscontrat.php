@@ -45,7 +45,7 @@ function siscontratLista($tipoPessoa,$instituicao,$num_registro,$pagina,$ordem,$
 	$pag = $pagina - 1;
 	$registro_inicial = $num_registro * $pag;
 	$total_paginas = $total_registros / $num_registro; // gera o número de páginas
-	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao WHERE  publicado = '1' $tipo AND instituicao = '$instituicao' AND estado = '$estado' ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
+	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao WHERE  publicado = '1' $tipo AND instituicao = '$instituicao' $est ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
 		$query_lista_pagina = mysqli_query($con,$sql_lista_pagina);
 	//$x = $sql_lista_pagina;
 	$i = 0;
@@ -250,7 +250,7 @@ function siscontratDocs($idPessoa,$tipo){
 				"EstadoCivil" => "" ,
 				"DataNascimento" => "" ,
 				"LocalNascimento" => "" ,
-				"Naturalidade" => "" ,
+				"Nacionalidade" => $x['Nacionalidade'] ,
 				"DRT" =>"" ,
 				"PIS" => "" ,
 				"Observacao" => "" ,
@@ -373,13 +373,13 @@ function siscontratListaEvento($tipoPessoa,$instituicao,$num_registro,$pagina,$o
 
 	
 	
-	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao, ig_evento WHERE igsis_pedido_contratacao.idEvento = ig_evento.idEvento AND idUsuario = '$idUsuario' AND igsis_pedido_contratacao.publicado = '1' AND ig_evento.dataEnvio IS NOT NULL $tipo AND instituicao = '$instituicao' $est ";
+	$sql_lista_total = "SELECT * FROM igsis_pedido_contratacao, ig_evento WHERE igsis_pedido_contratacao.idEvento = ig_evento.idEvento AND (idUsuario = '$idUsuario' OR idResponsavel = '$idUsuario' OR suplente = '$idUsuario') AND igsis_pedido_contratacao.publicado = '1' AND ig_evento.dataEnvio IS NOT NULL $tipo AND instituicao = '$instituicao' $est ";
 	$query_lista_total = mysqli_query($con,$sql_lista_total);
 	$total_registros = mysqli_num_rows($query_lista_total);
 	$pag = $pagina - 1;
 	$registro_inicial = $num_registro * $pag;
 	$total_paginas = $total_registros / $num_registro; // gera o número de páginas
-	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao, ig_evento WHERE igsis_pedido_contratacao.idEvento = ig_evento.idEvento AND idUsuario = '$idUsuario' AND igsis_pedido_contratacao.publicado = '1' AND ig_evento.dataEnvio IS NOT NULL ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
+	$sql_lista_pagina = "SELECT * FROM igsis_pedido_contratacao, ig_evento WHERE igsis_pedido_contratacao.idEvento = ig_evento.idEvento AND (idUsuario = '$idUsuario' OR idResponsavel = '$idUsuario' OR suplente = '$idUsuario') AND igsis_pedido_contratacao.publicado = '1' AND ig_evento.dataEnvio IS NOT NULL ORDER BY idPedidoContratacao $ordem LIMIT $registro_inicial,$num_registro";
 		$query_lista_pagina = mysqli_query($con,$sql_lista_pagina);
 	//$x = $sql_lista_pagina;
 	$i = 0;

@@ -1,5 +1,7 @@
 <?php
 
+//require "../funcoes/funcoesSiscontrat.php";
+
 $linha_tabela_lista = siscontratLista(1,$_SESSION['idInstituicao'],10,1,"DESC","todos"); //esse gera uma array com os pedidos
 
 //$tipoPessoa,$instituicao,$num_registro,$pagina,$ordem,$estado
@@ -50,4 +52,5 @@ for($i = 0; $i < count($linha_tabela_lista); $i++)
 			</div>
 		</div>
 	</section>
+
 <!--fim_list-->
