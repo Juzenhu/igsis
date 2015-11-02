@@ -346,7 +346,8 @@ if(isset($_POST['pesquisar'])){ // inicia a busca por Razao Social ou CNPJ
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
-					<div class="sub-title">CADASTRO DE PESSOA JURÍDICA</div>
+					<h3>CADASTRO DE PESSOA JURÍDICA</h3>
+                    <p>Não foram encontradas nenhuma pessoa jurídica com referência <strong><?php echo $_POST['busca'] ?></strong></p> 
 			  </div>
 
 	  		<div class="row">
@@ -1334,6 +1335,10 @@ if(isset($_POST['insereRepresentante'])){
 		$data = date('Y-m-d');
 		$idUsuario = $_SESSION['idUsuario'];
 		
+		$codBanco = $_POST['codBanco'];
+		$agencia = $_POST['agencia'];
+		$conta = $_POST['conta'];
+
 		$sql_atualizar_pessoa = "UPDATE sis_pessoa_fisica SET
 		`Nome` = '$Nome',
 		`NomeArtistico` = '$NomeArtistico',
@@ -1344,6 +1349,11 @@ if(isset($_POST['insereRepresentante'])){
 		`DataNascimento` = '$DataNascimento', 
 		`Nacionalidade` = '$Nacionalidade', 
 		`CEP` = '$CEP', 
+
+		`codBanco` = '$codBanco', 
+		`agencia` = '$agencia', 
+		`conta` = '$conta', 
+		
 
 		`Numero` = '$Numero', 
 		`Complemento` = '$Complemento', 
@@ -1388,7 +1398,13 @@ if(isset($_POST['insereRepresentante'])){
 		$data = date("Y-m-d");
 		$idUsuario = $_SESSION['idUsuario'];
 		
-		$sql_atualizar_juridica = "UPDATE `sis_pessoa_juridica` SET `RazaoSocial` = '$RazaoSocial', `CNPJ` = '$CNPJ', `CCM` = '$CCM', `CEP` = '$CEP', `Numero` = '$Numero', `Complemento` = '$Complemento', `Telefone1` = '$Telefone1', `Telefone2` = '$Telefone2', `Telefone3` = '$Telefone3', `Email` = '$Email', `DataAtualizacao` = '$data', `Observacao` = '$Observacao' WHERE `sis_pessoa_juridica`.`Id_PessoaJuridica` = '$idJuridica';";
+		$codBanco = $_POST['codBanco'];
+		$agencia = $_POST['agencia'];
+		$conta = $_POST['conta'];
+		
+		$sql_atualizar_juridica = "UPDATE `sis_pessoa_juridica` SET `RazaoSocial` = '$RazaoSocial', `CNPJ` = '$CNPJ', `CCM` = '$CCM', `CEP` = '$CEP', `Numero` = '$Numero', `Complemento` = '$Complemento', `Telefone1` = '$Telefone1', `Telefone2` = '$Telefone2', `Telefone3` = '$Telefone3', `Email` = '$Email', `DataAtualizacao` = '$data', `Observacao` = '$Observacao', `codBanco` = '$codBanco', 
+		`agencia` = '$agencia', 
+		`conta` = '$conta'  WHERE `sis_pessoa_juridica`.`Id_PessoaJuridica` = '$idJuridica';";
 				if(mysqli_query($con,$sql_atualizar_juridica)){
 			$mensagem = "Atualizado com sucesso!";	
 		}else{
@@ -1550,6 +1566,30 @@ if(isset($_POST['insereRepresentante'])){
 					  <input type="text" class="form-control" id="OMB" name="OMB" placeholder="OMB" value="<?php echo $fisica['OMB']; ?>">
 					</div>
 				  </div>
+                  
+                  <!-- Dados Bancários -->
+                                   <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Banco:</strong><br/>
+					 <select class="form-control" name="codBanco" id="codBanco">
+ 					<option></option>
+                     <option value='32'>Banco do Brasil S.A.</option>
+					<?php
+					
+					geraOpcao("igsis_bancos",$fisica['codBanco'],"");
+					
+					 ?>
+                     </select>
+					</div>
+				  </div> 
+                  
+                 				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Agência</strong><br/>
+					  <input type="text" class="form-control" id="agencia" name="agencia" placeholder="" value="<?php echo $fisica['agencia']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>Conta:</strong><br/>
+					  <input type="text" class="form-control" id="conta" name="conta" placeholder="" value="<?php echo $fisica['conta']; ?>">
+					</div>
+				  </div> 
 				  
 				  
 				  <div class="form-group">
@@ -1711,6 +1751,30 @@ if(isset($_POST['insereRepresentante'])){
 				  </div>
 				  
 				  </div>
+                  
+                  <!-- Dados Bancários -->
+                                   <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Banco:</strong><br/>
+					 <select class="form-control" name="codBanco" id="codBanco">
+ 					<option></option>
+                     <option value='32'>Banco do Brasil S.A.</option>
+					<?php
+					
+					geraOpcao("igsis_bancos",$juridica['codBanco'],"");
+					
+					 ?>
+                     </select>
+					</div>
+				  </div> 
+                  
+                 				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Agência</strong><br/>
+					  <input type="text" class="form-control" id="agencia" name="agencia" placeholder="" value="<?php echo $juridica['agencia']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>Conta:</strong><br/>
+					  <input type="text" class="form-control" id="conta" name="conta" placeholder="" value="<?php echo $juridica['conta']; ?>">
+					</div>
+				  </div>                   
 					<div class="form-group">
                     <div class="col-md-offset-2 col-md-8">
                     	<br />

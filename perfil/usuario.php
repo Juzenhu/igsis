@@ -132,30 +132,100 @@ if(isset($_POST['senha01'])){ //verifica se há um post
 
 break;
 case "dados";
+
+if(isset($_POST['atualizar'])){ //atualiza os dados
+	$nome = $_POST['nome'];
+	$email  = $_POST['email'];
+	$telefone  = $_POST['telefone'];
+	$notificacao  = $_POST['notificacao'];
+	$idUsuario = $_SESSION['idUsuario'];
+
+	$sql_atualiza_dados = "UPDATE `igsis`.`ig_usuario` SET `receberNotificacao` = '$notificacao', `nomeCompleto` = '$nome', `telefone` = '$telefone' WHERE `ig_usuario`.`idUsuario` = '$idUsuario';";
+	
+	$con = bancoMysqli();
+	$query_atualiza_dados = mysqli_query($con, $sql_atualiza_dados);	
+	if($query_atualiza_dados){
+		$mensagem = "Dados atualizados!";
+		gravarLog($sql_atualiza_dados);	
+	}else{
+		$mensagem = "Erro ao atualizar! Tente novamente.";	
+
+	}
+
+}
+
+
 $conta = recuperaUsuarioCompleto($_SESSION['idUsuario']);
  ?>
- 	  <section id="contact" class="home-section bg-white">
+	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
-			  <div class="row">
-				  <div class="col-md-offset-2 col-md-8">
-					<div class="text-hide">
-                <h2>Configuração de conta</h2>
-					 <h5>Dados da conta</h5>
-                     <h6><?php if(isset($mensagem)){echo $mensagem;} ?></h6>
-					</div>
-				  </div>
+			  <div class="form-group">
+					<h3>DADOS DO USUÁRIO</h3>
+                    <p><?php if(isset($mensagem)){ echo $mensagem; } ?></p> 
+                    <p>Se necessitar a edição de um campo não permitido neste formulário, contacte o administrador local.</p> 
 			  </div>
 
 	  		<div class="row">
-	  			<div class="left">
-                <p>Usuário: <strong><?php echo $_SESSION['usuario']; ?></strong></p>
-                <p>Nome completo: <strong><?php echo $conta['nomeCompleto']; ?></strong></p>
-                <p>E-mail: <strong><?php echo $conta['email']; ?></strong></p> 
-                <p>Notificação por e-mail: <strong><?php echo $conta['notificacao']; ?></strong></p> 
-                <p>Instituição: <strong><?php echo $conta['instituicao']; ?></strong></p>
-                <p>Perfil: <strong><?php echo $conta['perfil']; ?></strong></p>
-                <p>Módulos: <strong><?php echo $conta['modulos']; ?></strong></p>
-            </div>
+	  			<div class="col-md-offset-1 col-md-10">
+
+				<form class="form-horizontal" role="form" action="?perfil=usuario&p=dados" method="post">
+				  
+			  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Nome completo:</strong><br/>
+					  <input type="text" class="form-control" id="nome" name="nome" value="<?php echo $conta['nomeCompleto']; ?>" >
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Email:</strong><br/>
+					  <input type="text"  class="form-control" id="email" name="email" value="<?php echo $conta['email']; ?>"  >
+					</div>
+					<div class="col-md-6"><strong>Usuário:</strong><br/>
+					  <input type="text" readonly class="form-control" id="usuario" name="usuario" value="<?php echo $conta['nomeUsuario']; ?>" >
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+                  					<div class="col-md-offset-2 col-md-6"><strong>Telefone</strong><br/>
+					  <input type="text" class="form-control" id="telefone" name="telefone" value="<?php echo $conta['telefone']; ?>" placeholder="(XX)XXXX-XXXX">
+					</div>				  
+					<div class=" col-md-6"><strong>Receber notificação por Email</strong><br/>
+	              		 <select class="form-control" name="notificacao" id="inputSubject" >
+                        <option value="0" <?php if($conta['receberNotificacao'] == 0){echo "selected";} ?> >Não</option>
+                        <option value="1" <?php if($conta['receberNotificacao'] == 1){echo "selected";} ?> >Sim</option>
+                        
+                        </select>       
+					</div>
+
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8"><strong>Módulos habilitados</strong><br/>
+					  	<textarea name="publico" readonly="readonly" class="form-control" rows="5" placeholder=""><?php echo $conta['modulos']; ?></textarea>
+                      
+					</div>
+				  </div>
+				  
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-6"><strong>Perfil:</strong><br/>
+					  <input type="text" readonly class="form-control" value="<?php echo $conta['perfil']; ?>">
+					</div>				  
+					<div class=" col-md-6"><strong>Instituicao:</strong><br/>
+					  <input type="text" readonly class="form-control" value="<?php echo $conta['instituicao']; ?>">
+					</div>
+				  </div>
+				  
+				<!-- Botão Gravar -->	
+				  <div class="form-group">
+					<div class="col-md-offset-2 col-md-8">
+                     <input type="hidden" name="atualizar" value="1" />
+					 <input type="image" alt="GRAVAR" value="submit" class="btn btn-theme btn-lg btn-block">
+					</div>
+				  </div>
+				</form>
+	
+	  			</div>
 			
 				
 	  		</div>
@@ -163,6 +233,7 @@ $conta = recuperaUsuarioCompleto($_SESSION['idUsuario']);
 
 	  	</div>
 	  </section>  
+
 <?php
 
 break;

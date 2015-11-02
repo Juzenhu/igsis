@@ -572,8 +572,8 @@ function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
 			$hora = exibirHora($campo['horaInicio']);
 			$retirada = recuperaIngresso($campo['retiradaIngresso']);
 			$valor = dinheiroParaBr($campo['valorIngresso']);
-			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
-			$espaco = $local['espaco'];
+			$local = recuperaDados("ig_local",$campo['local'],"idLocal");
+			$espaco = $local['sala'];
 			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
 			$instituicao = $inst['instituicao'];
 			$id = $campo['idOcorrencia'];
@@ -655,9 +655,9 @@ function listaOcorrenciasTexto($idEvento){ //lista ocorrencias de determinado ev
 			$hora = exibirHora($campo['horaInicio']);
 			$retirada = recuperaIngresso($campo['retiradaIngresso']);
 			$valor = dinheiroParaBr($campo['valorIngresso']);
-			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
-			$espaco = $local['espaco'];
-			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
+			$local = recuperaDados("ig_local",$campo['local'],"idLocal");
+			$espaco = $local['sala'];
+			$inst = recuperaDados("ig_instituicao",$local['idInstituicao'],"idInstituicao");
 			$instituicao = $inst['instituicao'];
 			$id = $campo['idOcorrencia'];
 			
@@ -773,11 +773,11 @@ function descricaoEvento($idEvento){ //imprime dados de um evento
 	echo "<b>Suplente:</b> ".$suplente['nomeCompleto']."<br />";
 	echo "<br />";
 	echo "<b>Autor:</b><br />".$evento['autor']."<br /><br />";
-	echo "<b>Ficha técnica:</b><br />".$evento['fichaTecnica']."<br /><br />";
+	echo "<b>Ficha técnica:</b><br />".nl2br($evento['fichaTecnica'])."<br /><br />";
 	echo "<b>Faixa ou indicação etária:</b> ".$faixa['faixa']."<br /><br />";
 	echo "<br /><br />";
-	echo "<b>Sinopse:</b><br />".$evento['sinopse']."<br /><br />";
-	echo "<b>Release:</b><br />".$evento['releaseCom']."<br /><br />";
+	echo "<b>Sinopse:</b><br />".nl2br($evento['sinopse'])."<br /><br />";
+	echo "<b>Release:</b><br />".nl2br($evento['releaseCom'])."<br /><br />";
 	// Foi para área de pedido de contratação
 	//echo "<b>Justificativa:</b><br />".$evento['justificativa']."<br /><br />"; 
 	//echo "<b>Parecer artístico:</b><br />".$evento['parecerArtistico']."<br /><br />";
@@ -888,6 +888,7 @@ function recuperaPessoa($id,$tipo){ //recupera os dados de uma pessoa
 			$y['numero'] = $x['CPF'];
 			$y['cep'] = $x['CEP'];
 			$y['ccm'] = $x['CCM'];
+			$y['email'] = $x['Email'];
 			$y['telefones'] = $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'];
 			 
 			return $y;
@@ -902,6 +903,7 @@ function recuperaPessoa($id,$tipo){ //recupera os dados de uma pessoa
 			$y['numero'] = $x['CNPJ'];
 			$y['cep'] = $x['CEP'];
 			$y['ccm'] = $x['CCM'];
+			$y['email'] = $x['Email'];
 			$y['telefones'] = $x['Telefone1']." / ".$x['Telefone2']." / ".$x['Telefone3'];
 				
 						return $y;	
@@ -1527,8 +1529,8 @@ function listaOcorrenciasCinema($idCinema){ //lista ocorrencias de determinado e
 			$hora = exibirHora($campo['horaInicio']);
 			$retirada = recuperaIngresso($campo['retiradaIngresso']);
 			$valor = dinheiroParaBr($campo['valorIngresso']);
-			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
-			$espaco = $local['espaco'];
+			$local = recuperaDados("ig_local",$campo['local'],"idLocal");
+			$espaco = $local['sala'];
 			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
 			$instituicao = $inst['instituicao'];
 			$id = $campo['idOcorrencia'];
@@ -1608,8 +1610,8 @@ function listaOcorrenciasFilmes($idCinema){ //lista ocorrencias de determinado f
 			$hora = exibirHora($campo['horaInicio']);
 			$retirada = recuperaIngresso($campo['retiradaIngresso']);
 			$valor = dinheiroParaBr($campo['valorIngresso']);
-			$local = recuperaDados("ig_espaco",$campo['local'],"idEspaco");
-			$espaco = $local['espaco'];
+			$local = recuperaDados("ig_local",$campo['local'],"idLocal");
+			$espaco = $local['sala'];
 			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
 			$instituicao = $inst['instituicao'];
 			$id = $campo['idOcorrencia'];
@@ -1790,7 +1792,6 @@ function busca($busca,$tipo){
 	case 1:	// busca em ig_eventos
 	$sql_busca = "SELECT DISTINCT * FROM ig_evento WHERE 
 	(nomeEvento LIKE '%$busca%' OR 
-	projeto LIKE '%$busca%' OR
 	autor LIKE '%$busca%' OR
 	fichaTecnica LIKE '%$busca%' OR
 	sinopse LIKE '%$busca%' OR
@@ -1801,8 +1802,14 @@ function busca($busca,$tipo){
 	if($num > 0){
 		$i = 0;
 		while($evento = mysqli_fetch_array($query_busca)){
+			$usuario = recuperaUsuarioCompleto($evento['idResponsavel']);
+			$x[$i]['tipo'] = $evento['ig_tipo_evento_idTipoEvento'];
+			$x[$i]['responsavel'] = $usuario['nomeCompleto'];
+			$x[$i]['dataEnvio'] = $evento['dataEnvio'];
 			$x[$i]['nomeEvento'] = $evento['nomeEvento'];
 			$x[$i]['idEvento'] = $evento['idEvento'];
+			$x[$i]['instituicao'] = $usuario['instituicao'];
+			
 			$i++;
 		}	
 	}
@@ -1851,10 +1858,64 @@ function busca($busca,$tipo){
 
 
 	$x['numReg'] = $num_pf + $num_pj;
+	$x['numPf'] = $num_pf;
+	$x['numPj'] = $num_pj;
+
 	return $x;	
 
 	break;
+	case 3:
 
+	$sql_busca_instituicao = "SELECT * FROM ig_instituicao WHERE 
+	instituicao LIKE '%$busca%'";
+	$query_busca_instituicao = mysqli_query($con,$sql_busca_instituicao);  
+	$num_instituicao = mysqli_num_rows($query_busca_instituicao); 
+	if($num_instituicao > 0){ 
+		$i = 0;	
+		while($instituicao = mysqli_fetch_array($query_busca_instituicao)){
+			$x['instituicao'][$i]['idInstituicao'] = $instituicao['idInstituicao'];	
+			$x['instituicao'][$i]['nome'] = $instituicao['instituicao'];	
+			$x['instituicao'][$i]['sigla'] = $instituicao['sigla'];	
+			$i++;
+		}
+	}
+
+	$sql_busca_usuario = "SELECT * FROM ig_usuario WHERE 
+	nomeCompleto LIKE '%$busca%'";
+	$query_busca_usuario = mysqli_query($con,$sql_busca_usuario);    	
+	$num_usuario = mysqli_num_rows($query_busca_usuario);
+	if($num_usuario > 0){
+		$i = 0;
+		while($usuario = mysqli_fetch_array($query_busca_usuario)){
+			$instituicao = recuperaDados("ig_instituicao",$usuario['idInstituicao'],"idInstituicao");
+			$x['usuario'][$i]['nome'] = $usuario['nomeCompleto'];
+			$x['usuario'][$i]['instituicao'] = $instituicao['instituicao'];
+			$x['usuario'][$i]['email'] = $usuario['email'];
+			$x['usuario'][$i]['telefone'] = $usuario['telefone'];
+			$i++;				
+		}
+	}
+
+	$sql_busca_local = "SELECT * FROM ig_local WHERE 
+	sala LIKE '%$busca%'";
+	$query_busca_local = mysqli_query($con,$sql_busca_local);    	
+	$num_local = mysqli_num_rows($query_busca_local);
+	if($num_local > 0){
+		$i = 0;
+		while($local = mysqli_fetch_array($query_busca_local)){
+			$instituicao = recuperaDados("ig_instituicao",$local['idInstituicao'],"idInstituicao");
+			$x['local'][$i]['nome'] = $local['sala'];
+			$x['local'][$i]['instituicao'] = $instituicao['instituicao'];
+			$i++; 
+		}
+	}
+	$x['num_instituicao'] = $num_instituicao;
+	$x['num_usuario'] = $num_usuario;
+	$x['num_local'] = $num_local;
+
+	return $x;
+
+	break;    
 	}
 }	
 
@@ -1911,7 +1972,7 @@ function retornaModulos($perfil){
 	while($fieldinfo = mysqli_fetch_field($query)){
 		if(($campoFetch[$fieldinfo->name] == 1) AND ($fieldinfo->name != 'idPapelUsuario')){
 			$descricao = recuperaModulo($fieldinfo->name);
-			$nome = $nome.", ".$descricao['nome'];
+			$nome = $nome.";\n + ".$descricao['nome'];
 		}
 	}
 	return substr($nome,1);		
@@ -1934,7 +1995,10 @@ function recuperaUsuarioCompleto($idUsuario){ //retorna dados do usuário
 		$x = array(
 		    "nomeCompleto" => $recupera['nomeCompleto'],
 		    "email" => $recupera['email'],
+			"nomeUsuario" => $recupera['nomeUsuario'],
 		    "perfil" => $perfil['nomePapelUsuario'],
+		    "telefone" => $recupera['telefone'],
+		    "receberNotificacao" => $recupera['receberNotificacao'],
 			"modulos" => $modulos,
 			"notificacao" => $notificacao,		
 			"instituicao" => $instituicao['instituicao']
