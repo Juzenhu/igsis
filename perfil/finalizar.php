@@ -4,10 +4,14 @@ if(isset($_POST['finalizar'])){
 
 	$con = bancoMysqli();
 	$datetime = date("Y-m-d H:i:s");
+	$instituicao = $_SESSION['idInstituicao'];
 	$idEvento = $_SESSION['idEvento'];
 	$sql_atualiza_evento = "UPDATE ig_evento SET dataEnvio = '$datetime' WHERE idEvento = '$idEvento'";
 	$query_atualiza_evento = mysqli_query($con,$sql_atualiza_evento);
-	$sql_atualiza_pedido = "UPDATE `igsis`.`igsis_pedido_contratacao` SET `estado` = 'publicado' WHERE `igsis_pedido_contratacao`.`idPedidoContratacao` = '$idEvento'";
+	$sql_atualiza_pedido = "UPDATE `igsis`.`igsis_pedido_contratacao` SET 
+	`estado` = 'publicado',
+	 `instituicao` = '$instituicao'
+	WHERE `igsis_pedido_contratacao`.`idEvento` = '$idEvento'";
 	$query_atualiza_pedido = mysqli_query($con,$sql_atualiza_pedido);
 		if($query_atualiza_evento){
 			$sql_protocolo = "INSERT INTO `ig_protocolo` (`idProtocolo`, `ig_evento_idEvento`, `publicado`, `dataInsercao`) VALUES (NULL, '$idEvento', '1', '$datetime')";

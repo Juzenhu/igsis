@@ -24,21 +24,25 @@ function verificaCampos($idEvento){
 	$query = mysqli_query($con,$sql); // executa a query
 	$num = mysqli_num_rows($query); // recebe o número de campos a se verificar;
 	$total = 0;
+	$z['campo'] = "";
 	if($num > 0){ // começa a verificação
 		while($x = mysqli_fetch_array($query)){ // roda os campos
 			$y = explode('.',$x['codigo']); // separa a tabela do campo
 			$tabela = $y[0];
 			$campo = $y[1];
 			$campoEvento = $y['2'];
+			$nomeCampo = $y['3'];
 			$sql_verifica = "SELECT * FROM $tabela WHERE $campoEvento = '$idEvento' LIMIT 0,1"; //gera a query e retorna 1 registro
 			$query_verifica = mysqli_query($con,$sql_verifica);
 			$campoRecuperado = mysqli_fetch_array($query_verifica);
+			$i = 0;
 			if(
 				($campoRecuperado[$campo] == "") OR //verifica se o campo está vazio
 				($campoRecuperado[$campo] == NULL) //verifica se o campo é nulo
 			)
 			{
 				$z[$tabela][$campo] = 0;
+				$z['campos'] = $z['campo'].", + ".$nomeCampo."<br />";
 				$total++;
 			}else{
 				$z[$tabela][$campo] = 1;
@@ -80,16 +84,20 @@ function prazoContratos($idEvento){ //deixar mais redondo.
 		$hoje = date("Y-m-d");
 		if($data_final >= $hoje){
 			$prazo = substr($y[1], 1);
-			echo "Hoje é ".exibirDataBr($hoje).".<br />
+			echo "<h5> Você está dentro do prazo de contratos.</h5>";
+			echo "Hoje é ".exibirDataBr($hoje).".";
+			echo "
 			O seu evento se inicia em ".exibirDataBr($data['dataInicio'])." .<br />
-			O prazo para contratos é de $prazo dias.<br />
-			Você está no prazo de contratos.";
+			O prazo para contratos é de <strong>$prazo </strong>dias.<br />
+			Você está <strong>dentro</strong> do prazo de contratos.";
 		}else{
 			$prazo = substr($y[1], 1);
-			echo "Hoje é ".exibirDataBr($hoje).".<br />
+			echo "<h5> Você está fora do prazo de contratos.</h5>";
+			echo "Hoje é ".exibirDataBr($hoje).".";
+			echo "
 			O seu evento se inicia em ".exibirDataBr($data['dataInicio'])." .<br />
-			O prazo para contratos é de $prazo dias.<br />
-			Você está fora do prazo de contratos.";
+			O prazo para contratos é de <strong>$prazo </strong>dias.<br />
+			Você está <strong>fora</strong> do prazo de contratos.";
 		}
 	}
 

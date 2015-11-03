@@ -2315,37 +2315,44 @@ require_once("../funcoes/funcoesSiscontrat.php");
 	$ocorrencia = verificaOcorrencias($_SESSION['idEvento']);
 
 ?>   
-			  <h5> <a href="?perfil=evento&p=enviar&action=evento">Dados do evento </a>| Solicitação de serviços | <a href="?perfil=evento&p=enviar&action=pedidos">Pedidos de contratação</a>  |  Pendências</h5>
+			  <h5> <a href="?perfil=evento&p=enviar&action=evento">Dados do evento </a>| <a href="?perfil=evento&p=enviar&action=servicos">Solicitação de serviços</a> | <a href="?perfil=evento&p=enviar&action=pedidos">Pedidos de contratação</a>  |  Pendências</h5>
 			<div class="table-responsive list_info" >
             <h4><?php echo $evento['nomeEvento'] ?></h4>
             <div class="left">
             
 <?php //print_r($evento);
 if($campos['total'] > 0){
-	echo "Há campos obrigatórios não preenchidos.";	
+	echo "<h4>Há campos obrigatórios não preenchidos.</h4>";	
+	echo "<strong>".substr($campos['campos'],1)."</strong>";
 }else{
-	echo "Todos os campos obrigatórios foram preenchidos";
+	echo "<h4>Todos os campos obrigatórios foram preenchidos.</h4>";
 }
 
+
+
+
 ?></p>
+<br />
+<br />
 <p>
 <?php //print_r($evento);
 if($ocorrencia > 0){
-	echo "Há ocorrências cadastradas.";	
+	echo "<h4>Há ocorrências cadastradas.</h4>";	
+	echo "<br /><br />";
 	prazoContratos($_SESSION['idEvento']);
+
 }else{
 	echo "Não há ocorrências cadastradas.";
 }
 
 ?></p>
 
-            </div>
-<?php
-break;
- } // fecha a switch action ?>	
 
- </div>
-        <div class="form-group">
+            </div>
+            <br />
+            <br />
+            
+                          <div class="form-group">
             <div class="col-md-offset-2 col-md-8">
 	          <form method='POST' action='?perfil=evento&p=finalizar'>
 			<input type='hidden' name='carregar' value='".$campo['idEvento']."' />
@@ -2353,9 +2360,16 @@ break;
 
             </div>
         </div>
+<?php
+break;
+ } // fecha a switch action ?>	
+ </div>
+		</div>
 		</div>
 
-		</div>
+
+      
+
 	</section> 
 
 <?php 
