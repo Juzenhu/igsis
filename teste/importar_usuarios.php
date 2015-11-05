@@ -23,6 +23,8 @@ function bancoImporta(){
 $con = bancoImporta();
 
 
+
+
 $sql_pesquisar = "SELECT * FROM ig_user";
 $query = mysqli_query($con,$sql_pesquisar);
 while($importa = mysqli_fetch_array($query)){

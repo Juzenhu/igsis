@@ -8,15 +8,20 @@ if(isset($_POST['finalizar'])){
 	$idEvento = $_SESSION['idEvento'];
 	$sql_atualiza_evento = "UPDATE ig_evento SET dataEnvio = '$datetime' WHERE idEvento = '$idEvento'";
 	$query_atualiza_evento = mysqli_query($con,$sql_atualiza_evento);
+	if($query_atualiza_evento){
+		gravarLog($sql_atualiza_evento);	
+	}
 	$sql_atualiza_pedido = "UPDATE `igsis`.`igsis_pedido_contratacao` SET 
 	`estado` = 'publicado',
 	 `instituicao` = '$instituicao'
 	WHERE `igsis_pedido_contratacao`.`idEvento` = '$idEvento'";
 	$query_atualiza_pedido = mysqli_query($con,$sql_atualiza_pedido);
 		if($query_atualiza_evento){
+			gravarLog($sql_atualiza_pedido);
 			$sql_protocolo = "INSERT INTO `ig_protocolo` (`idProtocolo`, `ig_evento_idEvento`, `publicado`, `dataInsercao`) VALUES (NULL, '$idEvento', '1', '$datetime')";
 			$query_protocolo = mysqli_query($con,$sql_protocolo);
 			if($query_protocolo){
+				gravarLog($sql_protocolo);
 				$protocolo = recuperaUltimo("ig_protocolo");
 				$mensagem = "O formulário de evento foi enviado com sucesso. O protocolo é IGSIS.".$protocolo." . <br />";
 				$sql_recupera_pedidos = "SELECT * FROM igsis_pedido_contratacao WHERE idEvento = '$idEvento' AND publicado = '1'";
@@ -30,6 +35,7 @@ if(isset($_POST['finalizar'])){
 						$query_fecha_pedido = mysqli_query($con,$sql_fecha_pedido);
 						$i = 0;
 						if($sql_fecha_pedido){
+								gravarLog($sql_fecha_pedido);
 								$protoPedido = recuperaUltimo("sis_protocolo");
 								$pedidos[$i] = $protoPedido;
 								$mensagem = $mensagem."Foi gerado um pedido de contratação com o Protocolo 2015.$protocolo.".$pedidos[$i].".<br />";
