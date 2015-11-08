@@ -3,7 +3,10 @@
 <script src="js/jquery-1.9.1.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/jquery.maskedinput.js" type="text/javascript"></script>
-<script src="js/jquery.maskMoney.js" type="text/javascript"></script>
+<script src="js/jquery.maskMoney.js"> </script>
+<script src="js/ZeroClipboard.js" type="text/javascript"></script>
+<script src="js/main.js" type="text/javascript"></script>
+
   <script>
 
   $(function(){
@@ -13,6 +16,9 @@
  
     $(function() {
     $('#valor').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
+  });
+      $(function() {
+    $('.valor').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
   });
     $(function() {
     $('#valor01').maskMoney({thousands:'', decimal:',', allowZero:true, suffix: ''});
@@ -140,6 +146,8 @@
 	});	
   
   </script>
+  
+  
 
 
 

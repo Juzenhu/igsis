@@ -3,8 +3,9 @@
 						<button class="dl-trigger">Open Menu</button>
 						<ul class="dl-menu">
 							<li>
-								<a href="?perfil=financa">Visão Geral</a>
+								<a href="?perfil=financa&p=visaogeral">Visão Geral</a>
 							</li>
+							<li><a href="?perfil=financa&p=verbas">Valores de verbas</a></li>
 							<li><a href="?perfil=financa&p=pedidos">Pedidos de contratação</a></li>
 							<li><a href="?perfil=financa&p=relatorios">Relatórios</a></li>
    							<li><a href="?perfil=financa">Instituições, usuários e espaços</a></li>
@@ -23,6 +24,7 @@
 <?php
 require_once("../funcoes/funcoesVerifica.php");
 require_once("../funcoes/funcoesSiscontrat.php");
+require_once("../funcoes/funcoesFinanca.php");
 $con = bancoMysqli();
 if(isset($_GET['p'])){
 	$p = $_GET['p'];	
@@ -47,10 +49,10 @@ case 'inicio':
             </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-8">
-	            <a href="?perfil=financa" class="btn btn-theme btn-lg btn-block">Visão Geral</a>
+	            <a href="?perfil=financa&p=visaogeral" class="btn btn-theme btn-lg btn-block">Visão Geral</a>
+   	            <a href="?perfil=financa&p=verbas" class="btn btn-theme btn-lg btn-block">Valores de verbas</a>
 	            <a href="?perfil=financa&p=pedidos" class="btn btn-theme btn-lg btn-block">Pedidos de contratação</a>
    	            <a href="?perfil=financa&p=relatorios" class="btn btn-theme btn-lg btn-block">Relatórios</a>
-  	            <a href="?perfil=financa" class="btn btn-theme btn-lg btn-block">Instituições, usuários e espaços</a>
             </div>
           </div>
         </div>
@@ -117,12 +119,76 @@ while($linha_tabela_pedido_contratacao = mysqli_fetch_array($query))
 			</div>
 		</div>
 	</section>
+
+   <?php 
+   break;
+   case "visaogeral":
+   
+?>
+
+<section id="list_items">
+		<div class="container">
+             <div class="col-md-offset-2 col-md-8">
+                
+                <h2>Visão Geral de Gastos</h2>
+	                <h6>Contratações artísticas</h6>
+                    <p><?php if(isset($mensagem)){ echo $mensagem; } ?></p>
+    
+                </div>
+			<div class="table-responsive list_info">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
+					<thead>
+						<tr class="list_menu">
+                        <td></td>
+							<td>Orçamento</td>
+							<td>Pedido</td>
+							<td>Empenhado</td>
+  							<td>Restante</td>
+						</tr>
+					</thead>
+					<tbody>
+<tr>
+<td>Pessoa física</td>
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"pf")); ?></td>
+<td><?php echo dinheiroParaBr(somaPedido($_SESSION['idInstituicao'],1)); ?></td>
+<td>Empenhado</td>
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"pf") - somaPedido($_SESSION['idInstituicao'],1)) ?></td>
+
+<tr>
+
+<tr>
+<td>Pessoa jurídica</td>
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"pj")); ?></td>
+<td><?php echo dinheiroParaBr(somaPedido($_SESSION['idInstituicao'],2)); ?></td>
+<td>Empenhado</td>
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"pj") - somaPedido($_SESSION['idInstituicao'],2)) ?></td>
+
+
+<tr>
+
+<tr>
+<td>Prêmio</td>
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"premio")); ?></td>
+
+<tr>
+	
+				
+					</tbody>
+				</table>
+
+			</div>
+
+            </div>            
+		</div>
+	</section>
     
    <?php 
    break;
    case "relatorios":
    
 ?>
+
+
 	  <section id="contact" class="home-section bg-white">
 	  	<div class="container">
 			  <div class="form-group">
@@ -193,7 +259,7 @@ while($linha_tabela_pedido_contratacao = mysqli_fetch_array($query))
 					            		
             		<select class="form-control" name="verba" id="inputSubject" >
 						<option value="0">Todos os tipos de verba</option>
-						<?php echo geraOpcao("sis_verba",$campo['Id_Verba'],"") ?>
+						<?php echo geraOpcaoPai("sis_verba",$campo['Id_Verba'],$_SESSION['idInstituicao']) ?>
                     </select>		
 					</div>
 				  </div>				  				  
@@ -220,6 +286,93 @@ while($linha_tabela_pedido_contratacao = mysqli_fetch_array($query))
 
 	  	</div>
 	  </section>  
+
+<?php 
+   break;
+   case "verbas":
+   if(isset($_POST['atualizar'])){
+		$idVerba = $_POST['idVerba'];		   
+		$pj = dinheiroDeBr($_POST['pj']);		   
+		$pf = dinheiroDeBr($_POST['pf']);		   
+		$premio = dinheiroDeBr($_POST['premio']);
+		$sql_atualiza_verba = "UPDATE sis_verba SET
+		pf = '$pf',
+		pj = '$pj',
+		premio = '$premio'
+		WHERE Id_Verba = '$idVerba'";
+		$con = bancoMysqli();
+		$query_atualiza_verba = mysqli_query($con,$sql_atualiza_verba);
+		if($query_atualiza_verba){
+			$mensagem = "Valores atualizados!";
+		}else{
+			$mensagem = "Erro ao atualizar valores.";	
+		}		   
+
+   }
+   
+?>
+	<section id="list_items">
+		<div class="container">
+             <div class="col-md-offset-2 col-md-8">
+                
+                <h2>Valores de Verbas</h2>
+	                <h6>Exercício 2016 em Reais</h6>
+                    <p><?php if(isset($mensagem)){ echo $mensagem; } ?></p>
+    
+                </div>
+			<div class="table-responsive list_info">
+				<table class="table table-condensed"><script type=text/javascript language=JavaScript src=../js/find2.js> </script>
+					<thead>
+						<tr class="list_menu">
+							<td>Verba</td>
+							<td>Pessoa Física</td>
+							<td>Pessoa Jurídica</td>
+							<td>Prêmio</td>
+							<td>Total</td>
+  							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+<?php
+$idInstituicao = $_SESSION['idInstituicao'];
+$sql = "SELECT * FROM sis_verba WHERE idInstituicao = '$idInstituicao' AND pai IS NOT NULL" ;
+$query = mysqli_query($con,$sql);
+while($verba = mysqli_fetch_array($query)){
+?>
+
+<tr>
+<form action="?perfil=financa&p=verbas" method="post">
+<td><?php echo $verba['Verba']; ?></td>
+<td><input type="text" name="pf" class="valor" value="<?php echo dinheiroParaBr($verba['pf']); ?>"/></td>
+<td><input type="text" name="pj" class="valor" value="<?php echo dinheiroParaBr($verba['pj']); ?>"/></td>
+<td><input type="text" name="premio" class="valor" value="<?php echo dinheiroParaBr($verba['premio']); ?>"/></td>
+
+<td><?php echo dinheiroParaBr($verba['premio'] + $verba['pj'] + $verba['pf']) ; ?></td>
+<td>
+<input type="hidden" name="idVerba" value="<?php echo $verba['Id_Verba']; ?>" />
+<input type="hidden" name="atualizar" value="<?php echo $verba['Id_Verba']; ?>" />
+<input type ='submit' class='btn btn-theme  btn-block' value='atualizar'></td>
+</form>
+
+</tr>
+	
+    <?php } ?>
+<tr>
+<td>Total:</td>    
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"pf")) ?></td>    
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"pj"))?></td>    
+<td><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"premio"))?></td>    
+<td><strong><?php echo dinheiroParaBr(somaVerba($_SESSION['idInstituicao'],"pf") + somaVerba($_SESSION['idInstituicao'],"pj") + somaVerba($_SESSION['idInstituicao'],"premio")); ?></strong></td>
+</tr>					
+					</tbody>
+				</table>
+
+			</div>
+
+            </div>            
+		</div>
+	</section>
+
 
 <?php   
 break;

@@ -24,4 +24,5 @@ function bancoMysqliCep(){
 	return $con;
 }
 
+
 ?>

@@ -54,7 +54,10 @@ $query_blog = mysqli_query($con,$sql_blog);
 while($blog = mysqli_fetch_array($query_blog)){
 ?>	
 <h4><?php echo $blog['titulo'];  ?></h4>
+<p class="left"><?php echo exibirDataBr($blog['data']); ?>
 <div class="left"><?php echo $blog['mensagem']; ?></div>
+<br />
+<br />
 
 
 <?php } ?>

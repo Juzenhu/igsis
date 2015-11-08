@@ -17,7 +17,7 @@ Esta é a página para as funções gerais do sistema.
 
 // Conecta-se ao banco de dados MySQL
 function verificaMysql($sql_inserir){ 	//Verifica erro na string/query
-	$mysqli = new mysqli("localhost", "root", "","igsis");
+	$mysqli = new mysqli("localhost", "root", "lic54eca","igsis");
 	if (!$mysqli->query($sql_inserir)) {
     printf("Errormessage: %s\n", $mysqli->error);
 	}
@@ -35,6 +35,8 @@ function habilitarErro(){
 
 //autentica usuario e cria inicia uma session
 function autenticaUsuario($usuario, $senha){ 
+//
+	
 	$sql = "SELECT * FROM ig_usuario, ig_instituicao, ig_papelusuario WHERE ig_usuario.nomeUsuario = '$usuario' AND ig_instituicao.idInstituicao = ig_usuario.idInstituicao AND ig_papelusuario.idPapelUsuario = ig_usuario.ig_papelusuario_idPapelUsuario LIMIT 0,1";
 	$con = bancoMysqli();
 	$query = mysqli_query($con,$sql);
@@ -345,6 +347,25 @@ function geraOpcao($tabela,$select,$instituicao){ //gera os options de um select
 	}
 }
 
+function geraOpcaoPai($tabela,$select,$instituicao){
+	if($instituicao != ""){
+		$sql = "SELECT * FROM $tabela WHERE idInstituicao = $instituicao OR idInstituicao = 999";
+	}else{
+		$sql = "SELECT * FROM $tabela";
+	}
+	$con = bancoMysqli();
+	$query = mysqli_query($con,$sql);
+	while($option = mysqli_fetch_array($query)){
+		if($option['pai'] != NULL){		
+			if($option[0] == $select){
+				echo "<option value='".$option[0]."' selected >".$option[1]."</option>";	
+			}else{
+				echo "<option value='".$option[0]."'>".$option[1]."</option>";	
+			}
+		}
+	}
+}
+
 function geraOpcaoSub($idEvento,$selecionado){
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_sub_evento WHERE ig_evento_idEvento = '$idEvento' AND publicado = '1'";
@@ -574,7 +595,7 @@ function listaOcorrencias($idEvento){ //lista ocorrencias de determinado evento
 			$valor = dinheiroParaBr($campo['valorIngresso']);
 			$local = recuperaDados("ig_local",$campo['local'],"idLocal");
 			$espaco = $local['sala'];
-			$inst = recuperaDados("ig_instituicao",$local['ig_instituicao_idInstituicao'],"idInstituicao");
+			$inst = recuperaDados("ig_instituicao",$local['idInstituicao'],"idInstituicao");
 			$instituicao = $inst['instituicao'];
 			$id = $campo['idOcorrencia'];
 			
@@ -719,6 +740,34 @@ function listaArquivos($idEvento){ //lista arquivos de determinado evento
 			<form method='POST' action='?perfil=evento&p=arquivos'>
 			<input type='hidden' name='apagar' value='".$campo['idArquivo']."' />
 			<input type ='submit' class='btn btn-theme  btn-block' value='apagar'></td></form>"	;
+			echo "</tr>";		
+	}
+					
+						
+
+                        
+
+						
+		
+	echo "					</tbody>
+				</table>";	
+}
+
+function listaArquivosDetalhe($idEvento){ //lista arquivos de determinado evento
+	$con = bancoMysqli();
+	$sql = "SELECT * FROM ig_arquivo WHERE ig_evento_idEvento = '$idEvento' AND publicado = '1'";
+	$query = mysqli_query($con,$sql);
+	echo "<table class='table table-condensed'>
+					<thead>
+						<tr class='list_menu'>
+							<td></td>
+							<td width='10%'></td>
+						</tr>
+					</thead>
+					<tbody>";
+	while($campo = mysqli_fetch_array($query)){
+			echo "<tr>";
+			echo "<td class='list_description'><a href='../uploads/".$campo['arquivo']."' target='_blank'>".$campo['arquivo']."</a></td>";
 			echo "</tr>";		
 	}
 					
@@ -2061,8 +2110,60 @@ function retornaPedidos($idEvento){
 function retornaProtoPedido($idPedido){
 	$con = bancoMysqli();
 	$protocolo = recuperaDados("sis_protocolo",$idPedido,"idPedido");
-	return $protocolo['idProtocolo'];
-	
+	return $protocolo['idProtocolo'];				
 }
+
+function retornaProtoEvento($idEvento){
+	$con = bancoMysqli();
+	$protocolo = recuperaDados("ig_protocolo",$idEvento,"ig_evento_idEvento");
+	return $protocolo['idProtocolo'];		
+}
+
+function retornaMes($mes){
+
+	switch($mes){
+	case "01":
+		return "Janeiro";
+	break;
+	case "02":
+		return "Fevereiro";
+	break;
+	case "03":
+		return "Março";
+	break;
+	case "04":
+		return "Abril";
+	break;
+	case "05":
+		return "Maio";
+	break;
+	case "06":
+		return "Junho";
+	break;
+	case "07":
+		return "Julho";
+	break;
+	case "08":
+		return "Agosto";
+	break;
+	case "09":
+		return "Setembro";
+	break;
+	case "10":
+		return "Outubro";
+	break;
+	case "11":
+		return "Novembro";
+	break;
+	case "12":
+		return "Dezembro";
+	break;
+		
+	}	
+
+
+}
+
+
 
 ?>

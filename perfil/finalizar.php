@@ -53,7 +53,20 @@ if(isset($_POST['finalizar'])){
 		}else{
 				$mensagem = "Erro ao enviar formulário";	
 		}
-	
+
+// Gera um registro em ig_comunicacao
+$sql_pesquisar = "SELECT * FROM ig_evento WHERE idEvento = '$idEvento'";
+$query = mysqli_query($con,$sql_pesquisar);
+while($importa = mysqli_fetch_array($query)){
+	$sql_importar = "INSERT INTO `igsis`.`ig_comunicacao` (`sinopse`, `fichaTecnica`, `autor`, `projeto`, `releaseCom`, `ig_evento_idEvento`, `nomeEvento`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma`) 
+	SELECT `sinopse`, `fichaTecnica`, `autor`, `projeto`,`releaseCom`, `idEvento`, `nomeEvento`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma` FROM `ig_evento` WHERE `idEvento` = '$idEvento'";
+	$query_importar = mysqli_query($con,$sql_importar);
+	if($query_importar){
+		$mensagem_com = "Registro na Divisão de Comunicação e Informação efetuado com sucesso.";
+	}else{
+		$mensagem_com = "Erro ao registrar evento na Divisão de Comunicação e Informação.";
+	}
+}		
 	
 // Criar data para fechamento
 // Criar Protocolo da IG
@@ -78,6 +91,7 @@ $_SESSION['idEvento'] = NULL;
                      
 <p><?php //var_dump($_SESSION); ?></p>
 <p><?php if(isset($mensagem)){echo $mensagem;} ?></p>
+<p><?php if(isset($mensagem_com)){echo $mensagem_com;} ?></p>
 <p><a href="?p=inicio">Voltar ao início.</a></p>
 
 					</div>

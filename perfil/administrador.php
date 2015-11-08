@@ -1,3 +1,26 @@
+	<div class="menu-area">
+					<div id="dl-menu" class="dl-menuwrapper">
+						<button class="dl-trigger">Open Menu</button>
+						<ul class="dl-menu">
+							<li><a href="?secao=inicio">Início</a></li>
+							<li><a href="?secao=perfil">Perfil de acesso</a></li>
+<?//Menu Administrativo!?> <li><a href="#lista"> Perfil Administrativo Local </a>
+							<ul class="dl-submenu">
+							<li><a href="?perfil=administrador&p=users"> Listar Usuários</a></li>
+							<li><a href="?perfil=administrador&p=espacos"> Listar Espaço</a></li>
+							<li><a href="?perfil=administrador&p=listaprojetoespecial"> Listar Projeto Especial</a></li>
+							<li><a href="?perfil=administrador&p=eventos"> Listar Eventos</a></li>
+							<li><a href="?perfil=administrador&p=logsLocais"> Logs Locais</a></li>
+							<li><a href="?perfil=administrador&p=alteracoes"> Alterações</a></li>
+							</li> </ul> <!-- Fim Menu administrativo!--> 
+							<li><a href="?perfil=usuario">Gerenciar conta</a></li>
+							<li><a href="?secao=ajuda">Ajuda</a></li>
+                            <li><a href="../include/logoff.php">Sair</a></li>
+							
+						</ul>
+					</div><!-- /dl-menuwrapper -->
+		</div>
+<!-- fim Menu Área !-->
 <?php
 
 //include para painel administração
@@ -18,8 +41,6 @@ switch($p){
 
 case "inicio":
 ?>
-<?php menuInicio($_SESSION['perfil']); //CHAMA O MENU ?> 
- 
 	<section id="contact" class="home-section bg-white">
 	<div class="container">
         <div class="row">
@@ -45,6 +66,7 @@ case "inicio":
 // LISTA DE USUARIOS 
 break;
  case "users":
+ 
 	
 	if(isset($_POST['apagar'])){
 	$idApagar = $_POST['apagar'];
@@ -55,12 +77,10 @@ break;
 		gravarLog($sql_apagar_registro);
 	}else{
 		$mensagem = "Erro ao apagar o usuário...";	
-	}
-		
-}
-	?> 
-<?php menuUsers($_SESSION['perfil']); //CHAMA O MENU ?> 	
+	}		
+}	
 
+?> 
 	<form method="POST" action="?perfil=administrador&p=users" class="form-horizontal" role="form">
 	<section id="listarUser" class="home-section bg-white">
 	 <div class="form-group">
@@ -88,6 +108,13 @@ break;
 <?php	
 break; // FIM LISTA USUARIOS
 case "novoUser": // INSERIR NOVO USUARIO 
+
+
+	if(isset($_POST['carregar'])){
+	$_SESSION['idUsuario'] = $_POST['carregar'];
+}
+
+
 
 	if(isset($_POST['inserirUser'])){
 		$nomeCompleto = $_POST['nomeCompleto'];
@@ -122,8 +149,6 @@ case "novoUser": // INSERIR NOVO USUARIO
 		}
 	}
 ?>
-<?php menuNovoUser($_SESSION['perfil']); //CHAMA O MENU ?> 
- 
 <section id="inserirUser" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -238,8 +263,6 @@ if(isset($_POST['editarUser'])){
 		}
 	}
 ?>
-<?php menuNovoUser($_SESSION['perfil']); //CHAMA O MENU ?> 
- 
 <section id="inserirUser" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -310,7 +333,6 @@ if(isset($_POST['editarUser'])){
 	</div>    
 </div>
 </section>   
-
 <?php
 break; // FIM LISTA USUARIOS / INSERIR / ATUALIZAR
 case "novoEspaco": // INSERIR NOVO ESPACO 
@@ -342,9 +364,7 @@ if(isset($_POST['cadastrar'])){
 				}
 		}					 
 }
-?>
-<?php menuNovoEspaco($_SESSION['perfil']); //CHAMA O MENU ?> 
-      
+?>    
  <section id="inserirUser" class="home-section bg-white">
     <div class="container">
         <div class="row">
@@ -378,9 +398,8 @@ if(isset($_POST['cadastrar'])){
 					<div class="col-md-offset-2 col-md-8">
                     	<input type="hidden" name="cadastrar" value="1"  />
                 		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir"  />
-						         		</div>
-			
-			</div>
+				    </div>
+				</div>
 		</div>
 		</form>
 				<form method="POST" action="?perfil=administrador&p=espacos" class="form-horizontal"  role="form">
@@ -389,14 +408,11 @@ if(isset($_POST['cadastrar'])){
 				</div></form>
 </div>
   </div>
-    </div>
-       <!-- // FIM DE INSERIR ESPACOS !-->
+    </div>  <!-- // FIM DE INSERIR ESPACOS !-->
 	</section>
-	
-<?php
+	<?php
 break; // FIM ADICIONAR NOVO ESPACO
 case "espacos": 
-
 if(isset($_POST['apagar'])){
 	$con = bancoMysqli();
 	$idApagar = $_POST['apagar'];
@@ -408,12 +424,9 @@ if(isset($_POST['apagar'])){
 	}else{
 		$mensagem = "Erro ao apagar o evento...";	
 	}
-		
-}
-// EDITAR / APAGAR ESPACOS
+}// EDITAR / APAGAR ESPACOS
 ?>
-<?php menuEspacos($_SESSION['perfil']); //CHAMA O MENU ?> 
- 		<section id="list_items" class="home-section bg-white">
+<section id="list_items" class="home-section bg-white">
 		 <div class="form-group">
             <div class="col-md-offset-2 col-md-8">		
 			<h2>Lista de Espaços</h2>
@@ -467,9 +480,7 @@ if(isset($_POST['cadastrar'])){
 		}					 
 }
 ?>
-<?php menuNovoProjetoEspecial($_SESSION['perfil']); //CHAMA O MENU ?> 
-      
- <section id="inserirUser" class="home-section bg-white">
+<section id="inserirUser" class="home-section bg-white">
     <div class="container">
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
@@ -503,7 +514,6 @@ if(isset($_POST['cadastrar'])){
                     	<input type="hidden" name="cadastrar" value="1"  />
                 		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Adcionar"  />
 						         		</div>
-			
 			</div>
 		</div>
 		</form>
@@ -531,11 +541,9 @@ if(isset($_POST['apagar'])){
 	}else{
 		$mensagem = "Erro ao apagar o projeto especial...";	
 	}
-							}	
-// EDITAR / APAGAR PROJETO ESPECIAL
+							}	// EDITAR / APAGAR PROJETO ESPECIAL
 ?>
-<?php menuListaProjetoEspecial($_SESSION['perfil']); //CHAMA O MENU ?> 
- 		<section id="list_items" class="home-section bg-white">
+<section id="list_items" class="home-section bg-white">
 		 <div class="form-group">
             <div class="col-md-offset-2 col-md-8">		
 			<h2>Lista de projeto especial</h2>
@@ -555,9 +563,7 @@ if(isset($_POST['apagar'])){
                          <?php projetoEspecialExistente ($_SESSION['perfil']); ?>
 			</div>
 		</div>
-		
-	</section> <!--/#list_items-->
-
+</section> <!--/#list_items-->
 <?php	
 break; // FIM PROJETO ESPECIAL
 case "eventos": // LISTAR NOVOS EVENTOS
@@ -573,9 +579,7 @@ if(isset($_POST['apagar'])){
 	}
 }
 ?>
-<?php menuEventos ($_SESSION['perfil']); //CHAMA O MENU ?> 
-
-	<section id="list_items" class="home-section bg-white">
+<section id="list_items" class="home-section bg-white">
 		<div class="container">
       			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
@@ -598,8 +602,6 @@ if(isset($_POST['apagar'])){
 break; // FIM EVENTOS
 case "logsLocais": // VISUALIZAR LOGS DE USUARIO
 ?>
-<?php menuLog($_SESSION['perfil']);  //CHAMA O MENU ?>
-
 		<section id="list_items" class="home-section bg-white">
 		<div class="container">
       			  <div class="row">
@@ -617,19 +619,98 @@ case "logsLocais": // VISUALIZAR LOGS DE USUARIO
 			</div>
 		</div>
 	</section> <!--/#list_items-->		
+	<?php
+	break; // FIM LOGS
+	case "formularioalteracoes": // inicio dos formularios de alterações 
+	?> <?php
+if(isset($_POST['carregar'])){
+	$_SESSION['idChamado'] = $_POST['carregar'];
+}
+// Cria um array com dados do evento
+$campo = recuperaAlteracao ("igsis_chamado",$_SESSION['idChamado'],"chamado");
+			
+	?>
+<section id="inserirUser" class="home-section bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+                <div class="text-hide">
+                    <h3>CHAMADOS</h3>
+					<h3><?php if(isset($mensagem)){echo $mensagem;} ?></h3>
+                </div>
+            </div>
+    	</div>
+  <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+	<form method="POST" action="?perfil=administrador&p=formularioalteracoes" class="form-horizontal" role="form">
+               
+					<!-- // Usuario !-->
+			<div class="col-md-offset-1 col-md-10">  
+			    <div class="form-group">
+				<div class="col-md-offset-2 col-md-8">
+                		<label>ID Chamado:</label>
+                		<input type="text" readonly name="idChamado" class="form-control"id="inputSubject" value="" />  </div> 
+                	<div class="col-md-offset-2 col-md-8">
+                		<label>Titulo chamado:</label>
+                		<select name="listaTitulo" class="form-control"  >
+						<?php geraTituloChamado("igsis_chamado_titulo",""); ?>	</select>	
+                	</div>  
+					<div class="col-md-offset-2 col-md-8">	
+                		<label>Criado por:</label>
+                		<input type="text" readonly name="idUsuario" class="form-control"id="usuario" value="" />
+                </div> <!-- Usuário que preencheou o chamado !-->
+					<div class="col-md-offset-2 col-md-8">	
+                		<label>Data do chamado:</label>
+                		<input type="text" readonly name="data" onblur="validate()" class="form-control"id="data" value="" />
+						</div><!--  // data !-->
+					 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Descrição:</label>
+            		<textarea name="descricao"  readonly class="form-control" rows="10" value="" ></textarea>
+            	</div>  <!-- Preenchemento feito pelo usuário !-->  
+            </div>
+					<div class="col-md-offset-2 col-md-8">	
+                		<label>Status:</label>
+                		<select name="listaStatus" class="form-control"  >
+						<?php geraStatusChamado("igsis_chamado_status",""); ?> </select>
+                </div> 
+				 <div class="form-group">
+            	<div class="col-md-offset-2 col-md-8">
+            		<label>Notas adicionais:</label>
+            		<textarea name="descricao" class="form-control" rows="10" value="" ></textarea>
+            	</div> <!-- Fim de Preenchemento !-->  
+            </div>
+			</div>	
+				<div class="col-md-offset-2 col-md-8">
+                    	<input type="hidden" name="concluir" value="1"  />
+                		<input type="submit" class="btn btn-theme btn-lg btn-block" value="concluir"  />
+					</div>
+						
+			</div>
+		
+	</form>
+	<form method="POST" action="?perfil=administrador&p=alteracoes" class="form-horizontal"  role="form">
+				<div class="col-md-offset-2 col-md-8">
+					<input type="submit" class="btn btn-theme btn-lg btn-blcok" value="Lista de chamados" />
+					</div>
+					</form>
+			</div>
+		</div>
+	</div>
+</section>   
+	
 		<?php	
-break; // FIM LOGS LOCAIS
+break; // FIM FORM ALTERÇÕES
 case "alteracoes": // INICIO DE ALTERAÇÕES
 ?>
-              <?php menuAlteracoes ($_SESSION['perfil']); //CHAMA O MENU ?> 
-			  
-			  <section id="list_items" class="home-section bg-white">
+ 		  <section id="list_items" class="home-section bg-white">
 		<div class="container">
       			  <div class="row">
 				  <div class="col-md-offset-2 col-md-8">
 					<div class="section-heading">
 					 <h2>Chamados</h2>
 					<h4>Selecione o chamado para visualizar.</h4>
+					<a href="?perfil=administrador&p=finChamados" class="btn btn-theme btn-lg btn-block">Chamados finalizados</a>
                     <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
 					</div>
 				  </div>
@@ -648,11 +729,29 @@ case "alteracoes": // INICIO DE ALTERAÇÕES
 	
 	*/
 	?>
-	
-
 <?php 
-
 break;
+case "finChamados": // INICIO DE ALTERAÇÕES
+?>
+ 		  <section id="list_items" class="home-section bg-white">
+		<div class="container">
+      			  <div class="row">
+				  <div class="col-md-offset-2 col-md-8">
+					<div class="section-heading">
+					 <h2>Chamados</h2>
+					<h4>Selecione o chamado para visualizar.</h4>
+					<a href="?perfil=administrador&p=alteracoes" class="btn btn-theme btn-lg btn-block">Chamados abertos</a>
+                    <h5><?php if(isset($mensagem)){echo $mensagem;} ?></h5>
+					</div>
+				  </div>
+			  </div>  
+
+			<div class="table-responsive list_info">
+                         <?php listaChamadosFinalizados($_SESSION['perfil']); ?>
+			</div>
+		</div>
+	</section> <!--/#list_items-->
+	<?php
 } //fim da switch ?>
 
 <?php var_dump ($_POST)

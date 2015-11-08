@@ -492,8 +492,13 @@ $pedido = listaPedidoContratacao($_GET['evento']);
 
 			<h5>Serviços Internos</h5>
 			<?php listaServicosInternos($_GET['evento']) ?>
+			<br />
+</div>			
+						<h4>Arquivos anexos</h4>
+			<div class="left">
+		<?php listaArquivosDetalhe($_GET['evento']) ?>
+			</div>
 
-</div>
 </div>
             </div>
 </section>

@@ -5,7 +5,7 @@
 							<li><a href="?perfil=evento&p=basica&inserir=novo">Inserir um evento</a> </li>
 							<li><a href="?perfil=evento&p=carregar">Carregar um evento gravado</a></li>
                             <li><a href="?perfil=evento&p=enviados">Acompanhar andamento de eventos enviados</a>
-                          	<li><a href="?perfil=evento&p=pedidos">Acompanhar andamento de pedidos enviados</a></a> 
+                          	<li><a href="?perfil=evento&p=pedidos">Acompanhar andamento de pediso enviados</a></a> 
                             <li><a href="#">+ opções</a>   
                              <ul class="dl-submenu">
                                         <li selected><a href="?perfil=evento&p=basica">Início</a></li>
