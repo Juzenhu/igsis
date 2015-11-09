@@ -58,8 +58,8 @@ if(isset($_POST['finalizar'])){
 $sql_pesquisar = "SELECT * FROM ig_evento WHERE idEvento = '$idEvento'";
 $query = mysqli_query($con,$sql_pesquisar);
 while($importa = mysqli_fetch_array($query)){
-	$sql_importar = "INSERT INTO `igsis`.`ig_comunicacao` (`sinopse`, `fichaTecnica`, `autor`, `projeto`, `releaseCom`, `ig_evento_idEvento`, `nomeEvento`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma`) 
-	SELECT `sinopse`, `fichaTecnica`, `autor`, `projeto`,`releaseCom`, `idEvento`, `nomeEvento`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma` FROM `ig_evento` WHERE `idEvento` = '$idEvento'";
+	$sql_importar = "INSERT INTO `igsis`.`ig_comunicacao` (`sinopse`, `fichaTecnica`, `autor`, `projeto`, `releaseCom`, `ig_evento_idEvento`, `nomeEvento`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma`, `idInstituicao`) 
+	SELECT `sinopse`, `fichaTecnica`, `autor`, `projeto`,`releaseCom`, `idEvento`, `nomeEvento`, `ig_tipo_evento_idTipoEvento`, `ig_programa_idPrograma`, `idInstituicao` FROM `ig_evento` WHERE `idEvento` = '$idEvento'";
 	$query_importar = mysqli_query($con,$sql_importar);
 	if($query_importar){
 		$mensagem_com = "Registro na Divisão de Comunicação e Informação efetuado com sucesso.";

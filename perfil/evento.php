@@ -79,7 +79,7 @@ if(isset($_POST['carregar'])){
 }
 // Insere um novo evento em branco
 if(isset($_GET["inserir"])){
-	iniciaFormulario($_SESSION['idUsuario']);
+	iniciaFormulario($_SESSION['idUsuario'],$_SESSION['idInstituicao']);
 }
 // Atualiza o banco com as informações do post
 if(isset($_POST['atualizar'])){

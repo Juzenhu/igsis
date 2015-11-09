@@ -3,7 +3,7 @@
 						<button class="dl-trigger">Busca</button>
 						<ul class="dl-menu">
    
-	            <li><a href="?perfil=comunicacao&p=todos" > Todos os eventos</a></li>
+	            <li><a href="?perfil=comunicacao&p=all" > Todos os eventos</a></li>
 	          <!--<a href="?perfil=busca&p=pedidos" class="btn btn-theme btn-lg btn-block">Pedidos de contratação</a>-->
 	            <li><a href="?perfil=comunicacao&p=editados" > Eventos editados</a></li>                
   	            <li><a href="?perfil=comunicacao&p=revisados" > Eventos revisados</a></li>

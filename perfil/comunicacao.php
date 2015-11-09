@@ -1,6 +1,6 @@
 <?
 //include para comunicação
-//require "../funcoes/funcoesComunicacao.php";
+require "../funcoes/funcoesComunicacao.php";
 
  ?>
 <?php
@@ -14,6 +14,7 @@ if($verifica == 1){
 	}else{
 		$p = "inicial";
 	}
+	$idInstituicao = $_SESSION['idInstituicao'];
 ?>
 <?php include "../include/menuCom.php"; ?>
 <?php
@@ -53,7 +54,7 @@ if($verifica == 1){
             </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-8">
-	            <a href="?perfil=comunicacao&p=todos" class="btn btn-theme btn-lg btn-block">Todos os eventos</a>
+	            <a href="?perfil=comunicacao&p=all" class="btn btn-theme btn-lg btn-block">Todos os eventos</a>
 	            <a href="?perfil=comunicacao&p=editados" class="btn btn-theme btn-lg btn-block">Eventos editados</a>
 	            <a href="?perfil=comunicacao&p=revisados" class="btn btn-theme btn-lg btn-block">Eventos revisados</a>
 
@@ -67,7 +68,7 @@ if($verifica == 1){
 	
 	
 	break;
-	case "todos":
+	case "all":
 	
 		?>
 
@@ -97,7 +98,7 @@ if($verifica == 1){
 					<tbody>
 					<?php
 					$con = bancoMysqli();
-					$sql_busca_dic = "SELECT * FROM ig_comunicacao WHERE editado IS NULL ORDER BY idCom DESC";
+					$sql_busca_dic = "SELECT * FROM ig_comunicacao WHERE editado IS NULL AND idInstituicao = '$idInstituicao' ORDER BY idCom DESC";
 					$query_busca_dic = mysqli_query($con,$sql_busca_dic);
 						while($evento = mysqli_fetch_array($query_busca_dic)){ 
 						$event = recuperaDados("ig_evento",$evento['ig_evento_idEvento'],"idEvento");
@@ -152,7 +153,7 @@ if($verifica == 1){
 					<tbody>
 					<?php
 					$con = bancoMysqli();
-					$sql_busca_dic = "SELECT * FROM ig_comunicacao WHERE editado = '1' ORDER BY idCom DESC";
+					$sql_busca_dic = "SELECT * FROM ig_comunicacao WHERE editado = '1' AND idInstituicao = '$idInstituicao' ORDER BY idCom DESC";
 					$query_busca_dic = mysqli_query($con,$sql_busca_dic);
 						while($evento = mysqli_fetch_array($query_busca_dic)){ 
 						$event = recuperaDados("ig_evento",$evento['ig_evento_idEvento'],"idEvento");
@@ -208,7 +209,7 @@ if($verifica == 1){
 					<tbody>
 					<?php
 					$con = bancoMysqli();
-					$sql_busca_dic = "SELECT * FROM ig_comunicacao WHERE revisado = '1' ORDER BY idCom DESC";
+					$sql_busca_dic = "SELECT * FROM ig_comunicacao WHERE revisado = '1'  AND idInstituicao = '$idInstituicao' ORDER BY idCom DESC";
 					$query_busca_dic = mysqli_query($con,$sql_busca_dic);
 						while($evento = mysqli_fetch_array($query_busca_dic)){ 
 						$event = recuperaDados("ig_evento",$evento['ig_evento_idEvento'],"idEvento");
@@ -325,14 +326,16 @@ if($verifica == 1){
 					" OR ((dataFinal BETWEEN '$data_inicio' AND $data_final) AND dataInicio <= '$data_inicio') ". // temporada se inicia antes do periodo e termina durante o  periodo
 					" OR (dataInicio <= '$data_inicio' AND dataFinal >= '$data_final') ". // temporada se inicia antes do periodo e termina depois periodo
 
-					") AND publicado = '1'
-					  ORDER BY dataInicio ASC";
+					") AND publicado = '1' ".
+					
+					"  ORDER BY dataInicio ASC";
+					  
 					$query_busca_dic = mysqli_query($con,$sql_busca_dic);
 						while($evento = mysqli_fetch_array($query_busca_dic)){ 
 						$event = recuperaDados("ig_evento",$evento['idEvento'],"idEvento");
 						$nome = recuperaUsuario($event['idUsuario']);
 						
-						if($event['dataEnvio'] != NULL){ // só as enviadas
+						if($event['dataEnvio'] != NULL AND $event['idInstituicao'] == $_SESSION['idInstituicao']){ // só as enviadas
 						?>
 						
 					<tr>
@@ -359,6 +362,7 @@ if($verifica == 1){
 	break;
 	case "edicao": 
 	$idEvento = $_GET['id'];
+	
 if(isset($_POST['atualizar'])){
 
 	if(isset($_POST['editado'])){
@@ -395,23 +399,7 @@ if(isset($_POST['atualizar'])){
 	$releaseCom = addslashes($_POST['releaseCom']); 
 	$observacao =  addslashes($_POST['observacao']);	
 	$idCom = $_POST['atualizar'];
-	/*
-	$sql_atualiza_com = "UPDATE ig_comunicacao SET
-	nomeEvento = '$nomeEvento',
-	editado = '$editado',
-	revisado = '$revisado',
-	site = '$site',
-	publicacao = '$publicacao',
-	projetoEspecial = '$projetoEspecial',
-	ig_tipo_evento_idTipoEvento = '$ig_tipo_evento_idTipoEvento',
-	autor = '$autor',
-	fichaTecnica = '$fichaTecnica',
-	sinopse = '$sinopse',
-	releaseCom = '$releaseCom',
-	observacao = '$observacao'
-	WHERE idEvento = '$idEvento'
-	
-	"; */
+
 	$sql_atualiza_com = "UPDATE `igsis`.`ig_comunicacao` SET 
 	`sinopse` = '$sinopse', 
 	`fichaTecnica` = '$fichaTecnica',
@@ -464,7 +452,19 @@ if(isset($_POST['atualizar'])){
         <form method="POST" action="?perfil=comunicacao&p=edicao&id=<?php echo $_GET['id'] ?>" class="form-horizontal" role="form">
  <div class="form-group">
 	                <div class="col-md-offset-2 col-md-8">	
-				<h6><a href="?perfil=busca&p=detalhe&evento=<?php echo $campo['ig_evento_idEvento'] ?>" target="_blank">Documento enviado </a> | Edição | <a href="?perfil=comunicacao&p=spcultura&id=<?php echo $_GET['id']; ?>" >SPCultura</a> </h6>	
+				<h6><a href="?perfil=busca&p=detalhe&evento=<?php echo $campo['ig_evento_idEvento'] ?>" target="_blank">Documento enviado </a> | Edição | <a href="?perfil=comunicacao&p=spcultura&id=<?php echo $_GET['id']; ?>" >SPCultura</a> 
+				<?php 
+				if($campo['ig_tipo_evento_idTipoEvento'] == 1){ //edição cinema
+					$_SESSION['cinema'] = 1;
+					$_SESSION['idEvento'] = $_GET['id'];
+					$_SESSION['com'] = 1;
+				
+				?>
+                | <a href="?perfil=cinema" >Filmes </a>
+                <?php
+				}
+				
+				?></h6>	
                  	</div>                     
                 </div>
 
@@ -528,13 +528,17 @@ if(isset($_POST['atualizar'])){
 					 <textarea name="releaseCom" class="form-control" rows="20" ><?php echo $campo['releaseCom'] ?></textarea>
 					</div>
 				  </div>	
-                  <?php if($_SESSION['idInstituicao'] == 5){ // Mostra Gerador de formatação?>
+                  <?php if($_SESSION['idInstituicao'] == 5){ // Mostra Gerador de formatação ?>
 				<div class="form-group">
 					<div class="col-md-offset-2 col-md-8"><strong>Gerador de Diagramação</strong><br/>
                     <div class="left">
 					 <h5><?php echo $campo['nomeEvento']; ?></h5>
                      <p><?php echo resumoOcorrencias($idEvento); ?></p>
                      <p><?php echo nl2br($campo['sinopse']); ?></p>
+					
+	
+                     <p></p>
+                     
 					</div>
                 	</div>
 				  </div>	

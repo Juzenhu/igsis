@@ -42,10 +42,8 @@ function listaCom($st,$intituicao,$num_registro,$pagina,$ordem){
 	return $x;
 }
 
-function periodoCom($idEvento){
 
-	
-}
+
 
 
 ?>
