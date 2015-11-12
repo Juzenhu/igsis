@@ -13,7 +13,7 @@ function acessoPerfilUser($tabela,$select,$instituicao){ //gera os options de um
 		if($instituicao != ""){
 		$sql = "SELECT * FROM $tabela WHERE idInstituicao = $instituicao OR idInstituicao = 999";
 	}else{
-		$sql = "SELECT * FROM ig_papelusuario WHERE idPapelUsuario >= '3'";
+		 $sql = "SELECT * FROM ig_papelusuario WHERE idPapelUsuario >= '3'"; // $sql = "SELECT * FROM ig_papelusuario WHERE idPapelUsuario";
 	}
 	
 	$query = mysqli_query($con,$sql);
@@ -59,6 +59,7 @@ function recuperaUser ($idUsuario) {
 }
 
 function listaUsuarioAdministrador($idUsuario){ 
+	
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM ig_usuario WHERE idInstituicao = '$idUsuario' AND publicado = '1'";
 	$query = mysqli_query($con,$sql);
@@ -77,12 +78,12 @@ function listaUsuarioAdministrador($idUsuario){
 					</thead>
 					<tbody>";
 	while($campo = mysqli_fetch_array($query)){
-			echo "<tr>";
-			//echo "<td class='list_description'>".recuperaIdDado("ig_usuario",$campo['ig_usuario_idUsuario'])."</td>";
+			//$RecuperaIdUsuario = recuperaDados("ig_usuario",$campo['idUsuario'], "ig_usuario_idUsuario");
+			//echo "<tr>";
 			echo "<td class='list_description'>".$campo['nomeCompleto']."</td>";
 			echo "<td class='list_description'>".$campo['nomeUsuario']."</td>";
 			echo "<td class='list_description'>".$campo['email']."</td>";
-			echo "<td class='list_description'></td>";
+			//echo "<td class='list_description'></td>";
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=administrador&p=editarUser'>
@@ -135,7 +136,7 @@ function geraProjetoEspecial($tabela,$select,$publicado,$instituicao){ //gera os
 }
 function geraTituloChamado($tabela,$select,$instituicao){ //gera os options de um select  (( tirei o idInstituição)
 	$con = bancoMysqli();
-			$sql = "SELECT * FROM igsis_chamado_titulo";
+			$sql = "SELECT * FROM igsis_tipo_chamado";
 			$query = mysqli_query($con,$sql);
 	while($option = mysqli_fetch_row($query)){
 		if($option[0] == $select) {
@@ -147,23 +148,30 @@ function geraTituloChamado($tabela,$select,$instituicao){ //gera os options de u
 }
 function geraStatusChamado($tabela,$select,$instituicao){ //gera os options de um select  (( tirei o idInstituição)
 	$con = bancoMysqli();
-			$sql = "SELECT * FROM igsis_chamado_status";
+			$sql = "SELECT * FROM igsis_tipo_chamado where idTipoChamado <= 3";
 			$query = mysqli_query($con,$sql);
 	while($option = mysqli_fetch_row($query)){
 		if($option[0] == $select) {
-			echo "<option value='".$option[0]."' selected >".$option[1]."</option>";	
+			echo "<option value='".$option[0]."' selected >".$option[3]."</option>";	
 		}else{
-			echo "<option value='".$option[0]."'>".$option[1]."</option>";	
+			echo "<option value='".$option[0]."'>".$option[3]."</option>";	
 		}
 	}
 }
 function espacoExistente ($idUsuario) {
 	$con = bancoMysqli();
-	$sql = "SELECT * FROM ig_espaco WHERE idEspaco AND publicado = 1";
+		$sql = "SELECT esp.espaco, esp.idEspaco
+	FROM ig_espaco esp 
+		INNER JOIN ig_instituicao inst 
+			ON esp.ig_instituicao_idInstituicao = inst.idInstituicao 
+			WHERE  idInstituicao = $idUsuario and publicado = 1 ";   // editar para só adicionar instituicao do LOCAL
+//$sql = "SELECT * FROM ig_espaco WHERE idEspaco AND publicado = 1";
 	  $query = mysqli_query($con,$sql); 
 	  	echo " 
-		<table class='table table-condensed'>	<div class='col-md-offset-2 col-md-8'>
-					<thead>						<tr class='list_menu'> 
+		<table class='table table-condensed'>	
+		<div class='col-md-offset-2 col-md-8'>
+					<thead>						
+					<tr class='list_menu'> 
 							<td>Nome do Espaço</td>
   							<td></td>
 							<td width='10%'></td>
@@ -193,13 +201,16 @@ function projetoEspecialExistente ($idUsuario) {
 	$sql = "SELECT * FROM ig_projeto_especial WHERE idProjetoEspecial AND publicado = 1";
 	  $query = mysqli_query($con,$sql); 
 	  	echo " 
-		<table class='table table-condensed'>	<div class='col-md-offset-2 col-md-8'>
-					<thead>						<tr class='list_menu'> 
+		<table class='table table-condensed'>	
+		<div class='col-md-offset-2 col-md-8'>
+					<thead>					
+					<tr class='list_menu'> 
 							<td>Nome do projeto especial</td>
-  							<td></td>
+  							
 							<td width='10%'></td>
 							<td width='10%'></td>
 					 </tr>	
+					 
 					</thead>
 					</div>
 					<tbody>";
@@ -221,7 +232,7 @@ function projetoEspecialExistente ($idUsuario) {
 
 function listaEventosAdministrador($idUsuario){ 
 	$con = bancoMysqli();
-	$sql = "SELECT * FROM ig_evento WHERE idUsuario = $idUsuario AND publicado = 0";
+	$sql = "SELECT * FROM ig_evento WHERE idInstituicao = $idUsuario AND publicado = 0";
 	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
@@ -256,8 +267,9 @@ function listaEventosAdministrador($idUsuario){
 				</table>";
  } // FUNÇÃO DE ALTERACOES
  
- function recuperaAlteracao($tabela,$idChamado){ //retorna uma array com os dados da tabela ig_evento
+ function recuperaAlteracao($tabela,$idChamado,$idInstituicao){ //retorna uma array com os dados da tabela ig_evento
 	$con = bancoMysqli();
+	//$sql = "SELECT * FROM ig_usuario WHERE idInstituicao = '$idUsuario' AND publicado = '1'";
 	$sql = "SELECT * FROM $tabela WHERE ".$campo." = '$idChamado' LIMIT 0,1";
 	$query = mysqli_query($con,$sql);
 	$campo = mysqli_fetch_array($query);
@@ -266,7 +278,8 @@ function listaEventosAdministrador($idUsuario){
 
 function listaAlteracoes($idUsuario){ 
 	$con = bancoMysqli();
-	$sql = "SELECT * FROM igsis_chamado WHERE idChamado ";
+	$sql = "SELECT * FROM igsis_chamado ";/*idInstituicao = '$idUsuario' AND */ 
+//	$sql = "SELECT * FROM igsis_chamado WHERE idChamado ";
 	$query = mysqli_query($con,$sql);
 	echo "<table class='table table-condensed'>
 					<thead>
@@ -284,25 +297,26 @@ function listaAlteracoes($idUsuario){
 					<tbody>";
 	while($campo = mysqli_fetch_array($query)){
 			echo "<tr>";
+			//$RecuperaIdUsuario = recuperaDados("ig_usuario",$campo['idUsuario'], "ig_usuario_idUsuario");
 			echo "<td class='list_description'>".$campo['idChamado']."</td>";
-			echo "<td class='list_description'>".$campo['ig_usuario_idUsuario']."</td>";
-			echo "<td class='list_description'>".$campo['igsis_chamado_titulo_idTitulo']."</td>";
+			echo "<td class='list_description'>".$campo['idUsuario']."</td>";
+			//echo "<td class='list_description'>"'igsis_tipo_chamado'.$campo['titulo']."chamado""</td>";
 			echo "<td class='list_description'>".$campo['data']."</td>";
-			echo "<td class='list_description'>".$campo['igsis_chamado_status_idStatus']."</td>";
+			echo "<td class='list_description'>".$campo['estado']."</td>";
 		
 			echo "<td class='list_description'></td>";
 		
 			echo "
 			<td class='list_description'>
 			<form method='POST' action='?perfil=administrador&p=formularioalteracoes'>
-			<input type='hidden' name='carregar' value='".$campo['idChamado']."' />
+			<input type='hidden' name='carregaChamado' value='".$campo['idChamado']."' />
 			<input type ='submit' class='btn btn-theme btn-block' value='visualizar chamado'></td></form>"	;
 				echo "</tr>";		
 	}
 	echo "					</tbody>
 				</table>";
 				}
-				function listaChamadosFinalizados($idUsuario){ 
+function listaChamadosFinalizados($idUsuario){ 
 	$con = bancoMysqli();
 	$sql = "SELECT * FROM igsis_chamado WHERE idChamado AND publicado = 1 ";
 	$query = mysqli_query($con,$sql);
