@@ -24,7 +24,7 @@
 <?php
 
 //include para painel administração
-require "../funcoes/funcoesadministrador.php"; //chamar funcoes do administrador
+require "../funcoes/funcoesAdministrador.php"; //chamar funcoes do administrador
 
 ?>
 <?php
@@ -116,13 +116,13 @@ case "novoUser": // INSERIR NOVO USUARIO
 
 
 
-	if(isset($_POST['inserirUser'])){
+	if(isset($_POST['atualizar'])){
 		$nomeCompleto = $_POST['nomeCompleto'];
 		$usuario = $_POST['usuario'];
 		$existe = verificaExiste("ig_usuario","nomeUsuario",$usuario,"0");
 		//$senha = MD5($_POST['senha']);
 		$senha = MD5 ('igsis2015');
-		$instituicao = $_POST['ig_instituicao_idInstituicao'];
+		$instituicao = $_SESSION['idInstituicao'];
 		$telefone = $_POST['telefone'];
 		$perfil = $_POST['papelusuario'];
 		$email = $_POST['email'];
@@ -203,10 +203,9 @@ case "novoUser": // INSERIR NOVO USUARIO
             		</div> <!-- Fim de Preenchemento !-->  
 					<!-- Botão de Confirmar cadastro !-->
 					<div class="col-md-offset-2 col-md-8">
-                    	<input type="hidden" name="inserirUser" value="1"  />
+                    	<input type="hidden" name="atualizar" value="1"  />
                 		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Inserir Usuário"  />
-						
-						        		</div>
+					</div>
 						</div>
 				</div>
 		</div>
@@ -227,32 +226,52 @@ case "novoUser": // INSERIR NOVO USUARIO
 <?php	
 break; // FIM INSERIR USUARIO
 case "editarUser": // ATUALIZAR/EDITAR USUARIO 
-if(isset($_POST['editarUser'])){
-	$_SESSION['idUsuario'] = $_POST['editarUser'];
-}
-	if(isset($_POST['inserirUser'])){
-		$nomeCompleto = $_POST['nomeCompleto'];
-		$usuario = $_POST['usuario'];
-		$existe = verificaExiste("ig_usuario","nomeUsuario",$usuario,"0");
-		//$senha = MD5($_POST['senha']);
+
+
+if (isset ($_POST ['resetSenha'])) {
 		$senha = MD5 ('igsis2015');
-		$instituicao = $_POST['ig_instituicao_idInstituicao'];
+		$usuario = $_POST ['editarUser'];
+		
+	$sql_atualizar = "UPDATE `ig_usuario` SET
+	`senha` = '$senha'
+	WHERE `idUsuario` = '$usuario'";
+			$con = bancoMysqli();
+	if(mysqli_query ($con,$sql_atualizar)){
+		$mensagem = "Senha reiniciado com sucesso";
+			}else{
+				$mensagem = "Erro ao reiniciar. Tente novamente.";
+			}
+	}
+	
+	// Atualiza o banco com as informações do post
+	if(isset($_POST['atualizar'])){
+		$usuario= $_POST ['idUsuario'];
+		$nomeCompleto = $_POST['nomeCompleto'];
+		$nomeUsuario = $_POST['nomeUsuario'];
+		$existe = verificaExiste("ig_usuario","nomeUsuario",$usuario,"0");
 		$telefone = $_POST['telefone'];
+		$instituicao = $_SESSION['id_usuario = 1'] = $_POST['ig_instituicao_idInstituicao'];
 		$perfil = $_POST['papelusuario'];
-		$email = $_POST['email'];
-		$existe = verificaExiste("ig_usuario","email",$usuario,"0");
-		$publicado = "1";
+		$rf	=	$_POST['rf'];
+		$email = $_POST['email'];	
 		if(isset($_POST['receberEmail'])){
 			$receberEmail =	1;
 		}else{
 			$receberEmail =	0;
-		}
-			
-	
-		if($existe['numero'] == 0){
-			$sql_inserir = "INSERT INTO `ig_usuario` (`idUsuario`, `ig_papelusuario_idPapelUsuario`, `senha`, `receberNotificacao`, `nomeUsuario`, `email`, `nomeCompleto`, `idInstituicao`, `telefone`, `publicado`) VALUES (NULL, '$perfil', '$senha', '$receberEmail', '$usuario', '$email', '$nomeCompleto', '$instituicao', '$telefone', '$publicado')";
-			$query_inserir = mysqli_query($con,$sql_inserir);
-			if($query_inserir){
+		}	if($existe['numero'] == 0)
+			{
+				$sql_atualizar = "UPDATE `ig_usuario`SET
+			`nomeCompleto`= '$nomeCompleto',
+			`nomeUsuario`= '$nomeUsuario', 
+				`telefone`= '$telefone',
+				`idInstituicao` = '$instituicao',
+			`ig_papelusuario_idPapelUsuario`= '$perfil',
+			`rf`= '$rf',	
+			`email`= '$email', 
+			`receberNotificacao`= '$receberEmail'			
+			WHERE `idUsuario` = '$usuario' ";
+				$con = bancoMysqli();
+			if(mysqli_query($con,$sql_atualizar)){ 
 				$mensagem = "Usuário atualizado com sucesso";
 			}else{
 				$mensagem = "Erro ao editar. Tente novamente.";
@@ -261,7 +280,8 @@ if(isset($_POST['editarUser'])){
 		else{
 			$mensagem = "Tente novamente.";
 		}
-	}
+	} 
+	$recuperaUsuario = recuperaDados("ig_usuario",$_POST['editarUser'],"idUsuario"); 
 ?>
 <section id="inserirUser" class="home-section bg-white">
     <div class="container">
@@ -276,60 +296,70 @@ if(isset($_POST['editarUser'])){
   <div class="row">
         <div class="col-md-offset-2 col-md-8">
 	<form method="POST" action="?perfil=administrador&p=editarUser" class="form-horizontal" role="form">
-               
+          <input type="hidden" name="idUsuario"  value=<?php  echo $recuperaUsuario['idUsuario'] ?> />
 					<!-- // Usuario !-->
 			<div class="col-md-offset-1 col-md-10">  
 			    <div class="form-group">
 				<div class="col-md-offset-2 col-md-8">
                 		<label>Nome Completo:</label>
-                		<input type="text" name="nomeCompleto" class="form-control"id="nomeCompleto" value="" />  </div> 
+                		<input type="text" name="nomeCompleto" class="form-control"id="nomeCompleto" value="<?php echo $recuperaUsuario['nomeCompleto'] ?>" />  </div> 
                 	<div class="col-md-offset-2 col-md-8">
                 		<label>Usuario:</label>
-                		<input type="text" name="usuario" class="form-control"id="usuario" />
+                		<input type="text" name="nomeUsuario" class="form-control"id="nomeUsuario" value="<?php echo $recuperaUsuario['nomeUsuario'] ?>" />
                 	</div>  <!-- // SENHA !-->
-					<div class="col-md-offset-2 col-md-8">
-                		<label>Senha:</label>
-						<input type="password" name="senha" class="form-control" id="senha" />
-               		</div> 	<!-- // Departamento !-->
+						<!-- // Departamento !-->
 					<div class="col-md-offset-2 col-md-8">	
                 		<label>telefone:</label>
-                		<input type="text" name="telefone" class="form-control"id="departamento" />
+                		<input type="text" name="telefone" class="form-control"id="departamento" value="<?php echo $recuperaUsuario['telefone'] ?>" />
                 	</div>  <!-- // Perfil de Usuario !-->
 					<div class="col-md-offset-2 col-md-8">
                 		<label>Instituição:</label>
                 		<select name="ig_instituicao_idInstituicao" class="form-control"  >
-						<?php instituicaoLocal("ig_instituicao","1",""); ?>
+						<?php instituicaoLocal("ig_instituicao",$recuperaUsuario['idInstituicao'],""); ?>
 						</select>
                 	</div>  <!-- // Perfil de Usuario !-->
 					 <div class="col-md-offset-2 col-md-8">
 					 <div class="col-md-offset-2 col-md-8">
                 		<label>Acesso aos Perfil's :</label> </div>
 						<select name="papelusuario" class="form-control"  >
-						<?php acessoPerfilUser("ig_papelusuario","3",""); ?>
+						<?php acessoPerfilUser("ig_papelusuario",$recuperaUsuario['ig_papelusuario_idPapelUsuario'],""); ?>
 						</select>
-					</div>  <!--  // Email !-->
+					</div>  <!--  // Regristro Funcional 'RF' !-->
+					<div class="col-md-offset-2 col-md-8">  
+					<label>RF:</label>
+					<input type="text" name="rf" class="form-control" value="<?php echo $recuperaUsuario ['rf']?>"/>
+					</div> <!--  // Email !-->
 					<div class="col-md-offset-2 col-md-8">  
 					<label>Email para cadastro:</label>
-					<input type="text" name="email" class="form-control" id="email" value=""/>
+					<input type="text" name="email" class="form-control" id="email" value="<?php echo $recuperaUsuario ['email']?>"/>
 					</div>
 		            <div class="col-md-offset-2 col-md-8"> <!-- // Confirmação de Recebimento de Email !-->
             		  <label style="padding:0 10px 0 5px;">Receber Email de atualizações: </label><input type="checkbox" name="receberEmail" id="diasemana01"/>
             		</div> <!-- Fim de Preenchemento !-->  
 					<!-- Botão de Confirmar cadastro !-->
 					<div class="col-md-offset-2 col-md-8">
-                    	<input type="hidden" name="inserirUser" value="1"  />
+					<input type="hidden" name="editarUser" value="<?php echo $_POST['editarUser'] ?>"  />
+                    	<input type="hidden" name="atualizar" value="1"  />
                 		<input type="submit" class="btn btn-theme btn-lg btn-block" value="Atualizar Usuário"  />
 					</div>
 						        	
 	</form>			
 	</div>
+	<form method="POST" action="?perfil=administrador&p=editarUser" class="form-horizontal" role="form">
+<div class="col-md-offset-1 col-md-10">
+                		<input type="hidden" name="editarUser" value="<?php echo $_POST['editarUser'] ?>"  />
+						<input type="hidden" name="resetSenha" value="1"  />
+						<input type="submit" class="btn btn-theme btn-lg btn-blcok" name="resetar_senha" value="Resetar Senha do usuario" /> <p> </p>
+               		</div> 
+</form>	
 	<form method="POST" action="?perfil=administrador&p=users" class="form-horizontal" >
 				<div class="col-md-offset-2 col-md-8">
 					<input type="submit" class="btn btn-theme btn-lg btn-blcok" value="Lista de Usuário" />
 				</div>
 		</div>
 	</div>	
-	</form>		  
+	</form>	
+
 	</div>    
 </div>
 </section>   
@@ -416,7 +446,7 @@ case "espacos":
 if(isset($_POST['apagar'])){
 	$con = bancoMysqli();
 	$idApagar = $_POST['apagar'];
-	$sql_apagar_registro = "UPDATE ig_espaco SET publicado = 3 WHERE idEspaco = $idApagar";
+	$sql_apagar_registro = "UPDATE ig_espaco SET publicado = 2 WHERE idEspaco = $idApagar";
 
 	if(mysqli_query($con,$sql_apagar_registro)){	
 		$mensagem = "Espaço apagado com sucesso!";
@@ -443,7 +473,7 @@ if(isset($_POST['apagar'])){
 				  </div>
 				  
 			<div class="table-responsive list_info">
-                         <?php espacoExistente ($_SESSION['perfil']); ?>
+                         <?php espacoExistente ($_SESSION['idInstituicao']); ?>
 			</div>
 		</div>
 		
@@ -592,7 +622,7 @@ if(isset($_POST['apagar'])){
 			  </div>  
 
 			<div class="table-responsive list_info">
-                         <?php listaEventosAdministrador($_SESSION['perfil']); ?>
+                         <?php listaEventosAdministrador($_SESSION['idInstituicao']); ?>
 			</div>
 		</div>
 	</section> <!--/#list_items-->
@@ -627,8 +657,8 @@ if(isset($_POST['carregar'])){
 	$_SESSION['idChamado'] = $_POST['carregar'];
 }
 // Cria um array com dados do evento
-$campo = recuperaAlteracao ("igsis_chamado",$_SESSION['idChamado'],"chamado");
-			
+
+			$recuperaChamado = recuperaDados("igsis_chamado", $_POST['carregaChamado'],"idChamado");
 	?>
 <section id="inserirUser" class="home-section bg-white">
     <div class="container">
@@ -643,46 +673,46 @@ $campo = recuperaAlteracao ("igsis_chamado",$_SESSION['idChamado'],"chamado");
   <div class="row">
         <div class="col-md-offset-2 col-md-8">
 	<form method="POST" action="?perfil=administrador&p=formularioalteracoes" class="form-horizontal" role="form">
-               
+      
 					<!-- // Usuario !-->
 			<div class="col-md-offset-1 col-md-10">  
 			    <div class="form-group">
 				<div class="col-md-offset-2 col-md-8">
-                		<label>ID Chamado:</label>
-                		<input type="text" readonly name="idChamado" class="form-control"id="inputSubject" value="" />  </div> 
+                		<label>ID Chamado:</label>				
+                		<input type="text" readonly name="idChamado" class="form-control"id="inputSubject" value="<?php echo $recuperaChamado['idChamado'] ?>" />  </div> 
                 	<div class="col-md-offset-2 col-md-8">
                 		<label>Titulo chamado:</label>
                 		<select name="listaTitulo" class="form-control"  >
-						<?php geraTituloChamado("igsis_chamado_titulo",""); ?>	</select>	
+						<?php geraTituloChamado("igsis_tipo_chamado",$recuperaChamado['idTipoChamado'],""); ?>	</select>	
                 	</div>  
 					<div class="col-md-offset-2 col-md-8">	
                 		<label>Criado por:</label>
-                		<input type="text" readonly name="idUsuario" class="form-control"id="usuario" value="" />
+                		<input type="text" readonly name="idUsuario" class="form-control"id="usuario" value="<?php echo $recuperaChamado['idUsuario']?>" />
                 </div> <!-- Usuário que preencheou o chamado !-->
 					<div class="col-md-offset-2 col-md-8">	
                 		<label>Data do chamado:</label>
-                		<input type="text" readonly name="data" onblur="validate()" class="form-control"id="data" value="" />
+                		<input type="text" readonly name="data" onblur="validate()" class="form-control"id="data" value="<?php echo $recuperaChamado['data'] ?>" />
 						</div><!--  // data !-->
 					 <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
             		<label>Descrição:</label>
-            		<textarea name="descricao"  readonly class="form-control" rows="10" value="" ></textarea>
+            		<textarea name="descricao" readonly class="form-control" rows="10"> <?php echo $recuperaChamado['descricao'] ?></textarea>
             	</div>  <!-- Preenchemento feito pelo usuário !-->  
             </div>
 					<div class="col-md-offset-2 col-md-8">	
                 		<label>Status:</label>
-                		<select name="listaStatus" class="form-control"  >
-						<?php geraStatusChamado("igsis_chamado_status",""); ?> </select>
+                		<select name="estado" class="form-control"  >
+						<?php geraStatusChamado("igsis_tipo_chamado",$recuperaChamado['estado'],""); ?> </select>
                 </div> 
 				 <div class="form-group">
             	<div class="col-md-offset-2 col-md-8">
             		<label>Notas adicionais:</label>
-            		<textarea name="descricao" class="form-control" rows="10" value="" ></textarea>
+            		<textarea name="justificativa" class="form-control" rows="10"> <?php echo $recuperaChamado['justificativa'] ?></textarea>
             	</div> <!-- Fim de Preenchemento !-->  
             </div>
 			</div>	
 				<div class="col-md-offset-2 col-md-8">
-                    	<input type="hidden" name="concluir" value="1"  />
+                    	<input type="hidden" name="inserir" value="1"  />
                 		<input type="submit" class="btn btn-theme btn-lg btn-block" value="concluir"  />
 					</div>
 						
@@ -702,6 +732,7 @@ $campo = recuperaAlteracao ("igsis_chamado",$_SESSION['idChamado'],"chamado");
 		<?php	
 break; // FIM FORM ALTERÇÕES
 case "alteracoes": // INICIO DE ALTERAÇÕES
+
 ?>
  		  <section id="list_items" class="home-section bg-white">
 		<div class="container">
@@ -717,7 +748,7 @@ case "alteracoes": // INICIO DE ALTERAÇÕES
 			  </div>  
 
 			<div class="table-responsive list_info">
-                         <?php listaAlteracoes($_SESSION['perfil']); ?>
+                         <?php listaAlteracoes($_SESSION['idInstituicao']); ?>
 			</div>
 		</div>
 	</section> <!--/#list_items-->
